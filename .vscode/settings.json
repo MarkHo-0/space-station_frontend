@@ -1,0 +1,11 @@
+{
+    "files.exclude": {
+        ".dart_tool": true,
+        ".gitignore": true,
+        ".metadata": true,
+        "analysis_options.yaml": true,
+        "build": true,
+        "launcher_icons.yaml": true,
+        "pubspec.lock": true
+    }
+}
