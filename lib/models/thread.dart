@@ -3,7 +3,7 @@ class Stats {
   final int dislike;
   final int reply;
 
-  const Stats({
+  Stats({
     required this.like,
     required this.dislike,
     required this.reply,
@@ -25,7 +25,7 @@ class Sender {
   final String nickname;
   final int subject_id;
 
-  const Sender({
+  Sender({
     required this.uid,
     required this.nickname,
     required this.subject_id,
@@ -54,7 +54,7 @@ class Threads {
   final Stats stats;
   final Sender sender;
 
-  const Threads({
+  Threads({
     required this.tid,
     required this.pid,
     required this.fid,
