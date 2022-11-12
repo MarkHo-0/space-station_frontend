@@ -102,8 +102,8 @@ class Threads {
       title: json["title"],
       content_cid: json["content_cid"],
       pined_cid: json["pined_cid"],
-      stats: Stats.fromjson(json["stats"]),
-      threadsender: ThreadSender.fromjson(json["threadsender"]),
+      stats: Stats.fromjson(json["stats"]),                        //json["stats"] return map
+      threadsender: ThreadSender.fromjson(json["threadsender"]),   //json["threadsender"] return map
     );   //homedata 將 json "threads"的array 的 單獨index 的Map 比threads object
   }
 }
