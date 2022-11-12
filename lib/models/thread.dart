@@ -120,8 +120,8 @@ class HomeData {
   );
 
   factory HomeData.fromjson(Map<String,dynamic> json) {
-    List<String> a = json["News"];           //json[title] is a List 
-    List<String> b = json["Threads"];
+    List<String> a = json["News"];           //json["title"] is a List 
+    List<String> b = json["Threads"];        //json["Threads"] is a List
     List<News> c = [];
     List<Threads> d = [];
     for (int i = 0; i < a.length; i++) {
