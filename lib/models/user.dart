@@ -3,7 +3,7 @@ class User {
   final String nickname;
   final int subject_id;
 
-  const User({
+  User({
     required this.uid,
     required this.nickname,
     required this.subject_id,
