@@ -45,19 +45,19 @@ class Stats {
 
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
-class Sender {
+class ThreadSender {
   final int uid;
   final String nickname;
   final int subject_id;
 
-  Sender({
+  ThreadSender({
     required this.uid,
     required this.nickname,
     required this.subject_id,
   });
 
-  factory Sender.fromjson(Map<String, dynamic> json) {
-    return Sender(
+  factory ThreadSender.fromjson(Map<String, dynamic> json) {
+    return ThreadSender(
       uid: json["uid"],
       nickname: json["nickname"],
       subject_id: json["subject_id"],
@@ -77,7 +77,7 @@ class Threads {
   final int content_cid;
   final int pined_cid;
   final Stats stats;
-  final Sender sender;
+  final ThreadSender threadsender;
 
   Threads({
     required this.tid,
@@ -89,7 +89,7 @@ class Threads {
     required this.content_cid,
     required this.pined_cid,
     required this.stats,
-    required this.sender,
+    required this.threadsender,
   });
 
   factory Threads.fromJson(Map<String, dynamic> json) {
@@ -103,7 +103,7 @@ class Threads {
       content_cid: json["content_cid"],
       pined_cid: json["pined_cid"],
       stats: Stats.fromjson(json),
-      sender: Sender.fromjson(json),
+      threadsender: ThreadSender.fromjson(json),
     );
   }
 }
