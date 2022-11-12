@@ -104,7 +104,7 @@ class Threads {
       pined_cid: json["pined_cid"],
       stats: Stats.fromjson(json["stats"]),
       threadsender: ThreadSender.fromjson(json["threadsender"]),
-    );   //homedata 將 json "threads"的array String 轉成 單獨index 的Map 比threads object
+    );   //homedata 將 json "threads"的array 的 單獨index 的Map 比threads object
   }
 }
 //////////////////////////////////////////////////////
@@ -118,10 +118,13 @@ class HomeData {
     this.ThreadsArray,
   );
 
-  factory HomeData.fromjson(dynamic json) {
-    return HomeData();
+  factory HomeData.fromjson(Map<String,dynamic> json) {
+    return HomeData(
+      json["News"].forEach(=>News.fromjson(i)),
+      json["Threads"].forEach(String t=>Threads.fromJson(t)),
+    );
   }
 }
-//要將json String 分"thread"同"news"拆成Array 比 threads同news
+//要將json Map 分"thread"同"news"拆成Array  比 threads同news
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
