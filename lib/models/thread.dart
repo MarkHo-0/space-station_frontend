@@ -1,3 +1,28 @@
+class News {
+  final String title;
+  final String content;
+  final int create_time;
+  final int valid_time;
+
+  News({
+    required this.title,
+    required this.content,
+    required this.create_time,
+    required this.valid_time,
+  });
+
+  factory News.fromjson(Map<String, dynamic> json) {
+    return News(
+      title: json["title"],
+      content: json["content"],
+      create_time: json["create_time"],
+      valid_time: json["valid_time"],
+    );
+  }
+}
+
+//////////////////////////////////////////////////////
+//////////////////////////////////////////////////////
 class Stats {
   final int like;
   final int dislike;
