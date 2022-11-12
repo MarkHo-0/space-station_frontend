@@ -119,7 +119,7 @@ class HomeData {
   );
 
   factory HomeData.fromjson(Map<String,dynamic> json) {
-   List<News> x = json["News"].entries((i)=>News.fromjson(i));
+   List<News> x = json["News"].forEach((i) => News.fromjson(i));
    List<Threads> y = json["Threads"].forEach((t)=>Threads.fromJson(t));
     return HomeData(x,y);
   }
