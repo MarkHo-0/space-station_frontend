@@ -119,9 +119,17 @@ class HomeData {
   );
 
   factory HomeData.fromjson(Map<String,dynamic> json) {
-   return HomeData(
-        json["News"].forEach((listitem1) => News.fromjson(listitem1)),
-        json["Threads"].forEach((listitem2) => Threads.fromJson(listitem2)));
+    List<String> a = json["News"];
+    List<String> b = json["Threads"];
+    List<News> c = [];
+    List<Threads> d = [];
+    for (int i = 0; i < a.length; i++) {
+      c.add(News.fromjson(jsonDecode(a[i])));
+    }
+    for (int t = 0; t < b.length;t++){
+      d.add(Threads.fromJson(jsonDecode(a[t])));
+    }
+      return HomeData(c,d);
   }
 }
 //要將json Map 分"thread"同"news"拆成Array  比 threads同news
