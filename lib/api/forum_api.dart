@@ -64,3 +64,19 @@ Future<ThreadDetail> getThreadInsideData(String tid, String cursor) async {
     throw Exception('Failed to load ThreadDetail');
   }
 }
+//////////////////////////////////////////////////////
+//////////////////////////////////////////////////////
+
+//Not confirmed.
+
+Future<CommentDetail> getCommentInsideData(
+    String cid, String Authorization) async {
+  String domain = "";
+  http.Response response = await http.get(Uri.parse("$domain/comment/$cid"),
+      headers: <String, String>{'Authorization': Authorization});
+  if (response.statusCode == 200) {
+    return CommentDetail.fromJson(jsonDecode(response.body));
+  } else {
+    throw Exception('Failed to load CommentDetail');
+  }
+}
