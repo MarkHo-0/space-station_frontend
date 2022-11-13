@@ -127,7 +127,7 @@ class HomeData {
   );
 
   factory HomeData.fromJson(Map<String, dynamic> json) {
-    List<String> a = json["News"]; //json[title] is a List
+    List<String> a = json["News"]; //json["News"] is a List
     List<String> b = json["Threads"]; //json["Threads"] is a List
     List<News> c = [];
     List<Threads> d = [];
@@ -138,7 +138,7 @@ class HomeData {
     for (int t = 0; t < b.length; t++) {
       d.add(Threads.fromJson(jsonDecode(a[t])));
     }
-    return HomeData(c, d, User.fromjson(json["user"]));
+    return HomeData(c, d, User.fromjson(json["user"])); //json["user"] is a Map
   }
 }
 //要將json Map 分"thread"同"news"拆成Array  比 threads同news
