@@ -3,7 +3,8 @@ import 'package:flutter_application_3/class.dart';
 import 'package:http/http.dart' as http;
 
 Future<HomeData> getHomeData() async {
-  var response = await http.get(Uri.parse(""));
+  String domain = "";
+  var response = await http.get(Uri.parse("$domain/home"));
   if (response.statusCode == 200) {
     return HomeData.fromJson(jsonDecode(response.body));
   } else {
