@@ -171,7 +171,7 @@ class Has_next {
     this.has_next,
   );
 
-  factory ThreadPage.fromjson(Map<String, dynamic> json) {
+  factory ThreadPage.fromJson(Map<String, dynamic> json) {
     List<String> a = json["Threads"];
     List<Threads> b = [];
     for (int i = 0; i < a.length; i++) {
