@@ -53,7 +53,7 @@ Future<ThreadDetail> getThreadInsideData(String tid, String cursor) async {
   http.Response response;
 //cursor deafult =""
   if (cursor != "") {
-    response = await http.get(Uri.parse("$domain/thread/$tid?$cursor"));
+    response = await http.get(Uri.parse("$domain/thread/$tid?coursor=$cursor"));
   } else {
     response = await http.get(Uri.parse("$domain/thread/$tid"));
   }
