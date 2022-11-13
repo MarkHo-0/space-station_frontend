@@ -39,7 +39,6 @@ Future<ThreadPage> getThreadPageData(
   } else if (fid != -1) {
     Conditon = "${Conditon}fid=$fid";
   }
-
   if ((q != "") & (Conditon != "")) {
     Conditon = "$Conditon&q=$q";
   } else if (q != "") {
