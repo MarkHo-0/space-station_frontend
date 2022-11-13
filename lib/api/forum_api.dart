@@ -57,3 +57,21 @@ Future<ThreadPage> getThreadPageData(
     throw Exception('Failed to load ThreadPage');
   }
 }
+//////////////////////////////////////////////////////
+//////////////////////////////////////////////////////
+Future<ThreadDetail> getThreadInsideData(String tid, String cursor) async {
+  String domain = "";
+  http.Response response;
+//cursor deafult =""
+  if (cursor != "") {
+    response = await http.get(Uri.parse("$domain/thread/$tid?$cursor"));
+  } else {
+    response = await http.get(Uri.parse("$domain/thread/$tid"));
+  }
+
+  if (response.statusCode == 200) {
+    return ThreadDetail.fromJson(jsonDecode(response.body));
+  } else {
+    throw Exception('Failed to load ThreadDetail');
+  }
+}
