@@ -163,4 +163,23 @@ class Has_next {
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 //Called in api "/thread"
-class ThreadPage {
+ List<Threads> ThreadsArray;
+  Has_next has_next;
+
+  ThreadPage(
+    this.ThreadsArray,
+    this.has_next,
+  );
+
+  factory ThreadPage.fromjson(Map<String, dynamic> json) {
+    List<String> a = json["Threads"];
+    List<Threads> b = [];
+    for (int i = 0; i < a.length; i++) {
+      b.add(Threads.fromJson(jsonDecode(a[i])));
+    }
+
+    return ThreadPage(
+        b, Has_next.fromJson(json["has_next"])); //json["has_next"] is a Map
+  }
+}
+
