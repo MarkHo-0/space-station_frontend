@@ -1,4 +1,9 @@
- Future<ThreadPage> getThreadPageData(
+import 'dart:convert';
+import 'package:flutter_application_3/class.dart';
+import 'package:http/http.dart' as http;
+
+
+Future<ThreadPage> getThreadPageData(
     String cursor, int order, int pid, int fid, String q) async {
   String domain = "";
   // ignore: non_constant_identifier_names
