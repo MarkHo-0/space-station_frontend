@@ -1,5 +1,5 @@
 import 'dart:convert';
-import ' User.dart';
+import 'User.dart';
 
 class News {
   String title;
