@@ -1,13 +1,11 @@
-import 'user.dart';
+import 'dart:convert';
+import ' User.dart';
 
-
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
 class News {
-  final String title;
-  final String content;
+  String title;
+  String content;
   final int create_time;
-  final int valid_time;
+  int valid_time;
 
   News({
     required this.title,
@@ -29,22 +27,22 @@ class News {
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 class Stats {
-  final int like;
-  final int dislike;
-  final int reply;
+  int like;
+  int dislike;
+  int reply;
 
   Stats({
     required this.like,
     required this.dislike,
     required this.reply,
-    });
-  
-  factory Stats.fromjson(Map<String, dynamic> json){
+  });
+
+  factory Stats.fromjson(Map<String, dynamic> json) {
     return Stats(
       like: json["like"],
       dislike: json["dislike"],
       reply: json["reply"],
-      );
+    );
   }
 }
 
@@ -52,7 +50,7 @@ class Stats {
 //////////////////////////////////////////////////////
 class ThreadSender {
   final int uid;
-  final String nickname;
+  String nickname;
   final int subject_id;
 
   ThreadSender({
@@ -77,12 +75,12 @@ class Threads {
   final int pid;
   final int fid;
   final int create_time;
-  final int last_update_time;
-  final String title;
+  int last_update_time;
+  String title;
   final int content_cid;
   final int pined_cid;
-  final Stats stats;
-  final ThreadSender threadsender;
+  Stats stats;
+  ThreadSender threadsender;
 
   Threads({
     required this.tid,
@@ -107,14 +105,16 @@ class Threads {
       title: json["title"],
       content_cid: json["content_cid"],
       pined_cid: json["pined_cid"],
-      stats: Stats.fromjson(json["stats"]),                        //json["stats"] return map
-      threadsender: ThreadSender.fromjson(json["threadsender"]),   //json["threadsender"] return map
-    );   //homedata 將 json "threads"的array 的 單獨index 的Map 比threads object
+      stats: Stats.fromjson(json["stats"]), //json["stats"] return map
+      threadsender: ThreadSender.fromjson(
+          json["threadsender"]), //json["threadsender"] return map
+    ); //homedata 將 json "threads"的array 的 單獨index 的Map 比threads object
   }
 }
+
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
-//Called in api
+//Called in api "/home"
 class HomeData {
   List<News> NewsArray;
   List<Threads> ThreadsArray;
@@ -141,6 +141,26 @@ class HomeData {
     return HomeData(c, d, User.fromjson(json["user"])); //json["user"] is a Map
   }
 }
+
 //要將json Map 分"thread"同"news"拆成Array  比 threads同news
+// ignore: camel_case_types
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
+class Has_next {
+  bool has_more;
+  String next_cursor;
+
+  Has_next({required this.has_more, required this.next_cursor});
+
+  factory Has_next.fromJson(Map<String, dynamic> json) {
+    return Has_next(
+      has_more: json["has_more"],
+      next_cursor: json["next_cursor"],
+    );
+  }
+}
+
+//////////////////////////////////////////////////////
+//////////////////////////////////////////////////////
+//Called in api "/thread"
+class ThreadPage {
