@@ -1,62 +1,30 @@
 import 'dart:convert';
-import 'package:flutter_application_3/class.dart';
 import 'package:http/http.dart' as http;
+import 'api.dart';
 
 Future<ThreadPage> getThreadPageData(
-    String cursor, int order, int pid, int fid, String q) async {
-  String domain = "";
-  // ignore: non_constant_identifier_names
-  String Conditon = "?";
+    String? cursor, int? order, int? pid, int? fid) async {
   http.Response response;
-
-  //default String="",int=-1
-  if (cursor != "") {
-    Conditon = "${Conditon}cursor=$cursor";
-  }
-  if ((order != -1) & (Conditon != "?")) {
-    Conditon = "$Conditon&order=$order";
-  } else if (order != -1) {
-    Conditon = "${Conditon}order=$order";
-  }
-  if ((pid != -1) & (Conditon != "")) {
-    Conditon = "$Conditon&pid=$pid";
-  } else if (pid != -1) {
-    Conditon = "${Conditon}pid=$pid";
-  }
-  if ((fid != -1) & (Conditon != "")) {
-    Conditon = "$Conditon&fid=$fid";
-  } else if (fid != -1) {
-    Conditon = "${Conditon}fid=$fid";
-  }
-  if ((q != "") & (Conditon != "")) {
-    Conditon = "$Conditon&q=$q";
-  } else if (q != "") {
-    Conditon = "${Conditon}q=$q";
-  }
-
-  if (Conditon != "?") {
-    response = await http.get(Uri.parse("$domain/thread$Conditon"));
-  } else {
-    response = await http.get(Uri.parse("$domain/thread"));
-  }
-
+  Map<String, dynamic> query = {};
+  if (cursor != null) query["cursor"] = cursor;
+  if (order != null) query["order"] = order;
+  if (pid != null) query["pid"] = pid;
+  if (fid != null) query["fid"] = fid;
+  response = await API("").myGet("/thread", query);
   if (response.statusCode == 200) {
     return ThreadPage.fromJson(jsonDecode(response.body));
   } else {
     throw Exception('Failed to load ThreadPage');
   }
 }
+
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 Future<ThreadDetail> getThreadInsideData(String tid, String cursor) async {
-  String domain = "";
   http.Response response;
-//cursor deafult =""
-  if (cursor != "") {
-    response = await http.get(Uri.parse("$domain/thread/$tid?coursor=$cursor"));
-  } else {
-    response = await http.get(Uri.parse("$domain/thread/$tid"));
-  }
+  Map<String, dynamic> query = {};
+  if (cursor != "") query["cursor"] = cursor;
+  response = await API("").myGet("/thread/$tid", query);
 
   if (response.statusCode == 200) {
     return ThreadDetail.fromJson(jsonDecode(response.body));
@@ -67,13 +35,8 @@ Future<ThreadDetail> getThreadInsideData(String tid, String cursor) async {
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 
-//Not confirmed.
-
-Future<CommentDetail> getCommentInsideData(
-    String cid, String Authorization) async {
-  String domain = "";
-  http.Response response = await http.get(Uri.parse("$domain/comment/$cid"),
-      headers: <String, String>{'Authorization': Authorization});
+Future<CommentDetail> getCommentInsideData(String cid) async {
+  http.Response response = await API("").myGet("/comment/$cid", {});
   if (response.statusCode == 200) {
     return CommentDetail.fromJson(jsonDecode(response.body));
   } else {
