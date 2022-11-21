@@ -9,5 +9,6 @@ Future<HomeData> getHomeData() async {
     return HomeData.fromJson(jsonDecode(response.body));
   } else {
     throw Exception('Failed to load HomeData');
+    fwe
   }
 }
