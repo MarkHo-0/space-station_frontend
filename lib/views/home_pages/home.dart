@@ -120,7 +120,7 @@ class _HomePageState extends State<HomePage> {
   Widget _hitItem() {
     return GestureDetector(
         onTap: () {
-          //跳转到一个页面
+         //jump to other page
           // Navigator.push(context, MaterialPageRoute(builder: (context) {
           //   return const TextPage();
           // }));
