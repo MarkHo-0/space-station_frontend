@@ -22,3 +22,8 @@ Future<Map<String, dynamic>> loginin(
 //if http response==200, loginin successful
 //return requestbody:{token: ,valid_time:, User: {uid: ,nickname: ,subject_id: } }
 //要catch返Exception
+
+//////////////////////////////////////////////////////
+//////////////////////////////////////////////////////
+
+Future<Map<String, dynamic>> getUserThread(int uid) async {}

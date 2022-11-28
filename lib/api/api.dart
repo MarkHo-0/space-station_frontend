@@ -1,16 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-Future<HomeData> getHomeData() async {
-  String domain = "";
-  var response = await http.get(Uri.parse("$domain/home"));
-  if (response.statusCode == 200) {
-    return HomeData.fromJson(jsonDecode(response.body));
-  } else {
-    throw Exception('Failed to load HomeData');
-  }
-}
-
 class API extends http.BaseClient {
   String domain = "";
   String auth = "";
@@ -23,23 +13,23 @@ class API extends http.BaseClient {
       request.headers["Authorization"] = auth;
     }
     return _inner.send(request);
-  }
+  } //run automatically when create a uri object.
 
-  Future<http.Response> myGet(String path, Map<String, dynamic> params) {
-    Uri uri = Uri(host: domain, path: path, queryParameters: params);
+  Future<http.Response> myGet(String path, Map<String, dynamic> query) {
+    Uri uri = Uri(host: domain, path: path, queryParameters: query);
     return super.get(uri);
   }
 
   Future<http.Response> myPost(
-      String path, Map<String, dynamic> params, Map<String, dynamic> mybody) {
-    Uri uri = Uri(host: domain, path: path, queryParameters: params);
+      String path, Map<String, dynamic> query, Map<String, dynamic> mybody) {
+    Uri uri = Uri(host: domain, path: path, queryParameters: query);
     return super
         .post(uri, headers: {"Content-Type": "application/json"}, body: mybody);
   }
 
   Future<http.Response> myPatch(
-      String path, Map<String, dynamic> params, Map<String, dynamic> mybody) {
-    Uri uri = Uri(host: domain, path: path, queryParameters: params);
+      String path, Map<String, dynamic> query, Map<String, dynamic> mybody) {
+    Uri uri = Uri(host: domain, path: path, queryParameters: query);
     return super.patch(uri, body: mybody);
   }
 }
