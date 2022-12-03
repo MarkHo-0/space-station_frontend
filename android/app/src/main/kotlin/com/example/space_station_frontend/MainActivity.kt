@@ -1,4 +1,4 @@
-package com.example.space_station_frontend
+package com.example.space_station
 
 import io.flutter.embedding.android.FlutterActivity
 
