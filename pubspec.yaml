@@ -92,3 +92,15 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+icons_launcher:
+  image_path: "assets/launcher/icon.jpg"
+  platforms:
+    android:
+      enable: true
+    ios:
+      enable: true
+    web:
+      enable: true
+    windows:
+      enable: true
