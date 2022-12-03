@@ -1,5 +1,5 @@
-
 import 'package:flutter/material.dart';
+import 'package:localization/localization.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -25,9 +25,7 @@ class _HomePageState extends State<HomePage> {
             },
             child: Container(
               margin: const EdgeInsets.only(left: 28, right: 28, top: 22),
-              decoration: BoxDecoration(
-                  color: const Color.fromRGBO(38, 45, 67, 1),
-                  borderRadius: BorderRadius.circular(40)),
+              decoration: BoxDecoration(color: const Color.fromRGBO(38, 45, 67, 1), borderRadius: BorderRadius.circular(40)),
               height: 172,
               child: Stack(
                 children: [
@@ -69,13 +67,14 @@ class _HomePageState extends State<HomePage> {
           Container(
             alignment: Alignment.centerLeft,
             margin: const EdgeInsets.only(top: 14, left: 15),
-            child: const Text(
-              'Lastest Information',
-              style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 24,
-                  fontStyle: FontStyle.normal,
-                  color: Color.fromRGBO(0, 0, 0, 1)),
+            child: Text(
+              'latest_info'.i18n(),
+              style: const TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 24,
+                fontStyle: FontStyle.normal,
+                color: Color.fromRGBO(0, 0, 0, 1),
+              ),
             ),
           ),
           Container(
@@ -95,13 +94,9 @@ class _HomePageState extends State<HomePage> {
           Container(
             alignment: Alignment.centerLeft,
             margin: const EdgeInsets.only(top: 18, left: 15),
-            child: const Text(
-              'Hit topics',
-              style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 24,
-                  fontStyle: FontStyle.normal,
-                  color: Color.fromRGBO(0, 0, 0, 1)),
+            child: Text(
+              'hit_topics'.i18n(),
+              style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 24, fontStyle: FontStyle.normal, color: Color.fromRGBO(0, 0, 0, 1)),
             ),
           ),
           Container(
@@ -120,17 +115,14 @@ class _HomePageState extends State<HomePage> {
   Widget _hitItem() {
     return GestureDetector(
         onTap: () {
-         //jump to other page
+          //jump to other page
           // Navigator.push(context, MaterialPageRoute(builder: (context) {
           //   return const TextPage();
           // }));
         },
         child: Container(
           height: 110,
-          decoration: const BoxDecoration(
-              border: Border(
-                  top: BorderSide(
-                      color: Color.fromRGBO(188, 188, 188, 1), width: 1))),
+          decoration: const BoxDecoration(border: Border(top: BorderSide(color: Color.fromRGBO(188, 188, 188, 1), width: 1))),
           padding: const EdgeInsets.only(left: 13),
           child: Column(
             children: [
@@ -142,22 +134,14 @@ class _HomePageState extends State<HomePage> {
                   children: const [
                     Text(
                       'user name',
-                      style: TextStyle(
-                          color: Color.fromRGBO(110, 127, 183, 1),
-                          fontSize: 12,
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w400),
+                      style: TextStyle(color: Color.fromRGBO(110, 127, 183, 1), fontSize: 12, fontStyle: FontStyle.normal, fontWeight: FontWeight.w400),
                     ),
                     SizedBox(
                       width: 4,
                     ),
                     Text(
                       '00dat age',
-                      style: TextStyle(
-                          color: Color.fromRGBO(116, 116, 116, 1),
-                          fontSize: 8,
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w400),
+                      style: TextStyle(color: Color.fromRGBO(116, 116, 116, 1), fontSize: 8, fontStyle: FontStyle.normal, fontWeight: FontWeight.w400),
                     ),
                   ],
                 ),
@@ -168,12 +152,7 @@ class _HomePageState extends State<HomePage> {
                 alignment: Alignment.topLeft,
                 child: const Text(
                   'Title',
-                  style: TextStyle(
-                      fontSize: 20,
-                      decoration: TextDecoration.underline,
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.normal,
-                      color: Color.fromRGBO(0, 0, 0, 1)),
+                  style: TextStyle(fontSize: 20, decoration: TextDecoration.underline, fontWeight: FontWeight.w400, fontStyle: FontStyle.normal, color: Color.fromRGBO(0, 0, 0, 1)),
                 ),
               ),
               // menus
@@ -189,11 +168,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     const Text(
                       '100',
-                      style: TextStyle(
-                          fontSize: 10,
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w400,
-                          color: Color.fromRGBO(110, 127, 183, 1)),
+                      style: TextStyle(fontSize: 10, fontStyle: FontStyle.normal, fontWeight: FontWeight.w400, color: Color.fromRGBO(110, 127, 183, 1)),
                     ),
                     const SizedBox(
                       width: 6,
@@ -205,11 +180,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     const Text(
                       '100',
-                      style: TextStyle(
-                          fontSize: 10,
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w400,
-                          color: Color.fromRGBO(110, 127, 183, 1)),
+                      style: TextStyle(fontSize: 10, fontStyle: FontStyle.normal, fontWeight: FontWeight.w400, color: Color.fromRGBO(110, 127, 183, 1)),
                     ),
                     const SizedBox(
                       width: 6,
@@ -221,11 +192,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     const Text(
                       '100',
-                      style: TextStyle(
-                          fontSize: 10,
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w400,
-                          color: Color.fromRGBO(110, 127, 183, 1)),
+                      style: TextStyle(fontSize: 10, fontStyle: FontStyle.normal, fontWeight: FontWeight.w400, color: Color.fromRGBO(110, 127, 183, 1)),
                     ),
                     const SizedBox(
                       width: 10,
@@ -237,11 +204,11 @@ class _HomePageState extends State<HomePage> {
           ),
         ));
   }
+
 // jump to other page
   Widget _infoItem(String txt) {
     return GestureDetector(
       onTap: () {
-        
         // Navigator.push(context, MaterialPageRoute(builder: (context) {
         //   return null;
         // }));
@@ -251,16 +218,10 @@ class _HomePageState extends State<HomePage> {
         height: 170,
         padding: const EdgeInsets.only(top: 20, left: 13),
         margin: const EdgeInsets.only(left: 15, right: 5),
-        decoration: BoxDecoration(
-            color: const Color.fromRGBO(192, 103, 103, 1),
-            borderRadius: BorderRadius.circular(20)),
+        decoration: BoxDecoration(color: const Color.fromRGBO(192, 103, 103, 1), borderRadius: BorderRadius.circular(20)),
         child: Text(
           txt,
-          style: const TextStyle(
-              fontSize: 24,
-              color: Colors.white,
-              fontStyle: FontStyle.normal,
-              fontWeight: FontWeight.w600),
+          style: const TextStyle(fontSize: 24, color: Colors.white, fontStyle: FontStyle.normal, fontWeight: FontWeight.w600),
         ),
       ),
     );
