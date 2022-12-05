@@ -52,7 +52,7 @@ Future<bool> getverification() async {
 Future<bool> postverification(int sid, int code) async {
   Map<String, dynamic> queryMap = {'sid': sid, 'code': code};
   http.Response response =
-      await API("").myPost("/vfcode/send", queryMap, {}); //no body
+      await API("").myPost("/vfcode/check", queryMap, {}); //no body
   if (response.statusCode == 200) {
     return true;
   } else {
