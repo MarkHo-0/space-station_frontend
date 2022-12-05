@@ -121,12 +121,12 @@ Future<bool> postComment(int tid, int reply_to, String content) async {
 
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
-Future<Map<String, dynamic>> postCommentReation(int cid, int type) async {
+Future<LikeDislikeCount> postCommentReation(int cid, int type) async {
   http.Response response =
       await API("").myPost("/comment/$cid/reaction", {"type": type}, {});
   switch (response.statusCode) {
     case 200:
-      return jsonDecode(response.body);
+      return LikeDislikeCount.fromjson(jsonDecode(response.body));
     case 403:
       throw Exception("You are not allow to do this,please call the admin.");
     case 401:
@@ -136,6 +136,7 @@ Future<Map<String, dynamic>> postCommentReation(int cid, int type) async {
   }
 }
 
+//if code==200 , return LikeDislikeCount object (Field: liked:int, disliked:int)
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 Future<bool> postPinComment(int cid) async {
