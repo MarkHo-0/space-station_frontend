@@ -34,25 +34,21 @@ class API extends http.BaseClient {
   }
 }
 
-Future<bool> getverification() async {
-  http.Response response = await API("").myGet("/vfcode/send", {}); //no query
-  switch (response.statusCode) {
-    case 200:
-      return true; //if 200, return ture and send code to email
-    case 400:
-      int reason = jsonDecode(response.body)["reason_id"];
-      throw Exception("Failed to send,ReasonID:$reason");
-    case 460:
-      throw Exception("Operation is too frequent!");
-    default:
-      return false;
+Future<bool> sendverification(int sid) async {
+  http.Response response =
+      await API("").myPost("/vfcode/send", {}, {'sid': sid}); //no query
+  if (response.statusCode == 200) {
+    return true; //if 200, return ture and send code to email
+  } else {
+    int reason = jsonDecode(response.body)["reason_id"];
+    throw Exception("Failed to send,ReasonID:$reason");
   }
 }
 
-Future<bool> postverification(int sid, int code) async {
-  Map<String, dynamic> queryMap = {'sid': sid, 'code': code};
+Future<bool> checkverification(int sid, int vfcode) async {
+  Map<String, dynamic> bodyMap = {'sid': sid, 'vf_code': vfcode};
   http.Response response =
-      await API("").myPost("/vfcode/check", queryMap, {}); //no body
+      await API("").myPost("/vfcode/check", {}, bodyMap); //no query
   if (response.statusCode == 200) {
     return true;
   } else {
