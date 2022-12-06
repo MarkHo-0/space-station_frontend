@@ -52,7 +52,6 @@ Future<bool> checkverification(int sid, int vfcode) async {
   if (response.statusCode == 200) {
     return true;
   } else {
-    int reason = jsonDecode(response.body)["reason_id"];
-    throw Exception("Fail to verify,ResonId:$reason");
+    throw Exception("Fail to verify!");
   }
 }
