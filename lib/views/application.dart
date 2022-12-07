@@ -18,28 +18,26 @@ class _ApplicationContainerState extends State<ApplicationContainer> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: pages[pageIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        unselectedIconTheme: const IconThemeData(color: Colors.black54),
-        selectedIconTheme: const IconThemeData(color: Colors.black87),
-        type: BottomNavigationBarType.fixed,
-        iconSize: 30,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.forum), label: "Forum"),
-          BottomNavigationBarItem(icon: Icon(Icons.home_repair_service), label: "Toolbox"),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: "Setting"),
-        ],
-        currentIndex: pageIndex,
-        onTap: onItemClick,
+    return SafeArea(
+      bottom: false,
+      child: Scaffold(
+        body: pages[pageIndex],
+        bottomNavigationBar: NavigationBar(
+          selectedIndex: pageIndex,
+          onDestinationSelected: onDestinationClicked,
+          labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+          destinations: const [
+            NavigationDestination(icon: Icon(Icons.home), label: "Home"),
+            NavigationDestination(icon: Icon(Icons.forum), label: "Forum"),
+            NavigationDestination(icon: Icon(Icons.home_repair_service), label: "Toolbox"),
+            NavigationDestination(icon: Icon(Icons.settings), label: "Setting"),
+          ],
+        ),
       ),
     );
   }
 
-  void onItemClick(int index) {
+  void onDestinationClicked(int index) {
     setState(() {
       pageIndex = index;
     });
