@@ -107,11 +107,11 @@ class GetSingleCommentDetail {
 
   factory GetSingleCommentDetail.fromjson(Map<String, dynamic> json) {
     List<String> a = json[
-        "replies"]; //json["comments"] return List , all index element become String
+        "replies"]; //json["replies"] return List , all index element become String
     List<CommentReplies> b = [];
     for (int i = 0; i < a.length; i++) {
       b.add(CommentReplies.fromjson(jsonDecode(a[i])));
     }
-    return GetSingleCommentDetail(json["comment"], b);
+    return GetSingleCommentDetail(Comments.fromjson(json["comment"]), b);
   }
 }
