@@ -1,6 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:space_station/api/api.dart';
+import 'package:crypto/crypto.dart';
 
 Future<UserData> getUserData(int uid) async {
   http.Response response = await API("").myGet("/user/$uid", {});
@@ -31,7 +32,7 @@ Future<UserThreads> getUserThreads(int uid) async {
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 Future<int?> getUserState(int sid) async {
-  http.Response response = await API("").myGet("/user/$sid/state", {});
+  http.Response response = await API("").myGet("/user/state/$sid", {});
   if (response.statusCode == 200) {
     Map<String, int?> responsemap = jsonDecode(response.body);
     return responsemap["sid_state"];
@@ -44,7 +45,13 @@ Future<int?> getUserState(int sid) async {
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 Future<bool> postRegisterUser(int sid, String pwd, String nickname) async {
-  Map<String, dynamic> bodyMap = {"sid": sid, "pwd": pwd, 'nickname': nickname};
+  var bytes = utf8.encode(pwd);
+  String hasedpwd = sha256.convert(bytes).toString();
+  Map<String, dynamic> bodyMap = {
+    "sid": sid,
+    "pwd": hasedpwd,
+    'nickname': nickname
+  };
   http.Response response =
       await API("").myPost("/user/register", {}, bodyMap); //no query
   if (response.statusCode == 200) {
@@ -58,12 +65,15 @@ Future<bool> postRegisterUser(int sid, String pwd, String nickname) async {
 /////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 //input usernameController.text, passwordController.text , function device_name();
-Future<LoginData> postlogin(int sid, String pwd, String device_name) async {
+Future<LoginData> postlogin(int sid, String pwd, String? device_name) async {
+  var bytes = utf8.encode(pwd);
+  String hasedpwd = sha256.convert(bytes).toString();
   Map<String, dynamic> bodyMap = {
     "sid": sid,
-    "pwd": pwd,
+    "pwd": hasedpwd,
     'device_name': device_name
   };
+
   http.Response response = await API("").myPost("/user/login", {}, bodyMap);
   if (response.statusCode == 200) {
     return LoginData.fromjson(jsonDecode(response.body));
@@ -138,7 +148,13 @@ Future<String?> patNickname(String newname) async {
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 Future<bool> patPassword(String oldpwd, String newpwd) async {
-  Map<String, String> bodyMap = {"old_pwd": oldpwd, "new_pwd": newpwd};
+  String hasedoldpwd = sha256.convert(utf8.encode(oldpwd)).toString();
+  String hasednewpwd = sha256.convert(utf8.encode(newpwd)).toString();
+
+  Map<String, String> bodyMap = {
+    "old_pwd": hasedoldpwd,
+    "new_pwd": hasednewpwd
+  };
   http.Response response =
       await API("").myPatch("/user/pwd", {}, bodyMap); //no query
   switch (response.statusCode) {
