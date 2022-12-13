@@ -29,7 +29,7 @@ class Comments {
   final String content;
   final int createTime;
   final Comments? replyto;
-  final CommentStats stats;
+  CommentStats stats;
   final Sender sender;
   final int status;
   Comments(
@@ -72,5 +72,46 @@ class GetThreadinsideComment {
         Hasnext.fromJson(
             json["has_next"]), //json["has_next"] is map, b is <List>Comments
         Threads.fromJson(json["thread_detail"])); //json["thread_detail"] is map
+  }
+}
+
+class CommentReplies {
+  final int cid;
+  final String content;
+  final int createTime;
+  CommentStats stats;
+  final Sender sender;
+
+  CommentReplies(
+      {required this.cid,
+      required this.content,
+      required this.createTime,
+      required this.stats,
+      required this.sender});
+
+  factory CommentReplies.fromjson(Map<String, dynamic> json) {
+    return CommentReplies(
+        cid: json["cid"],
+        content: json["content"],
+        createTime: json["createTime"],
+        stats: CommentStats.fromjson(json["stats"]),
+        sender: Sender.fromjson(json["sender"]));
+  }
+}
+
+class GetSingleCommentDetail {
+  Comments comment;
+  List<CommentReplies> replies;
+
+  GetSingleCommentDetail(this.comment, this.replies);
+
+  factory GetSingleCommentDetail.fromjson(Map<String, dynamic> json) {
+    List<String> a = json[
+        "replies"]; //json["comments"] return List , all index element become String
+    List<CommentReplies> b = [];
+    for (int i = 0; i < a.length; i++) {
+      b.add(CommentReplies.fromjson(jsonDecode(a[i])));
+    }
+    return GetSingleCommentDetail(json["comment"], b);
   }
 }
