@@ -17,9 +17,9 @@ class News {
   factory News.fromjson(Map<String, dynamic> json) {
     return News(
       title: json["title"],
-      uuid: json["uuid"],
+      uuid: int.parse(json["uuid"]),
       content: json["content"],
-      publicTime: json["public_time"],
+      publicTime: int.parse(json["public_time"]),
     );
   }
 }
@@ -39,9 +39,9 @@ class Stats {
 
   factory Stats.fromjson(Map<String, dynamic> json) {
     return Stats(
-      like: json["like"],
-      dislike: json["dislike"],
-      reply: json["reply"],
+      like: int.parse(json["like"]),
+      dislike: int.parse(json["dislike"]),
+      reply: int.parse(json["reply"]),
     );
   }
 }
@@ -59,7 +59,7 @@ class Sender {
 
   factory Sender.fromjson(Map<String, dynamic> json) {
     return Sender(
-      uid: json["uid"],
+      uid: int.parse(json["uid"]),
       nickname: json["nickname"],
     );
   }
@@ -94,14 +94,14 @@ class Threads {
 
   factory Threads.fromJson(Map<String, dynamic> json) {
     return Threads(
-      tid: json["tid"],
-      pid: json["pid"],
-      fid: json["fid"],
-      createTime: json["create_time"],
-      lastUpdateTime: json["last_update_time"],
+      tid: int.parse(json["tid"]),
+      pid: int.parse(json["pid"]),
+      fid: int.parse(json["fid"]),
+      createTime: int.parse(json["create_time"]),
+      lastUpdateTime: int.parse(json["last_update_time"]),
       title: json["title"],
-      contentCid: json["content_cid"],
-      pinedCid: json["pined_cid"],
+      contentCid: int.parse(json["content_cid"]),
+      pinedCid: int.parse(json["pined_cid"]),
       stats: Stats.fromjson(json["stats"]), //json["stats"] return map
       sender: Sender.fromjson(
           json["threadsender"]), //json["threadsender"] return map
@@ -151,8 +151,9 @@ class Hasnext {
   Hasnext({required this.hasMore, required this.nextCursor});
 
   factory Hasnext.fromJson(Map<String, dynamic> json) {
+    bool b = (json["has_more"] == 'true');
     return Hasnext(
-      hasMore: json["has_more"],
+      hasMore: b,
       nextCursor: json["next_cursor"],
     );
   }
@@ -184,6 +185,7 @@ class GetThreadPage {
   }
 }
 
+//GetSearchedThread not used.
 class GetSearchedThread {
   final List<Threads> threadsList;
   final Hasnext hasnext;

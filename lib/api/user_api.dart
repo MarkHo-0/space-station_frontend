@@ -2,13 +2,19 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:space_station/api/api.dart';
 import 'package:crypto/crypto.dart';
+import '../models/user.dart';
 
-Future<UserData> getUserData(int uid) async {
+Future<GetUserDetail> getUserData(int uid) async {
   http.Response response = await API("").myGet("/user/$uid", {});
-  if (response.statusCode == 200) {
-    return UserData.fromjson(jsonDecode(response.body));
-  } else {
-    throw Exception("No Authorization!");
+  switch (response.statusCode) {
+    case 200:
+      return GetUserDetail.fromJson(jsonDecode(response.body));
+    case 401:
+      throw Exception("No Authorization!");
+    case 422:
+      throw Exception("Illegal");
+    default:
+      throw Exception("Error.Please try again.");
   }
 }
 

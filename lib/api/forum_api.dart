@@ -49,6 +49,7 @@ Future<GetThreadinsideComment> getThreadInsideData(
 
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
+//getSearchedThread not used.
 Future<GetSearchedThread> getSearchedThread(String q, String cursor) async {
   http.Response response;
   response = await API("").myGet("/thread/search", {"cursor": cursor, "q": q});

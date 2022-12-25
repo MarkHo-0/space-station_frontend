@@ -17,10 +17,10 @@ class CommentStats {
 
   factory CommentStats.fromjson(Map<String, dynamic> json) {
     return CommentStats(
-        like: json["like"],
-        dislike: json["dislike"],
-        reply: json["reply"],
-        me: json["me"]);
+        like: int.parse(json["like"]),
+        dislike: int.parse(json["dislike"]),
+        reply: int.parse(json["reply"]),
+        me: int.parse(json["me"]));
   }
 }
 
@@ -42,14 +42,14 @@ class Comments {
       required this.status});
   factory Comments.fromjson(Map<String, dynamic> json) {
     return Comments(
-        cid: json["cid"],
+        cid: int.parse(json["cid"]),
         content: json["content"],
-        createTime: json["createTime"],
+        createTime: int.parse(json["createTime"]),
         replyto:
             Comments.fromjson(json["reply_to"]), //json["reply_to"] is a map
         stats: CommentStats.fromjson(json["stats"]),
         sender: Sender.fromjson(json["sender"]),
-        status: json["status"]);
+        status: int.parse(json["status"]));
   }
 }
 
@@ -91,9 +91,9 @@ class CommentReplies {
 
   factory CommentReplies.fromjson(Map<String, dynamic> json) {
     return CommentReplies(
-        cid: json["cid"],
+        cid: int.parse(json["cid"]),
         content: json["content"],
-        createTime: json["createTime"],
+        createTime: int.parse(json["createTime"]),
         stats: CommentStats.fromjson(json["stats"]),
         sender: Sender.fromjson(json["sender"]));
   }
@@ -121,6 +121,8 @@ class LikeDislikeCount {
   bool disliked;
   LikeDislikeCount(this.liked, this.disliked);
   factory LikeDislikeCount.fromjson(Map<String, dynamic> json) {
-    return LikeDislikeCount(json["liked"], json["disliked"]);
+    bool x = (json["liked"] == 'true');
+    bool y = (json["disliked"] == 'true');
+    return LikeDislikeCount(x, y);
   }
 }
