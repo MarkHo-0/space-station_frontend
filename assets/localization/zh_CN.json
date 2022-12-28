@@ -1,4 +1,10 @@
 {
-    "latest_info": "最新资讯",
-    "hit_topics": "热门话题"
+  "latest_info": "最新资讯",
+  "hit_topics": "热门话题",
+  "home_page": "主页",
+  "forum_page": "论坛",
+  "toolbox_page": "工具箱",
+  "profile_page": "我的",
+  "black_theme": "夜间模式",
+  "language": "语言"
 }

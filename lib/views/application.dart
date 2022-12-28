@@ -4,6 +4,7 @@ import './forum_pages/forum.dart';
 import './home_pages/home.dart';
 import 'profile_pages/profile.dart';
 import './toolbox_pages/toolbox.dart';
+import 'package:localization/localization.dart';
 
 class ApplicationContainer extends StatefulWidget {
   const ApplicationContainer({super.key});
@@ -26,11 +27,11 @@ class _ApplicationContainerState extends State<ApplicationContainer> {
           selectedIndex: pageIndex,
           onDestinationSelected: onDestinationClicked,
           labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-          destinations: const [
-            NavigationDestination(icon: Icon(Icons.home), label: "Home"),
-            NavigationDestination(icon: Icon(Icons.forum), label: "Forum"),
-            NavigationDestination(icon: Icon(Icons.home_repair_service), label: "Toolbox"),
-            NavigationDestination(icon: Icon(Icons.people), label: "Profile"),
+          destinations: [
+            NavigationDestination(icon: const Icon(Icons.home), label: 'home_page'.i18n()),
+            NavigationDestination(icon: const Icon(Icons.forum), label: 'forum_page'.i18n()),
+            NavigationDestination(icon: const Icon(Icons.home_repair_service), label: 'toolbox_page'.i18n()),
+            NavigationDestination(icon: const Icon(Icons.people), label: 'profile_page'.i18n()),
           ],
         ),
       ),

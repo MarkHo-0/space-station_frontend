@@ -1,4 +1,10 @@
 {
-    "latest_info": "Lastest Information",
-    "hit_topics": "Hit topics"
+  "latest_info": "Lastest Information",
+  "hit_topics": "Hit topics",
+  "home_page": "Home",
+  "forum_page": "Forum",
+  "toolbox_page": "Toolbox",
+  "profile_page": "Profile",
+  "black_theme": "Black Theme",
+  "language": "Language"
 }
