@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import './forum_pages/forum.dart';
 import './home_pages/home.dart';
-import './setting_pages/setting.dart';
+import 'profile_pages/profile.dart';
 import './toolbox_pages/toolbox.dart';
 
 class ApplicationContainer extends StatefulWidget {
@@ -14,7 +14,7 @@ class ApplicationContainer extends StatefulWidget {
 
 class _ApplicationContainerState extends State<ApplicationContainer> {
   int pageIndex = 0;
-  final pages = const [HomePage(), ForumPage(), ToolboxPage(), SettingPage()];
+  final pages = const [HomePage(), ForumPage(), ToolboxPage(), ProfilePage()];
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class _ApplicationContainerState extends State<ApplicationContainer> {
             NavigationDestination(icon: Icon(Icons.home), label: "Home"),
             NavigationDestination(icon: Icon(Icons.forum), label: "Forum"),
             NavigationDestination(icon: Icon(Icons.home_repair_service), label: "Toolbox"),
-            NavigationDestination(icon: Icon(Icons.settings), label: "Setting"),
+            NavigationDestination(icon: Icon(Icons.people), label: "Profile"),
           ],
         ),
       ),

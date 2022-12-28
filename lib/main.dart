@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:localization/localization.dart';
+import 'package:provider/provider.dart';
+import 'package:space_station/providers/theme_provider.dart';
 import 'package:space_station/views/application.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: ((context) => ThemeProvider())),
+    ],
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -16,9 +23,7 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'Space Station',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: Provider.of<ThemeProvider>(context).theme,
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
