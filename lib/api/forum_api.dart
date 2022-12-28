@@ -1,12 +1,15 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../models/thread.dart';
+import '../models/comment.dart';
+import '../models/user.dart';
 import 'api.dart';
 
-Future<HomeData> getHomeData() async {
+Future<GetHomeData> getHomeData() async {
   String domain = "";
   var response = await http.get(Uri.parse("$domain/home"));
   if (response.statusCode == 200) {
-    return HomeData.fromJson(jsonDecode(response.body));
+    return GetHomeData.fromJson(jsonDecode(response.body));
   } else {
     throw Exception('Failed to load HomeData');
   }
@@ -14,7 +17,7 @@ Future<HomeData> getHomeData() async {
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 
-Future<ThreadPage> getThreadPageData(
+Future<GetThreadPage> getThreadPageData(
     String? cursor, int? order, int? pid, int? fid) async {
   http.Response response;
   Map<String, dynamic> query = {};
@@ -24,7 +27,7 @@ Future<ThreadPage> getThreadPageData(
   if (fid != null) query["fid"] = fid;
   response = await API("").myGet("/thread", query);
   if (response.statusCode == 200) {
-    return ThreadPage.fromJson(jsonDecode(response.body));
+    return GetThreadPage.fromJson(jsonDecode(response.body));
   } else {
     throw Exception('Failed to load ThreadPage');
   }
@@ -32,12 +35,13 @@ Future<ThreadPage> getThreadPageData(
 
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
-Future<ThreadDetail> getThreadInsideData(String tid, String cursor) async {
+Future<GetThreadinsideComment> getThreadInsideData(
+    String tid, String cursor) async {
   http.Response response;
   response = await API("").myGet("/thread/$tid", {"cursor": cursor});
 
   if (response.statusCode == 200) {
-    return ThreadDetail.fromJson(jsonDecode(response.body));
+    return GetThreadinsideComment.fromJson(jsonDecode(response.body));
   } else {
     throw Exception("Thread doesn't exist");
   }
@@ -45,12 +49,13 @@ Future<ThreadDetail> getThreadInsideData(String tid, String cursor) async {
 
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
-Future<SearchThread> getSearchedThread(String q, String cursor) async {
+//getSearchedThread not used.
+Future<GetSearchedThread> getSearchedThread(String q, String cursor) async {
   http.Response response;
   response = await API("").myGet("/thread/search", {"cursor": cursor, "q": q});
 
   if (response.statusCode == 200) {
-    return SearchThread.fromJson(jsonDecode(response.body));
+    return GetSearchedThread.fromJson(jsonDecode(response.body));
   } else {
     throw Exception("Fail to do this.");
   }
@@ -59,10 +64,10 @@ Future<SearchThread> getSearchedThread(String q, String cursor) async {
 /////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 
-Future<CommentDetail> getCommentInsideData(String cid) async {
+Future<GetSingleCommentDetail> getCommentInsideData(String cid) async {
   http.Response response = await API("").myGet("/comment/$cid", {});
   if (response.statusCode == 200) {
-    return CommentDetail.fromJson(jsonDecode(response.body));
+    return GetSingleCommentDetail.fromjson(jsonDecode(response.body));
   } else {
     throw Exception('Failed to load CommentDetail');
   }
