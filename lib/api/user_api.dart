@@ -23,10 +23,10 @@ Future<GetUserDetail> getUserData(int uid) async {
 
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
-Future<UserThreads> getUserThreads(int uid) async {
+Future<GetUserThreads> getUserThreads(int uid) async {
   http.Response response = await API("").myGet("/user/$uid/thread", {});
   if (response.statusCode == 200) {
-    return UserThreads.fromjson(jsonDecode(response.body));
+    return GetUserThreads.fromjson(jsonDecode(response.body));
   } else {
     throw Exception("No Authorization!");
   }

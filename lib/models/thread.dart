@@ -77,7 +77,7 @@ class Threads {
   final int contentCid;
   final int? pinedCid;
   Stats stats;
-  Sender sender;
+  Sender? sender;
 
   Threads({
     required this.tid,
@@ -115,7 +115,7 @@ class Threads {
 class GetHomeData {
   final List<News> newsArray;
   final List<Threads> threadsArray;
-  final User user;
+  final User? user;
 
   GetHomeData(
     this.newsArray,
@@ -124,8 +124,8 @@ class GetHomeData {
   ); //gethome object is not a map
 
   factory GetHomeData.fromJson(Map<String, dynamic> json) {
-    List<String> a = json["News"]; //json["News"] is a List
-    List<String> b = json["Threads"]; //json["Threads"] is a List
+    List<String> a = json["news"]; //json["News"] is a List
+    List<String> b = json["threads"]; //json["Threads"] is a List
     List<News> c = [];
     List<Threads> d = [];
     for (int i = 0; i < a.length; i++) {
@@ -172,7 +172,7 @@ class GetThreadPage {
   );
 
   factory GetThreadPage.fromJson(Map<String, dynamic> json) {
-    List<String> a = json["Threads"];
+    List<String> a = json["threads"];
     List<Threads> b = [];
     for (int i = 0; i < a.length; i++) {
       b.add(Threads.fromJson(jsonDecode(a[i])));

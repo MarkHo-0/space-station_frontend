@@ -108,13 +108,14 @@ Future<Map<String, dynamic>?> postThread(
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 // ignore: non_constant_identifier_names
-Future<bool> postComment(int tid, int reply_to, String content) async {
+Future<Map<String, dynamic>?> postComment(
+    int tid, int reply_to, String content) async {
   Map<String, dynamic> bodyMap = {"reply_to": reply_to, "content": content};
   http.Response response =
       await API("").myPost("/thread/$tid/comment", {}, bodyMap);
   switch (response.statusCode) {
     case 200:
-      return true;
+      return jsonDecode(response.body);
     case 413:
       throw Exception("Comment body have over the word limit");
     case 403:
@@ -122,7 +123,7 @@ Future<bool> postComment(int tid, int reply_to, String content) async {
     case 401:
       throw Exception("No Authorization!");
     default:
-      return false;
+      return null;
   }
 }
 

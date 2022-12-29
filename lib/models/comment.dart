@@ -1,7 +1,5 @@
 import 'dart:convert';
-
 import '../models/thread.dart';
-import '../models/user.dart';
 
 class CommentStats {
   int like;
@@ -56,7 +54,7 @@ class Comments {
 class GetThreadinsideComment {
   final List<Comments> commentsList;
   final Hasnext hasnext;
-  final Threads threadDetail;
+  final Threads? threadDetail;
 
   GetThreadinsideComment(this.commentsList, this.hasnext, this.threadDetail);
 
@@ -101,7 +99,7 @@ class CommentReplies {
 
 class GetSingleCommentDetail {
   Comments comment;
-  List<CommentReplies> replies;
+  List<CommentReplies>? replies;
 
   GetSingleCommentDetail(this.comment, this.replies);
 
