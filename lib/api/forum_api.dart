@@ -18,13 +18,14 @@ Future<GetHomeData> getHomeData() async {
 //////////////////////////////////////////////////////
 
 Future<GetThreadPage> getThreadPageData(
-    String? cursor, int? order, int? pid, int? fid) async {
+    String? cursor, int? order, int? pid, int? fid, String? q) async {
   http.Response response;
   Map<String, dynamic> query = {};
   if (cursor != null) query["cursor"] = cursor;
   if (order != null) query["order"] = order;
   if (pid != null) query["pid"] = pid;
   if (fid != null) query["fid"] = fid;
+  if ((q != null) && (q.length <= 10)) query["q"] = q;
   response = await API("").myGet("/thread", query);
   if (response.statusCode == 200) {
     return GetThreadPage.fromJson(jsonDecode(response.body));
