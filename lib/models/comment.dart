@@ -15,10 +15,10 @@ class CommentStats {
 
   factory CommentStats.fromjson(Map<String, dynamic> json) {
     return CommentStats(
-        like: int.parse(json["like"]),
-        dislike: int.parse(json["dislike"]),
-        reply: int.parse(json["reply"]),
-        me: int.parse(json["me"]));
+        like: json["like"],
+        dislike: json["dislike"],
+        reply: json["reply"],
+        me: json["me"]);
   }
 }
 
@@ -40,36 +40,36 @@ class Comments {
       required this.status});
   factory Comments.fromjson(Map<String, dynamic> json) {
     return Comments(
-        cid: int.parse(json["cid"]),
+        cid: json["cid"],
         content: json["content"],
-        createTime: int.parse(json["createTime"]),
+        createTime: json["createTime"],
         replyto:
             Comments.fromjson(json["reply_to"]), //json["reply_to"] is a map
         stats: CommentStats.fromjson(json["stats"]),
         sender: Sender.fromjson(json["sender"]),
-        status: int.parse(json["status"]));
+        status: json["status"]);
   }
 }
 
-class GetThreadinsideComment {
+class ThreadComment {
   final List<Comments> commentsList;
   final Hasnext hasnext;
-  final Threads? threadDetail;
+  final Thread? threadDetail;
 
-  GetThreadinsideComment(this.commentsList, this.hasnext, this.threadDetail);
+  ThreadComment(this.commentsList, this.hasnext, this.threadDetail);
 
-  factory GetThreadinsideComment.fromJson(Map<String, dynamic> json) {
-    List<String> a = json[
-        "comments"]; //json["comments"] return List , all index element become String
+  factory ThreadComment.fromJson(Map<String, dynamic> json) {
+    dynamic a = json[
+        "comments"]; //json["comments"] return List , all index element is map type
     List<Comments> b = [];
     for (int i = 0; i < a.length; i++) {
-      b.add(Comments.fromjson(jsonDecode(a[i])));
+      b.add(Comments.fromjson(a[i]));
     }
-    return GetThreadinsideComment(
+    return ThreadComment(
         b,
         Hasnext.fromJson(
             json["has_next"]), //json["has_next"] is map, b is <List>Comments
-        Threads.fromJson(json["thread_detail"])); //json["thread_detail"] is map
+        Thread.fromJson(json["thread_detail"])); //json["thread_detail"] is map
   }
 }
 
@@ -79,37 +79,40 @@ class CommentReplies {
   final int createTime;
   CommentStats stats;
   final Sender sender;
+  final int status;
 
   CommentReplies(
       {required this.cid,
       required this.content,
       required this.createTime,
       required this.stats,
-      required this.sender});
+      required this.sender,
+      required this.status});
 
   factory CommentReplies.fromjson(Map<String, dynamic> json) {
     return CommentReplies(
-        cid: int.parse(json["cid"]),
+        cid: json["cid"],
         content: json["content"],
-        createTime: int.parse(json["createTime"]),
+        createTime: json["create_time"],
         stats: CommentStats.fromjson(json["stats"]),
-        sender: Sender.fromjson(json["sender"]));
+        sender: Sender.fromjson(json["sender"]),
+        status: json["status"]);
   }
 }
 
-class GetSingleCommentDetail {
+class CommentDetail {
   Comments comment;
   List<CommentReplies>? replies;
 
-  GetSingleCommentDetail(this.comment, this.replies);
+  CommentDetail(this.comment, this.replies);
 
-  factory GetSingleCommentDetail.fromjson(Map<String, dynamic> json) {
-    List<String> a = json[
-        "replies"]; //json["replies"] return List , all index element become String
+  factory CommentDetail.fromjson(Map<String, dynamic> json) {
+    dynamic a = json[
+        "replies"]; //json["replies"] return List , all index element is map(dynamic variable)
     List<CommentReplies> b = [];
     for (int i = 0; i < a.length; i++) {
-      b.add(CommentReplies.fromjson(jsonDecode(a[i])));
+      b.add(CommentReplies.fromjson(a[i]));
     }
-    return GetSingleCommentDetail(Comments.fromjson(json["comment"]), b);
+    return CommentDetail(Comments.fromjson(json["comment"]), b);
   }
 }

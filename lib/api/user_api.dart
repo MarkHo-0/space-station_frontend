@@ -25,10 +25,15 @@ Future<GetUserDetail> getUserData(int uid) async {
 //////////////////////////////////////////////////////
 Future<GetUserThreads> getUserThreads(int uid) async {
   http.Response response = await API("").myGet("/user/$uid/thread", {});
-  if (response.statusCode == 200) {
-    return GetUserThreads.fromjson(jsonDecode(response.body));
-  } else {
-    throw Exception("No Authorization!");
+  switch (response.statusCode) {
+    case 200:
+      return GetUserThreads.fromjson(jsonDecode(response.body));
+    case 401:
+      throw Exception("No Authorization!");
+    case 422:
+      throw Exception("Missing required parameters /Illegal");
+    default:
+      throw Exception("Error.Please try again.");
   }
 }
 
@@ -37,13 +42,18 @@ Future<GetUserThreads> getUserThreads(int uid) async {
 
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
-Future<int?> getUserState(int sid) async {
+Future<int?> getUserState(String sid) async {
   http.Response response = await API("").myGet("/user/state/$sid", {});
-  if (response.statusCode == 200) {
-    Map<String, int?> responsemap = jsonDecode(response.body);
-    return responsemap["sid_state"];
-  } else {
-    throw Exception("Error");
+  switch (response.statusCode) {
+    case 200:
+      dynamic responsemap = jsonDecode(response.body);
+      return responsemap["sid_state"];
+    case 400:
+      throw Exception("Invalid student number");
+    case 422:
+      throw Exception("Missing required parameters /illegal");
+    default:
+      throw Exception("Error.Please try again.");
   }
 }
 //if statecode==200 ,return sid_state:int? ( int or null)

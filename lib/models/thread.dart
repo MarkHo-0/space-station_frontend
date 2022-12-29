@@ -17,9 +17,9 @@ class News {
   factory News.fromjson(Map<String, dynamic> json) {
     return News(
       title: json["title"],
-      uuid: int.parse(json["uuid"]),
+      uuid: json["uuid"],
       content: json["content"],
-      publicTime: int.parse(json["public_time"]),
+      publicTime: json["public_time"],
     );
   }
 }
@@ -39,9 +39,9 @@ class Stats {
 
   factory Stats.fromjson(Map<String, dynamic> json) {
     return Stats(
-      like: int.parse(json["like"]),
-      dislike: int.parse(json["dislike"]),
-      reply: int.parse(json["reply"]),
+      like: json["like"],
+      dislike: json["dislike"],
+      reply: json["reply"],
     );
   }
 }
@@ -59,7 +59,7 @@ class Sender {
 
   factory Sender.fromjson(Map<String, dynamic> json) {
     return Sender(
-      uid: int.parse(json["uid"]),
+      uid: json["uid"],
       nickname: json["nickname"],
     );
   }
@@ -67,7 +67,7 @@ class Sender {
 
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
-class Threads {
+class Thread {
   final int tid;
   final int pid;
   final int fid;
@@ -79,7 +79,7 @@ class Threads {
   Stats stats;
   Sender? sender;
 
-  Threads({
+  Thread({
     required this.tid,
     required this.pid,
     required this.fid,
@@ -92,19 +92,18 @@ class Threads {
     required this.sender,
   }); //Threads object is a map
 
-  factory Threads.fromJson(Map<String, dynamic> json) {
-    return Threads(
-      tid: int.parse(json["tid"]),
-      pid: int.parse(json["pid"]),
-      fid: int.parse(json["fid"]),
-      createTime: int.parse(json["create_time"]),
-      lastUpdateTime: int.parse(json["last_update_time"]),
+  factory Thread.fromJson(Map<String, dynamic> json) {
+    return Thread(
+      tid: json["tid"],
+      pid: json["pid"],
+      fid: json["fid"],
+      createTime: json["create_time"],
+      lastUpdateTime: json["last_update_time"],
       title: json["title"],
-      contentCid: int.parse(json["content_cid"]),
-      pinedCid: int.parse(json["pined_cid"]),
+      contentCid: json["content_cid"],
+      pinedCid: json["pined_cid"],
       stats: Stats.fromjson(json["stats"]), //json["stats"] return map
-      sender: Sender.fromjson(
-          json["threadsender"]), //json["threadsender"] return map
+      sender: Sender.fromjson(json["sender"]), //json["threadsender"] return map
     ); //homedata 將 json "threads"的array 的 單獨index 的Map 比threads object
   }
 }
@@ -112,31 +111,30 @@ class Threads {
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 //Called in api "/home"
-class GetHomeData {
+class HomePage {
   final List<News> newsArray;
-  final List<Threads> threadsArray;
+  final List<Thread> threadsArray;
   final User? user;
 
-  GetHomeData(
+  HomePage(
     this.newsArray,
     this.threadsArray,
     this.user,
   ); //gethome object is not a map
 
-  factory GetHomeData.fromJson(Map<String, dynamic> json) {
-    List<String> a = json["news"]; //json["News"] is a List
-    List<String> b = json["threads"]; //json["Threads"] is a List
+  factory HomePage.fromJson(Map<String, dynamic> json) {
+    dynamic a = json["news"]; //json["News"] is a List
+    dynamic b = json["threads"]; //json["Threads"] is a List
     List<News> c = [];
-    List<Threads> d = [];
+    List<Thread> d = [];
     for (int i = 0; i < a.length; i++) {
-      c.add(News.fromjson(jsonDecode(a[
-          i]))); //each index item is String and convert back to Map ,and assign object to new List
+      c.add(News.fromjson(a[
+          i])); //each index item is String and convert back to Map ,and assign object to new List
     }
     for (int t = 0; t < b.length; t++) {
-      d.add(Threads.fromJson(jsonDecode(a[t])));
+      d.add(Thread.fromJson(a[t]));
     }
-    return GetHomeData(
-        c, d, User.fromjson(json["user"])); //json["user"] is a Map
+    return HomePage(c, d, User.fromjson(json["user"])); //json["user"] is a Map
   }
 }
 
@@ -151,9 +149,8 @@ class Hasnext {
   Hasnext({required this.hasMore, required this.nextCursor});
 
   factory Hasnext.fromJson(Map<String, dynamic> json) {
-    bool b = (json["has_more"] == 'true');
     return Hasnext(
-      hasMore: b,
+      hasMore: json["has_more"],
       nextCursor: json["next_cursor"],
     );
   }
@@ -162,23 +159,23 @@ class Hasnext {
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 //Called in api "/thread"
-class GetThreadPage {
-  List<Threads> threadsArray;
+class ThreadPage {
+  List<Thread> threadsArray;
   Hasnext hasNext;
 
-  GetThreadPage(
+  ThreadPage(
     this.threadsArray,
     this.hasNext,
   );
 
-  factory GetThreadPage.fromJson(Map<String, dynamic> json) {
-    List<String> a = json["threads"];
-    List<Threads> b = [];
+  factory ThreadPage.fromJson(Map<String, dynamic> json) {
+    dynamic a = json["threads"]; //return list with map type
+    List<Thread> b = [];
     for (int i = 0; i < a.length; i++) {
-      b.add(Threads.fromJson(jsonDecode(a[i])));
+      b.add(Thread.fromJson(a[i]));
     }
 
-    return GetThreadPage(
+    return ThreadPage(
         b,
         Hasnext.fromJson(
             json["has_next"])); //json is map json["has_next"] is a Map
@@ -187,19 +184,19 @@ class GetThreadPage {
 
 //GetSearchedThread not used.
 class GetSearchedThread {
-  final List<Threads> threadsList;
+  final List<Thread> threadsList;
   final Hasnext hasnext;
   final String query;
 
   GetSearchedThread(this.threadsList, this.hasnext, this.query);
 
   factory GetSearchedThread.fromJson(Map<String, dynamic> json) {
-    List<String> a = json[
+    dynamic a = json[
         "threads"]; //json["threads"] return List , all index element become String
-    List<Threads> b = [];
+    List<Thread> b = [];
     for (int i = 0; i < a.length; i++) {
-      b.add(Threads.fromJson(jsonDecode(a[
-          i]))); //index element from string to map and assign to create object Threads
+      b.add(Thread.fromJson(a[
+          i])); //index element from string to map and assign to create object Threads
     }
     return GetSearchedThread(
         b, Hasnext.fromJson(json["has_next"]), json["query"]);

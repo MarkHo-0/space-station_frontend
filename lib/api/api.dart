@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class API extends http.BaseClient {
-  String domain = "";
+  String domain = ""; //waiting to add
   String auth = "";
   final http.Client _inner = http.Client();
 

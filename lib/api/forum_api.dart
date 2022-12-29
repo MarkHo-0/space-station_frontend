@@ -5,11 +5,11 @@ import '../models/comment.dart';
 import '../models/user.dart';
 import 'api.dart';
 
-Future<GetHomeData> getHomeData() async {
+Future<HomePage> getHomeData() async {
   String domain = "";
   var response = await http.get(Uri.parse("$domain/home"));
   if (response.statusCode == 200) {
-    return GetHomeData.fromJson(jsonDecode(response.body));
+    return HomePage.fromJson(jsonDecode(response.body));
   } else {
     throw Exception('Failed to load HomeData');
   }
@@ -17,7 +17,7 @@ Future<GetHomeData> getHomeData() async {
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 
-Future<GetThreadPage> getThreadPageData(
+Future<ThreadPage> getThreadPage(
     String? cursor, int? order, int? pid, int? fid, String? q) async {
   http.Response response;
   Map<String, dynamic> query = {};
@@ -28,7 +28,7 @@ Future<GetThreadPage> getThreadPageData(
   if ((q != null) && (q.length <= 10)) query["q"] = q;
   response = await API("").myGet("/thread", query);
   if (response.statusCode == 200) {
-    return GetThreadPage.fromJson(jsonDecode(response.body));
+    return ThreadPage.fromJson(jsonDecode(response.body));
   } else {
     throw Exception('Failed to load ThreadPage');
   }
@@ -36,13 +36,12 @@ Future<GetThreadPage> getThreadPageData(
 
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
-Future<GetThreadinsideComment> getThreadInsideData(
-    String tid, String cursor) async {
+Future<ThreadComment> getThread(String tid, String cursor) async {
   http.Response response;
   response = await API("").myGet("/thread/$tid", {"cursor": cursor});
 
   if (response.statusCode == 200) {
-    return GetThreadinsideComment.fromJson(jsonDecode(response.body));
+    return ThreadComment.fromJson(jsonDecode(response.body));
   } else {
     throw Exception("Thread doesn't exist");
   }
@@ -65,10 +64,10 @@ Future<GetSearchedThread> getSearchedThread(String q, String cursor) async {
 /////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 
-Future<GetSingleCommentDetail> getCommentInsideData(String cid) async {
+Future<CommentDetail> getComment(String cid) async {
   http.Response response = await API("").myGet("/comment/$cid", {});
   if (response.statusCode == 200) {
-    return GetSingleCommentDetail.fromjson(jsonDecode(response.body));
+    return CommentDetail.fromjson(jsonDecode(response.body));
   } else {
     throw Exception('Failed to load CommentDetail');
   }
@@ -76,8 +75,7 @@ Future<GetSingleCommentDetail> getCommentInsideData(String cid) async {
 
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
-Future<Map<String, dynamic>?> postThread(
-    int cid, int fid, String title, String content) async {
+Future<int?> postThread(int cid, int fid, String title, String content) async {
   Map<String, dynamic> bodyMap = {
     "cid": cid,
     "fid": fid,
@@ -87,7 +85,8 @@ Future<Map<String, dynamic>?> postThread(
   http.Response response = await API("").myPost("/thread", {}, bodyMap);
   switch (response.statusCode) {
     case 200:
-      return jsonDecode(response.body);
+      Map<String, dynamic> x = jsonDecode(response.body);
+      return (x["new_tid"]);
     case 413:
       throw Exception("Thread title/body have over the word limit");
     case 403:
@@ -108,14 +107,14 @@ Future<Map<String, dynamic>?> postThread(
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 // ignore: non_constant_identifier_names
-Future<Map<String, dynamic>?> postComment(
-    int tid, int replyTo, String content) async {
+Future<int?> postComment(int tid, int replyTo, String content) async {
   Map<String, dynamic> bodyMap = {"reply_to": replyTo, "content": content};
   http.Response response =
       await API("").myPost("/thread/$tid/comment", {}, bodyMap);
   switch (response.statusCode) {
     case 200:
-      return jsonDecode(response.body);
+      Map<String, dynamic> x = jsonDecode(response.body);
+      return (x["new_cid"]);
     case 413:
       throw Exception("Comment body have over the word limit");
     case 403:
@@ -129,12 +128,13 @@ Future<Map<String, dynamic>?> postComment(
 
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
-Future<Map<String, dynamic>?> postCommentReation(int cid, int type) async {
+Future<int?> postCommentReation(int cid, int type) async {
   http.Response response =
       await API("").myPost("/comment/$cid/reaction", {"type": type}, {});
   switch (response.statusCode) {
     case 200:
-      return jsonDecode(response.body);
+      Map<String, dynamic> x = jsonDecode(response.body);
+      return (x["final_reaction"]);
     case 403:
       throw Exception("You are not allow to do this,please call the admin.");
     case 401:
@@ -147,7 +147,7 @@ Future<Map<String, dynamic>?> postCommentReation(int cid, int type) async {
 //if code==200 , return LikeDislikeCount object (Field: liked:int, disliked:int)
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
-Future<bool> postPinComment(int cid) async {
+Future<bool> pinComment(int cid) async {
   http.Response response = await API("").myPost("/comment/$cid/pin", {}, {});
   switch (response.statusCode) {
     case 200:
@@ -167,7 +167,7 @@ Future<bool> postPinComment(int cid) async {
 //////////////////////////////////////////////////////
 
 // ignore: non_constant_identifier_names
-Future<bool> postReportComment(int cid, int reason_id) async {
+Future<bool> reportComment(int cid, int reason_id) async {
   http.Response response = await API("")
       .myPost("/comment/$cid/report", {"reason_id": reason_id}, {});
   switch (response.statusCode) {
