@@ -76,7 +76,8 @@ Future<GetSingleCommentDetail> getCommentInsideData(String cid) async {
 
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
-Future<bool> postThread(int cid, int fid, String title, String content) async {
+Future<Map<String, dynamic>?> postThread(
+    int cid, int fid, String title, String content) async {
   Map<String, dynamic> bodyMap = {
     "cid": cid,
     "fid": fid,
@@ -86,7 +87,7 @@ Future<bool> postThread(int cid, int fid, String title, String content) async {
   http.Response response = await API("").myPost("/thread", {}, bodyMap);
   switch (response.statusCode) {
     case 200:
-      return true;
+      return jsonDecode(response.body);
     case 413:
       throw Exception("Thread title/body have over the word limit");
     case 403:
@@ -97,7 +98,7 @@ Future<bool> postThread(int cid, int fid, String title, String content) async {
     case 401:
       throw Exception("No Authorization!");
     default:
-      return false;
+      return null;
   }
 }
 
