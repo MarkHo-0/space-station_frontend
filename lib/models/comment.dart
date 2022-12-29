@@ -113,14 +113,3 @@ class GetSingleCommentDetail {
     return GetSingleCommentDetail(Comments.fromjson(json["comment"]), b);
   }
 }
-
-class LikeDislikeCount {
-  bool liked;
-  bool disliked;
-  LikeDislikeCount(this.liked, this.disliked);
-  factory LikeDislikeCount.fromjson(Map<String, dynamic> json) {
-    bool x = (json["liked"] == 'true');
-    bool y = (json["disliked"] == 'true');
-    return LikeDislikeCount(x, y);
-  }
-}

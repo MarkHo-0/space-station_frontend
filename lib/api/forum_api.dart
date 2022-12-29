@@ -98,7 +98,7 @@ Future<Map<String, dynamic>?> postThread(
     case 401:
       throw Exception("No Authorization!");
     default:
-      return null;
+      throw Exception("Error.Please try again.");
   }
 }
 
@@ -109,8 +109,8 @@ Future<Map<String, dynamic>?> postThread(
 //////////////////////////////////////////////////////
 // ignore: non_constant_identifier_names
 Future<Map<String, dynamic>?> postComment(
-    int tid, int reply_to, String content) async {
-  Map<String, dynamic> bodyMap = {"reply_to": reply_to, "content": content};
+    int tid, int replyTo, String content) async {
+  Map<String, dynamic> bodyMap = {"reply_to": replyTo, "content": content};
   http.Response response =
       await API("").myPost("/thread/$tid/comment", {}, bodyMap);
   switch (response.statusCode) {
@@ -123,18 +123,18 @@ Future<Map<String, dynamic>?> postComment(
     case 401:
       throw Exception("No Authorization!");
     default:
-      return null;
+      throw Exception("Error.Please try again.");
   }
 }
 
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
-Future<LikeDislikeCount> postCommentReation(int cid, int type) async {
+Future<Map<String, dynamic>?> postCommentReation(int cid, int type) async {
   http.Response response =
       await API("").myPost("/comment/$cid/reaction", {"type": type}, {});
   switch (response.statusCode) {
     case 200:
-      return LikeDislikeCount.fromjson(jsonDecode(response.body));
+      return jsonDecode(response.body);
     case 403:
       throw Exception("You are not allow to do this,please call the admin.");
     case 401:
