@@ -22,7 +22,7 @@ class User {
 
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
-class GetUserDetail {
+class UserInfo {
   final User basicInfo;
   final String gender;
   final int createTime;
@@ -30,11 +30,11 @@ class GetUserDetail {
   final int threadCount;
   final int commentCount;
   final int fid;
-  GetUserDetail(this.basicInfo, this.gender, this.createTime, this.sid,
+  UserInfo(this.basicInfo, this.gender, this.createTime, this.sid,
       this.threadCount, this.commentCount, this.fid);
 
-  factory GetUserDetail.fromJson(Map<String, dynamic> json) {
-    return GetUserDetail(
+  factory UserInfo.fromJson(Map<String, dynamic> json) {
+    return UserInfo(
         User.fromjson(json["basic_info"]),
         json["gender"],
         json["create_time"],
@@ -45,11 +45,11 @@ class GetUserDetail {
   }
 }
 
-class GetUserThreads {
+class UserThreads {
   List<Thread> threadsArray;
-  GetUserThreads(this.threadsArray);
+  UserThreads(this.threadsArray);
 
-  factory GetUserThreads.fromjson(Map<String, dynamic> json) {
+  factory UserThreads.fromjson(Map<String, dynamic> json) {
     dynamic a = json["threads"]; //return list of map type
     List<Thread> b = [];
     for (int i = 0; i < a.length; i++) {
@@ -57,7 +57,7 @@ class GetUserThreads {
       b.add(Thread.fromJson(a[
           i])); //each index item is String and convert back to Map ,and assign object to new List
     }
-    return GetUserThreads(b);
+    return UserThreads(b);
   }
 }
 
@@ -69,5 +69,14 @@ class LoginData {
   factory LoginData.fromjson(Map<String, dynamic> json) {
     return LoginData(
         json["token"], json["valid_time"], User.fromjson(json["user"]));
+  }
+}
+
+class NewFaculty {
+  int fid;
+  String facultyName;
+  NewFaculty(this.fid, this.facultyName);
+  factory NewFaculty.fromjson(Map<String, dynamic> json) {
+    return NewFaculty(json["fid"], json["faculty_name"]); //return 文字
   }
 }

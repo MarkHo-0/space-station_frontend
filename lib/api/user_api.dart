@@ -4,11 +4,11 @@ import 'package:space_station/api/api.dart';
 import 'package:crypto/crypto.dart';
 import '../models/user.dart';
 
-Future<GetUserDetail> getUserData(int uid) async {
+Future<UserInfo> getUserData(int uid) async {
   http.Response response = await API("").myGet("/user/$uid", {});
   switch (response.statusCode) {
     case 200:
-      return GetUserDetail.fromJson(jsonDecode(response.body));
+      return UserInfo.fromJson(jsonDecode(response.body));
     case 401:
       throw Exception("No Authorization!");
     case 422:
@@ -23,11 +23,11 @@ Future<GetUserDetail> getUserData(int uid) async {
 
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
-Future<GetUserThreads> getUserThreads(int uid) async {
+Future<UserThreads> getUserThreads(int uid) async {
   http.Response response = await API("").myGet("/user/$uid/thread", {});
   switch (response.statusCode) {
     case 200:
-      return GetUserThreads.fromjson(jsonDecode(response.body));
+      return UserThreads.fromjson(jsonDecode(response.body));
     case 401:
       throw Exception("No Authorization!");
     case 422:
@@ -60,7 +60,7 @@ Future<int?> getUserState(String sid) async {
 
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
-Future<bool> postRegisterUser(int sid, String pwd, String nickname) async {
+Future<bool> registerUser(int sid, String pwd, String nickname) async {
   var bytes = utf8.encode(pwd);
   String hasedpwd = sha256.convert(bytes).toString();
   Map<String, dynamic> bodyMap = {
@@ -81,7 +81,7 @@ Future<bool> postRegisterUser(int sid, String pwd, String nickname) async {
 /////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 //input usernameController.text, passwordController.text , function device_name();
-Future<LoginData> postlogin(int sid, String pwd, String? device_name) async {
+Future<LoginData> login(int sid, String pwd, String? device_name) async {
   var bytes = utf8.encode(pwd);
   String hasedpwd = sha256.convert(bytes).toString();
   Map<String, dynamic> bodyMap = {
@@ -104,7 +104,7 @@ Future<LoginData> postlogin(int sid, String pwd, String? device_name) async {
 
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
-Future<bool> postlogout() async {
+Future<bool> logout() async {
   http.Response response =
       await API("").myPost("/user/logout", {}, {}); //no query and body
   if (response.statusCode == 200) {
@@ -116,13 +116,13 @@ Future<bool> postlogout() async {
 
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
-Future<PathchedInfo> patUserFaculty(String coursename) async {
+Future<NewFaculty> changeFaculty(String coursename) async {
   http.Response response = await API("").myPatch("/user/faculty", {}, {
     "course_name": coursename
   }); //由 Controller 選擇course input as parameter body , no query
   switch (response.statusCode) {
     case 200:
-      return PathchedInfo.fromjson(jsonDecode(response
+      return NewFaculty.fromjson(jsonDecode(response
           .body)); //if 200, return PathchedInfo object(field:fid:int,faculty_name:String)
     case 422:
       throw Exception("Wrong input Format");
@@ -133,14 +133,14 @@ Future<PathchedInfo> patUserFaculty(String coursename) async {
     case 406:
       throw Exception("Operation is too frequent!");
     default:
-      return null;
+      throw Exception("error");
   }
 }
 
 //if statecode==200 patch data 並return PatchedInfo object field:(fid:int,faculty_name:String)
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
-Future<String?> patNickname(String newname) async {
+Future<String?> changeNickname(String newname) async {
   http.Response response = await API("").myPatch("/user/nickname", {}, {
     'nickname': newname
   }); //由 Controller.text input newname as parameter, no query
@@ -163,7 +163,7 @@ Future<String?> patNickname(String newname) async {
 
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
-Future<bool> patPassword(String oldpwd, String newpwd) async {
+Future<bool> changePassword(String oldpwd, String newpwd) async {
   String hasedoldpwd = sha256.convert(utf8.encode(oldpwd)).toString();
   String hasednewpwd = sha256.convert(utf8.encode(newpwd)).toString();
 

@@ -36,12 +36,12 @@ Future<ThreadPage> getThreadPage(
 
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
-Future<ThreadComment> getThread(String tid, String cursor) async {
+Future<ThreadDetail> getThreadDetail(String tid, String cursor) async {
   http.Response response;
   response = await API("").myGet("/thread/$tid", {"cursor": cursor});
 
   if (response.statusCode == 200) {
-    return ThreadComment.fromJson(jsonDecode(response.body));
+    return ThreadDetail.fromJson(jsonDecode(response.body));
   } else {
     throw Exception("Thread doesn't exist");
   }

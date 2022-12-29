@@ -22,15 +22,15 @@ class CommentStats {
   }
 }
 
-class Comments {
+class Comment {
   final int cid;
   final String content;
   final int createTime;
-  final Comments? replyto;
+  final Comment? replyto;
   CommentStats stats;
   final Sender sender;
   final int status;
-  Comments(
+  Comment(
       {required this.cid,
       required this.content,
       required this.createTime,
@@ -38,34 +38,33 @@ class Comments {
       required this.stats,
       required this.sender,
       required this.status});
-  factory Comments.fromjson(Map<String, dynamic> json) {
-    return Comments(
+  factory Comment.fromjson(Map<String, dynamic> json) {
+    return Comment(
         cid: json["cid"],
         content: json["content"],
         createTime: json["createTime"],
-        replyto:
-            Comments.fromjson(json["reply_to"]), //json["reply_to"] is a map
+        replyto: Comment.fromjson(json["reply_to"]), //json["reply_to"] is a map
         stats: CommentStats.fromjson(json["stats"]),
         sender: Sender.fromjson(json["sender"]),
         status: json["status"]);
   }
 }
 
-class ThreadComment {
-  final List<Comments> commentsList;
+class ThreadDetail {
+  final List<Comment> commentsList;
   final Hasnext hasnext;
   final Thread? threadDetail;
 
-  ThreadComment(this.commentsList, this.hasnext, this.threadDetail);
+  ThreadDetail(this.commentsList, this.hasnext, this.threadDetail);
 
-  factory ThreadComment.fromJson(Map<String, dynamic> json) {
+  factory ThreadDetail.fromJson(Map<String, dynamic> json) {
     dynamic a = json[
         "comments"]; //json["comments"] return List , all index element is map type
-    List<Comments> b = [];
+    List<Comment> b = [];
     for (int i = 0; i < a.length; i++) {
-      b.add(Comments.fromjson(a[i]));
+      b.add(Comment.fromjson(a[i]));
     }
-    return ThreadComment(
+    return ThreadDetail(
         b,
         Hasnext.fromJson(
             json["has_next"]), //json["has_next"] is map, b is <List>Comments
@@ -101,7 +100,7 @@ class CommentReplies {
 }
 
 class CommentDetail {
-  Comments comment;
+  Comment comment;
   List<CommentReplies>? replies;
 
   CommentDetail(this.comment, this.replies);
@@ -113,6 +112,6 @@ class CommentDetail {
     for (int i = 0; i < a.length; i++) {
       b.add(CommentReplies.fromjson(a[i]));
     }
-    return CommentDetail(Comments.fromjson(json["comment"]), b);
+    return CommentDetail(Comment.fromjson(json["comment"]), b);
   }
 }
