@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:space_station/api/api.dart';
 import 'package:crypto/crypto.dart';
-import '../models/user.dart';
+import '../../models/user.dart';
 
 Future<UserInfo> getUserData(int uid) async {
   http.Response response = await API("").myGet("/user/$uid", {});
@@ -63,13 +63,8 @@ Future<int?> getUserState(String sid) async {
 Future<bool> registerUser(int sid, String pwd, String nickname) async {
   var bytes = utf8.encode(pwd);
   String hasedpwd = sha256.convert(bytes).toString();
-  Map<String, dynamic> bodyMap = {
-    "sid": sid,
-    "pwd": hasedpwd,
-    'nickname': nickname
-  };
-  http.Response response =
-      await API("").myPost("/user/register", {}, bodyMap); //no query
+  Map<String, dynamic> bodyMap = {"sid": sid, "pwd": hasedpwd, 'nickname': nickname};
+  http.Response response = await API("").myPost("/user/register", {}, bodyMap); //no query
   if (response.statusCode == 200) {
     return true;
   } else {
@@ -84,11 +79,7 @@ Future<bool> registerUser(int sid, String pwd, String nickname) async {
 Future<LoginData> login(int sid, String pwd, String? device_name) async {
   var bytes = utf8.encode(pwd);
   String hasedpwd = sha256.convert(bytes).toString();
-  Map<String, dynamic> bodyMap = {
-    "sid": sid,
-    "pwd": hasedpwd,
-    'device_name': device_name
-  };
+  Map<String, dynamic> bodyMap = {"sid": sid, "pwd": hasedpwd, 'device_name': device_name};
 
   http.Response response = await API("").myPost("/user/login", {}, bodyMap);
   if (response.statusCode == 200) {
@@ -105,8 +96,7 @@ Future<LoginData> login(int sid, String pwd, String? device_name) async {
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 Future<bool> logout() async {
-  http.Response response =
-      await API("").myPost("/user/logout", {}, {}); //no query and body
+  http.Response response = await API("").myPost("/user/logout", {}, {}); //no query and body
   if (response.statusCode == 200) {
     return true;
   } else {
@@ -117,13 +107,10 @@ Future<bool> logout() async {
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 Future<NewFaculty> changeFaculty(String coursename) async {
-  http.Response response = await API("").myPatch("/user/faculty", {}, {
-    "course_name": coursename
-  }); //由 Controller 選擇course input as parameter body , no query
+  http.Response response = await API("").myPatch("/user/faculty", {}, {"course_name": coursename}); //由 Controller 選擇course input as parameter body , no query
   switch (response.statusCode) {
     case 200:
-      return NewFaculty.fromjson(jsonDecode(response
-          .body)); //if 200, return PathchedInfo object(field:fid:int,faculty_name:String)
+      return NewFaculty.fromjson(jsonDecode(response.body)); //if 200, return PathchedInfo object(field:fid:int,faculty_name:String)
     case 422:
       throw Exception("Wrong input Format");
     case 403:
@@ -141,9 +128,7 @@ Future<NewFaculty> changeFaculty(String coursename) async {
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 Future<String?> changeNickname(String newname) async {
-  http.Response response = await API("").myPatch("/user/nickname", {}, {
-    'nickname': newname
-  }); //由 Controller.text input newname as parameter, no query
+  http.Response response = await API("").myPatch("/user/nickname", {}, {'nickname': newname}); //由 Controller.text input newname as parameter, no query
   switch (response.statusCode) {
     case 200:
       Map<String, String?> responsemap = jsonDecode(response.body);
@@ -167,12 +152,8 @@ Future<bool> changePassword(String oldpwd, String newpwd) async {
   String hasedoldpwd = sha256.convert(utf8.encode(oldpwd)).toString();
   String hasednewpwd = sha256.convert(utf8.encode(newpwd)).toString();
 
-  Map<String, String> bodyMap = {
-    "old_pwd": hasedoldpwd,
-    "new_pwd": hasednewpwd
-  };
-  http.Response response =
-      await API("").myPatch("/user/pwd", {}, bodyMap); //no query
+  Map<String, String> bodyMap = {"old_pwd": hasedoldpwd, "new_pwd": hasednewpwd};
+  http.Response response = await API("").myPatch("/user/pwd", {}, bodyMap); //no query
   switch (response.statusCode) {
     case 200:
       return true; //if 200, return ture;
