@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'User.dart';
+import 'user.dart';
 
 class News {
   final String title;
@@ -29,19 +29,19 @@ class News {
 class Stats {
   int like;
   int dislike;
-  int reply;
+  int comment;
 
   Stats({
     required this.like,
     required this.dislike,
-    required this.reply,
+    required this.comment,
   });
 
   factory Stats.fromjson(Map<String, dynamic> json) {
     return Stats(
       like: json["like"],
       dislike: json["dislike"],
-      reply: json["reply"],
+      comment: json["comment"],
     );
   }
 }
@@ -76,8 +76,8 @@ class Thread {
   final String title;
   final int contentCid;
   final int? pinedCid;
-  Stats stats;
-  Sender? sender;
+  final Stats stats;
+  final Sender sender;
 
   Thread({
     required this.tid,
@@ -96,7 +96,7 @@ class Thread {
     return Thread(
       tid: json["tid"],
       pid: json["pid"],
-      fid: json["fid"],
+      fid: json["fid"] ?? 0,
       createTime: json["create_time"],
       lastUpdateTime: json["last_update_time"],
       title: json["title"],
@@ -111,30 +111,24 @@ class Thread {
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 //Called in api "/home"
-class HomePage {
+class HomePageModel {
   final List<News> newsArray;
   final List<Thread> threadsArray;
-  final User? user;
+  final User user;
 
-  HomePage(
+  HomePageModel(
     this.newsArray,
     this.threadsArray,
     this.user,
   ); //gethome object is not a map
 
-  factory HomePage.fromJson(Map<String, dynamic> json) {
-    dynamic a = json["news"]; //json["News"] is a List
-    dynamic b = json["threads"]; //json["Threads"] is a List
-    List<News> c = [];
-    List<Thread> d = [];
-    for (int i = 0; i < a.length; i++) {
-      c.add(News.fromjson(a[
-          i])); //each index item is String and convert back to Map ,and assign object to new List
-    }
-    for (int t = 0; t < b.length; t++) {
-      d.add(Thread.fromJson(a[t]));
-    }
-    return HomePage(c, d, User.fromjson(json["user"])); //json["user"] is a Map
+  factory HomePageModel.fromJson(Map<String, dynamic> json) {
+    //json["News"] is a List //json["Threads"] is a List
+    List<News> news = (json["news"] as Iterable).map((n) => News.fromjson(n)).toList();
+    List<Thread> threads = (json["threads"] as Iterable).map((t) => Thread.fromJson(t)).toList();
+    User user = json["user"] != null ? User.fromjson(json["user"]) : User(uid: 0, nickname: 'Test User');
+
+    return HomePageModel(news, threads, user); //json["user"] is a Map
   }
 }
 
@@ -159,26 +153,23 @@ class Hasnext {
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 //Called in api "/thread"
-class ThreadPage {
+class Threads {
   List<Thread> threadsArray;
   Hasnext hasNext;
 
-  ThreadPage(
+  Threads(
     this.threadsArray,
     this.hasNext,
   );
 
-  factory ThreadPage.fromJson(Map<String, dynamic> json) {
+  factory Threads.fromJson(Map<String, dynamic> json) {
     dynamic a = json["threads"]; //return list with map type
     List<Thread> b = [];
     for (int i = 0; i < a.length; i++) {
       b.add(Thread.fromJson(a[i]));
     }
 
-    return ThreadPage(
-        b,
-        Hasnext.fromJson(
-            json["has_next"])); //json is map json["has_next"] is a Map
+    return Threads(b, Hasnext.fromJson(json["has_next"])); //json is map json["has_next"] is a Map
   }
 }
 
@@ -191,14 +182,11 @@ class GetSearchedThread {
   GetSearchedThread(this.threadsList, this.hasnext, this.query);
 
   factory GetSearchedThread.fromJson(Map<String, dynamic> json) {
-    dynamic a = json[
-        "threads"]; //json["threads"] return List , all index element become String
+    dynamic a = json["threads"]; //json["threads"] return List , all index element become String
     List<Thread> b = [];
     for (int i = 0; i < a.length; i++) {
-      b.add(Thread.fromJson(a[
-          i])); //index element from string to map and assign to create object Threads
+      b.add(Thread.fromJson(a[i])); //index element from string to map and assign to create object Threads
     }
-    return GetSearchedThread(
-        b, Hasnext.fromJson(json["has_next"]), json["query"]);
+    return GetSearchedThread(b, Hasnext.fromJson(json["has_next"]), json["query"]);
   }
 }
