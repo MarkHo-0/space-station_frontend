@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:localization/localization.dart';
 import 'package:provider/provider.dart';
+import 'package:space_station/api/http.dart';
 import 'package:space_station/providers/localization_provider.dart';
 import 'package:space_station/providers/theme_provider.dart';
 import 'package:space_station/views/application.dart';
 
 void main() {
+  HttpClient.init(ClientConfig());
+  
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: ((context) => ThemeProvider())),
