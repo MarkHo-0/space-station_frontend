@@ -1,10 +1,22 @@
 {
+  "__HomePage__": "----------------------------------",
   "latest_info": "最新資訊",
   "hit_topics": "熱門話題",
+  "__Navbar__": "----------------------------------",
   "home_page": "主頁",
   "forum_page": "論壇",
   "toolbox_page": "工具箱",
   "profile_page": "我的",
+  "__Time__": "----------------------------------",
+  "time_future": "來自未來",
+  "time_just_now": "剛剛",
+  "time_second": "%s 秒前",
+  "time_minute": "%s 分鐘前",
+  "time_hour": "%s 小時前",
+  "time_day": "%s 天前",
+  "time_month": "%s 個月前",
+  "time_year": "%s 年前",
+  "__ProfilePage__": "----------------------------------",
   "black_theme": "暗黑主題",
   "language": "語言"
 }

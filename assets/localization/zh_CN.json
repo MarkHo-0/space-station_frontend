@@ -1,10 +1,22 @@
 {
+  "__HomePage__": "----------------------------------",
   "latest_info": "最新资讯",
   "hit_topics": "热门话题",
+  "__Navbar__": "----------------------------------",
   "home_page": "主页",
   "forum_page": "论坛",
   "toolbox_page": "工具箱",
   "profile_page": "我的",
+  "__Time__": "----------------------------------",
+  "time_future": "来自未来",
+  "time_just_now": "刚刚",
+  "time_second": "%s 秒前",
+  "time_minute": "%s 分钟前",
+  "time_hour": "%s 小时前",
+  "time_day": "%s 天前",
+  "time_month": "%s 个月前",
+  "time_year": "%s 年前",
+  "__ProfilePage__": "----------------------------------",
   "black_theme": "夜间模式",
   "language": "语言"
 }

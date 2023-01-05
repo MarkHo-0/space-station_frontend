@@ -1,10 +1,22 @@
 {
+  "__HomePage__": "----------------------------------",
   "latest_info": "Lastest Information",
   "hit_topics": "Hit topics",
+  "__Navbar__": "----------------------------------",
   "home_page": "Home",
   "forum_page": "Forum",
   "toolbox_page": "Toolbox",
   "profile_page": "Profile",
+  "__Time__": "----------------------------------",
+  "time_future": "Come from future",
+  "time_just_now": "just now",
+  "time_second": "%s seconds ago",
+  "time_minute": "%s mins ago",
+  "time_hour": "%s hours ago",
+  "time_day": "%s days ago",
+  "time_month": "%s months ago",
+  "time_year": "%s years ago",
+  "__ProfilePage__": "----------------------------------",
   "black_theme": "Black Theme",
   "language": "Language"
 }
