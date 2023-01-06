@@ -1,19 +1,17 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:flutter/widgets.dart';
-
+import 'package:flutter/material.dart';
 import 'package:space_station/models/thread.dart';
 import 'package:space_station/utils/parse_time.dart';
 
 class ThreadItem extends StatelessWidget {
   final Thread data;
-  const ThreadItem({Key? key, required this.data}) : super(key: key);
+  final void Function(int threadID) onTap;
+  const ThreadItem({Key? key, required this.data, required this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: () {},
+    return InkWell(
+      onTap: () => onTap(data.tid),
+      child: Ink(
         child: Container(
           decoration: const BoxDecoration(
             border: Border(
@@ -34,8 +32,8 @@ class ThreadItem extends StatelessWidget {
                   children: [
                     Text(
                       data.sender.nickname,
-                      style: const TextStyle(
-                        color: Color.fromRGBO(110, 127, 183, 1),
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
                         fontSize: 14,
                         fontStyle: FontStyle.normal,
                         fontWeight: FontWeight.w400,
@@ -45,7 +43,7 @@ class ThreadItem extends StatelessWidget {
                       width: 10,
                     ),
                     Text(
-                      unixTime2String(data.lastUpdateTime),
+                      unixTime2DiffText(data.lastUpdateTime),
                       style: const TextStyle(
                         color: Color.fromRGBO(116, 116, 116, 1),
                         fontSize: 10,

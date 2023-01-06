@@ -6,8 +6,8 @@ import 'package:space_station/views/_share/thread_item.dart';
 import '../../_share/titled_container.dart';
 
 class HotestThreadList extends StatelessWidget {
-  final List<Thread> data;
-  const HotestThreadList(this.data, {Key? key, required}) : super(key: key);
+  final List<Thread> threads;
+  const HotestThreadList(this.threads, {Key? key, required}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,8 +15,11 @@ class HotestThreadList extends StatelessWidget {
       title: 'hit_topics'.i18n(),
       body: Column(
         children: List<ThreadItem>.generate(
-          data.length,
-          (index) => ThreadItem(data: data[index]),
+          threads.length,
+          (index) => ThreadItem(
+            data: threads[index],
+            onTap: (threadID) => print(threadID),
+          ),
           growable: false,
         ),
       ),
