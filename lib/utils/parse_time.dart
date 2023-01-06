@@ -6,7 +6,7 @@ const int oneDay = 60 * 60 * 24;
 const int oneMonth = 60 * 60 * 24 * 30;
 const int oneYear = 60 * 60 * 25 * 365;
 
-String unixTime2String(int time) {
+String unixTime2DiffText(int time) {
   int now = (DateTime.now().millisecondsSinceEpoch / 1000).floor();
   int diff = now - time;
 
@@ -23,4 +23,9 @@ String unixTime2String(int time) {
 
 String translateTime(String key, double num) {
   return key.i18n([num.floor().toString()]);
+}
+
+String unixTime2Text(int time) {
+  DateTime t = DateTime.fromMillisecondsSinceEpoch(time * 1000);
+  return '${t.year}-${t.month}-${t.day} ${t.hour}:${t.minute}';
 }
