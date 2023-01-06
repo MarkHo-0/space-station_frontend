@@ -1,14 +1,15 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:localization/localization.dart';
+import 'package:space_station/views/home_pages/news_detail_popup.dart';
 
 import '../../../models/thread.dart';
 import '../../_share/titled_container.dart';
 
 class NewsRow extends StatelessWidget {
-  final List<News> data;
+  final List<News> newsArray;
 
-  const NewsRow(this.data, {Key? key}) : super(key: key);
+  const NewsRow(this.newsArray, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +19,13 @@ class NewsRow extends StatelessWidget {
         height: 170,
         child: ListView.separated(
           padding: const EdgeInsets.only(left: 15),
-          itemCount: data.length,
+          itemCount: newsArray.length,
           scrollDirection: Axis.horizontal,
           itemBuilder: (_, index) {
-            return NewsCard(data: data[index]);
+            return NewsCard(
+              news: newsArray[index],
+              onTap: (news) => showNewsDetail(context, news),
+            );
           },
           separatorBuilder: (_, __) {
             return const SizedBox(width: 10);
@@ -33,9 +37,10 @@ class NewsRow extends StatelessWidget {
 }
 
 class NewsCard extends StatelessWidget {
-  final News data;
+  final News news;
+  final void Function(News news) onTap;
 
-  const NewsCard({Key? key, required this.data}) : super(key: key);
+  const NewsCard({Key? key, required this.news, required this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -47,11 +52,11 @@ class NewsCard extends StatelessWidget {
         width: 150,
         height: 170,
         child: InkWell(
-          onTap: () {},
+          onTap: (() => onTap(news)),
           child: Padding(
             padding: const EdgeInsets.all(15),
             child: Text(
-              data.title,
+              news.title,
               style: const TextStyle(
                 fontSize: 24,
                 color: Colors.white,
