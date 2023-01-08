@@ -2,9 +2,9 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:http/testing.dart';
-import 'package:space_station/api/error.dart';
-import 'package:space_station/api/mockings/base.dart';
+import 'mocking/client.dart' show TestClient;
+import 'error.dart';
+import 'methods.dart';
 
 class HttpClient {
   final ClientConfig _config;
@@ -18,10 +18,10 @@ class HttpClient {
     _singleton ??= HttpClient._(config);
   }
 
-  Future<Response> _send(ReqTypes type, String path, Map<String, dynamic>? query, Map<String, dynamic>? body) async {
+  Future<Response> _send(HttpMethod methold, String path, Map<String, dynamic>? query, Map<String, dynamic>? body) async {
     //構建請求網址
     final url = _config.pasteUrl(path, query);
-    Request req = Request(type.name, url);
+    Request req = Request(methold.name, url);
 
     //如果有請求內文，則添加進 body 欄。
     if (body != null && body.isNotEmpty) {
@@ -54,15 +54,15 @@ class HttpClient {
   }
 
   Future<Response> get(String path, {Map<String, dynamic>? parameters}) {
-    return _send(ReqTypes.get, path, parameters, null);
+    return _send(HttpMethod.GET, path, parameters, null);
   }
 
   Future<Response> post(String path, {Map<String, dynamic>? bodyItems}) {
-    return _send(ReqTypes.post, path, null, bodyItems);
+    return _send(HttpMethod.POST, path, null, bodyItems);
   }
 
   Future<Response> patch(String path, {Map<String, dynamic>? bodyItems}) {
-    return _send(ReqTypes.patch, path, null, bodyItems);
+    return _send(HttpMethod.PATCH, path, null, bodyItems);
   }
 }
 
@@ -73,12 +73,10 @@ class ClientConfig {
   String? authKey;
 
   ClientConfig({bool shouldUseFakeData = false, this.host = 'localhost', this.port = 3000}) {
-    baseClient = shouldUseFakeData ? MockClient(handleApiMock) : Client();
+    baseClient = shouldUseFakeData ? TestClient() : Client();
   }
 
   Uri pasteUrl(path, query) {
-    return Uri(scheme: 'http', host: host, path: 'api/$path', queryParameters: query, port: port);
+    return Uri(scheme: 'http', host: host, path: 'api$path', queryParameters: query, port: port);
   }
 }
-
-enum ReqTypes { get, post, patch }
