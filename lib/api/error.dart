@@ -1,53 +1,46 @@
 Exception handleException(int statusCode) {
   switch (statusCode) {
     case 400:
-      return GeneralError("General Error");
+      return GeneralError();
     case 401:
-      return AuthorizationError("Authorization Error");
+      return AuthorizationError();
     case 403:
-      return PermissionError("Permission Error");
+      return PermissionError();
     case 404:
-      return NoResourceError("NoResource Error");
+      return NoResourceError();
     case 422:
-      return ParametersError("Parameters Error");
+      return ParametersError();
     case 460:
-      return FrquentError("Frquent Error");
+      return FrquentError();
     default:
-      return NetWorkError("NetWork Error");
+      return NetWorkError();
   }
 }
 
 class GeneralError implements Exception {
-  String errormsg;
-  GeneralError(this.errormsg);
+  GeneralError() : super();
 }
 
 class AuthorizationError implements Exception {
-  String errormsg;
-  AuthorizationError(this.errormsg);
+  AuthorizationError() : super();
 }
 
 class PermissionError implements Exception {
-  String errormsg;
-  PermissionError(this.errormsg);
+  PermissionError() : super();
 }
 
 class NoResourceError implements Exception {
-  String errormsg;
-  NoResourceError(this.errormsg);
+  NoResourceError() : super();
 }
 
 class ParametersError implements Exception {
-  String errormsg;
-  ParametersError(this.errormsg);
+  ParametersError() : super();
 }
 
 class FrquentError implements Exception {
-  String errormsg;
-  FrquentError(this.errormsg);
+  FrquentError() : super();
 }
 
 class NetWorkError implements Exception {
-  String errormsg;
-  NetWorkError(this.errormsg);
+  NetWorkError() : super();
 }
