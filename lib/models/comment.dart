@@ -50,24 +50,20 @@ class Comment {
   }
 }
 
-class ThreadDetail {
+class ThreadDetailModel {
   final List<Comment> commentsList;
-  final Hasnext hasnext;
+  final String continuous;
   final Thread? threadDetail;
 
-  ThreadDetail(this.commentsList, this.hasnext, this.threadDetail);
+  ThreadDetailModel(this.commentsList, this.continuous, this.threadDetail);
 
-  factory ThreadDetail.fromJson(Map<String, dynamic> json) {
-    dynamic a = json[
-        "comments"]; //json["comments"] return List , all index element is map type
-    List<Comment> b = [];
-    for (int i = 0; i < a.length; i++) {
-      b.add(Comment.fromjson(a[i]));
-    }
-    return ThreadDetail(
-        b,
-        Hasnext.fromJson(
-            json["has_next"]), //json["has_next"] is map, b is <List>Comments
+  factory ThreadDetailModel.fromJson(Map<String, dynamic> json) {
+    List<Comment> comments =
+        (json["comments"] as Iterable).map((t) => Comment.fromjson(t)).toList();
+
+    return ThreadDetailModel(
+        comments,
+        json["continuous"], //json["has_next"] is map, b is <List>Comments
         Thread.fromJson(json["thread_detail"])); //json["thread_detail"] is map
   }
 }

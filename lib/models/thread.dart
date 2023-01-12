@@ -124,9 +124,13 @@ class HomePageModel {
 
   factory HomePageModel.fromJson(Map<String, dynamic> json) {
     //json["News"] is a List //json["Threads"] is a List
-    List<News> news = (json["news"] as Iterable).map((n) => News.fromjson(n)).toList();
-    List<Thread> threads = (json["threads"] as Iterable).map((t) => Thread.fromJson(t)).toList();
-    User user = json["user"] != null ? User.fromjson(json["user"]) : User(uid: 0, nickname: 'Test User');
+    List<News> news =
+        (json["news"] as Iterable).map((n) => News.fromjson(n)).toList();
+    List<Thread> threads =
+        (json["threads"] as Iterable).map((t) => Thread.fromJson(t)).toList();
+    User user = json["user"] != null
+        ? User.fromjson(json["user"])
+        : User(uid: 0, nickname: 'Test User');
 
     return HomePageModel(news, threads, user); //json["user"] is a Map
   }
@@ -136,57 +140,20 @@ class HomePageModel {
 // ignore: camel_case_types
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
-class Hasnext {
-  final bool hasMore;
-  final String nextCursor;
-
-  Hasnext({required this.hasMore, required this.nextCursor});
-
-  factory Hasnext.fromJson(Map<String, dynamic> json) {
-    return Hasnext(
-      hasMore: json["has_more"],
-      nextCursor: json["next_cursor"],
-    );
-  }
-}
-
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
 //Called in api "/thread"
-class Threads {
+class ThreadsModel {
   List<Thread> threadsArray;
-  Hasnext hasNext;
+  String continuous;
 
-  Threads(
+  ThreadsModel(
     this.threadsArray,
-    this.hasNext,
+    this.continuous,
   );
 
-  factory Threads.fromJson(Map<String, dynamic> json) {
-    dynamic a = json["threads"]; //return list with map type
-    List<Thread> b = [];
-    for (int i = 0; i < a.length; i++) {
-      b.add(Thread.fromJson(a[i]));
-    }
-
-    return Threads(b, Hasnext.fromJson(json["has_next"])); //json is map json["has_next"] is a Map
-  }
-}
-
-//GetSearchedThread not used.
-class GetSearchedThread {
-  final List<Thread> threadsList;
-  final Hasnext hasnext;
-  final String query;
-
-  GetSearchedThread(this.threadsList, this.hasnext, this.query);
-
-  factory GetSearchedThread.fromJson(Map<String, dynamic> json) {
-    dynamic a = json["threads"]; //json["threads"] return List , all index element become String
-    List<Thread> b = [];
-    for (int i = 0; i < a.length; i++) {
-      b.add(Thread.fromJson(a[i])); //index element from string to map and assign to create object Threads
-    }
-    return GetSearchedThread(b, Hasnext.fromJson(json["has_next"]), json["query"]);
+  factory ThreadsModel.fromJson(Map<String, dynamic> json) {
+    List<Thread> threads =
+        (json["threads"] as Iterable).map((t) => Thread.fromJson(t)).toList();
+    return ThreadsModel(
+        threads, json["continuous"]); //json is map json["has_next"] is a Map
   }
 }
