@@ -18,7 +18,8 @@ class HttpClient {
     _singleton ??= HttpClient._(config);
   }
 
-  Future<Response> _send(HttpMethod methold, String path, Map<String, dynamic>? query, Map<String, dynamic>? body) async {
+  Future<Response> _send(HttpMethod methold, String path,
+      Map<String, dynamic>? query, Map<String, dynamic>? body) async {
     //構建請求網址
     final url = _config.pasteUrl(path, query);
     Request req = Request(methold.name, url);
@@ -72,11 +73,27 @@ class ClientConfig {
   late final Client baseClient;
   String? authKey;
 
-  ClientConfig({bool shouldUseFakeData = false, this.host = 'localhost', this.port = 3000}) {
+  ClientConfig(
+      {bool shouldUseFakeData = false,
+      this.host = 'localhost',
+      this.port = 3000}) {
     baseClient = shouldUseFakeData ? TestClient() : Client();
   }
 
-  Uri pasteUrl(path, query) {
-    return Uri(scheme: 'http', host: host, path: 'api$path', queryParameters: query, port: port);
+  Uri pasteUrl(String path, Map<String, dynamic>? query) {
+    //將 query 的 int 轉為 String
+    if (query != null && query.isNotEmpty) {
+      query.forEach((key, value) {
+        if (value is int) {
+          query[key] = value.toString();
+        }
+      });
+    }
+    return Uri(
+        scheme: 'http',
+        host: host,
+        path: 'api$path',
+        queryParameters: query,
+        port: port);
   }
 }
