@@ -14,21 +14,27 @@ Future<HomePageModel> getHomeData() async {
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 
-Future<ThreadsModel> getThreadPage(
-    String? cursor, int? order, int? pid, int? fid, String? q) async {
-  http.Response response;
-  Map<String, dynamic> query = {};
-  if (cursor != null) query["cursor"] = cursor;
-  if (order != null) query["order"] = order;
-  if (pid != null) query["pid"] = pid;
-  if (fid != null) query["fid"] = fid;
-  if ((q != null) && (q.length <= 10)) query["q"] = q;
-  response = await HttpClient().get('/home', parameters: query);
-  if (response.statusCode == 200) {
-    return ThreadsModel.fromJson(jsonDecode(response.body));
-  } else {
-    throw Exception('Failed to load ThreadPage');
+Future<ThreadsModel> getThreads({
+  int? orderID,
+  int? pageID,
+  int? facultyID,
+  String? quaryText,
+  String? nextCursor,
+}) async {
+  Map<String, dynamic> params = {};
+  if (orderID != null) params.addAll({"order": orderID});
+  if (pageID != null) params.addAll({"pid": pageID});
+  if (facultyID != null) params.addAll({"fid": facultyID});
+  if (nextCursor != null && nextCursor.isNotEmpty) {
+    params.addAll({"cursor": nextCursor});
   }
+  if ((quaryText != null) && (quaryText.length <= 10)) {
+    params.addAll({"q": quaryText});
+  }
+
+  return HttpClient()
+      .get('/thread', parameters: params)
+      .then((res) => ThreadsModel.fromJson(jsonDecode(res.body)));
 }
 
 //////////////////////////////////////////////////////
