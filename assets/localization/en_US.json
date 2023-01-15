@@ -18,5 +18,20 @@
   "time_year": "%s years ago",
   "__ProfilePage__": "----------------------------------",
   "black_theme": "Black Theme",
-  "language": "Language"
+  "language": "Language",
+  "__ForumPage__": "----------------------------------",
+  "page_casual": "Casual",
+  "page_academic": "Academic",
+  "forum_searchbar_hit_text": "Seach threads by their title...",
+  "post_thread_tooltip": "Post a new thread",
+  "thread_order_1": "Newer last updated time First",
+  "thread_order_2": "Higher hotness First",
+  "__Faculties__": "----------------------------------",
+  "faculty_0": "All Faculties",
+  "faculty_1": "Arts and Humanities",
+  "faculty_2": "Economics and Business",
+  "faculty_3": "Engineering and Technology",
+  "faculty_4": "English",
+  "faculty_5": "Mathematics and Sciences",
+  "faculty_6": "Social Sciences"
 }
