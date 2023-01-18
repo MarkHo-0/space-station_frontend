@@ -15,21 +15,19 @@ Future<HomePageModel> getHomeData() async {
 //////////////////////////////////////////////////////
 
 Future<ThreadsModel> getThreads({
-  int? orderID,
-  int? pageID,
-  int? facultyID,
-  String? quaryText,
-  String? nextCursor,
+  int orderID = 1,
+  int pageID = 0,
+  int facultyID = 0,
+  String queryText = '',
+  String nextCursor = '',
 }) async {
   Map<String, dynamic> params = {};
-  if (orderID != null) params.addAll({"order": orderID});
-  if (pageID != null) params.addAll({"pid": pageID});
-  if (facultyID != null) params.addAll({"fid": facultyID});
-  if (nextCursor != null && nextCursor.isNotEmpty) {
-    params.addAll({"cursor": nextCursor});
-  }
-  if ((quaryText != null) && (quaryText.length <= 10)) {
-    params.addAll({"q": quaryText});
+  if (orderID > 1) params.addAll({"order": orderID});
+  if (pageID > 0) params.addAll({"pid": pageID});
+  if (facultyID > 0) params.addAll({"fid": facultyID});
+  if (nextCursor.isNotEmpty) params.addAll({"cursor": nextCursor});
+  if ((queryText.isNotEmpty) && (queryText.length <= 10)) {
+    params.addAll({"q": queryText});
   }
 
   return HttpClient()
