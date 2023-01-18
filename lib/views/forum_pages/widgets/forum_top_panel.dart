@@ -1,15 +1,17 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:localization/localization.dart';
-
-import '../forum_create.dart';
 
 class ForumTopPanel extends StatelessWidget {
   final void Function(int orderID) onOrderChanged;
   final void Function(String query) onSearch;
+  final void Function() onGoToPostPage;
 
-  const ForumTopPanel(
-      {super.key, required this.onOrderChanged, required this.onSearch});
+  const ForumTopPanel({
+    super.key,
+    required this.onOrderChanged,
+    required this.onSearch,
+    required this.onGoToPostPage,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -67,11 +69,7 @@ class ForumTopPanel extends StatelessWidget {
 
   Widget buildPostButtom(BuildContext context) {
     return IconButton(
-      onPressed: () {
-        Navigator.of(context).push(CupertinoPageRoute(
-          builder: (context) => const ForumPostPage(),
-        ));
-      },
+      onPressed: onGoToPostPage,
       icon: const Icon(Icons.edit),
       color: Theme.of(context).primaryColor,
       tooltip: 'post_thread_tooltip'.i18n(),
