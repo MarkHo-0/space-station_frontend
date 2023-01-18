@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 import '../../models/thread.dart';
 import '../_share/loading_page.dart';
@@ -6,39 +6,61 @@ import '../_share/thread_item.dart';
 
 class ThreadListView extends StatefulWidget {
   const ThreadListView(
-      {super.key, required this.onLoad, required this.onTaped});
+      {super.key, required this.requestData, required this.onTaped});
 
-  final void Function(String? nextCursor, void Function(ThreadsModel?)) onLoad;
+  final Future<ThreadsModel> Function(String nextCursor) requestData;
 
   final void Function(int threadID) onTaped;
 
   @override
-  State<ThreadListView> createState() => _ThreadListViewState();
+  State<ThreadListView> createState() => ThreadListViewState();
 }
 
-class _ThreadListViewState extends State<ThreadListView>
+class ThreadListViewState extends State<ThreadListView>
     with AutomaticKeepAliveClientMixin<ThreadListView> {
   final ScrollController _scrollController = ScrollController();
 
   bool isLoading = false;
-  String nextCursor = "";
+  String nextCursor = '';
   List<Thread> threads = [];
-
-  void loadMore() {
-    setState(() => isLoading = true);
-    widget.onLoad(nextCursor, (reuslt) {
-      if (reuslt != null) {
-        threads.addAll(reuslt.threadsArray);
-        nextCursor = reuslt.continuous;
-      }
-      setState(() => isLoading = false);
-    });
-  }
 
   @override
   void initState() {
     super.initState();
-    loadMore();
+    _loadMore(freshLoad: true);
+    _scrollController.addListener(() {
+      final pos = _scrollController.position;
+      if (pos.pixels > pos.maxScrollExtent - 40) {
+        _loadMore();
+      }
+    });
+  }
+
+  Future<void> _loadMore({freshLoad = false}) async {
+    //如果正在正在加載則退出
+    if (isLoading) return Future.value();
+    //如果沒有下一頁也退出
+    if (!freshLoad && nextCursor.isEmpty) return;
+    setState(() => isLoading = true);
+    try {
+      final cursor = freshLoad ? '' : nextCursor;
+      final data = await widget.requestData(cursor);
+
+      if (freshLoad) threads.clear();
+      threads.addAll(data.threadsArray);
+
+      nextCursor = data.continuous;
+    } catch (e) {
+      nextCursor = '';
+    }
+
+    setState(() => isLoading = false);
+    return Future.value();
+  }
+
+  Future<void> refresh() async {
+    await _loadMore(freshLoad: true);
+    return Future.value();
   }
 
   @override
@@ -50,13 +72,16 @@ class _ThreadListViewState extends State<ThreadListView>
       return const Text('沒有數據');
     }
 
-    return ListView.builder(
-      itemCount: threads.length,
-      itemBuilder: ((_, i) => ThreadItem(
-            data: threads[i],
-            onTap: ((threadID) => widget.onTaped(threadID)),
-          )),
-      controller: _scrollController,
+    return RefreshIndicator(
+      onRefresh: refresh,
+      child: ListView.builder(
+        itemCount: threads.length,
+        itemBuilder: ((_, i) => ThreadItem(
+              data: threads[i],
+              onTap: ((threadID) => widget.onTaped(threadID)),
+            )),
+        controller: _scrollController,
+      ),
     );
   }
 
