@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:space_station/models/thread.dart';
-import '../_share/thread_listview.dart';
-import './widgets/forum_tabbar.dart';
+import 'widgets/multi_tabs_thread_list.dart';
 import './widgets/forum_top_panel.dart';
 import '../../api/interfaces/forum_api.dart';
 
@@ -13,77 +12,58 @@ class ForumPage extends StatefulWidget {
   State<ForumPage> createState() => _ForumPageState();
 }
 
-class _ForumPageState extends State<ForumPage>
-    with SingleTickerProviderStateMixin {
-  late TabController tabController;
+class _ForumPageState extends State<ForumPage> {
+  final _forumKey = GlobalKey<MultiTabsThreadListState>();
 
-  int facultyID = 0, orderID = 0;
-  String quary = "";
-  bool isLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-    tabController = TabController(length: 2, vsync: this);
-    tabController.addListener(() {
-      setState(() {});
-    });
-  }
+  int orderID = 1;
+  String queryText = '';
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         ForumTopPanel(
-          onSearch: (value) => updateParams(quary: value),
-          onOrderChanged: (value) => updateParams(orderID: value),
+          onSearch: (value) => refreshList(queryText: value),
+          onOrderChanged: (value) => refreshList(orderID: value),
+          onGoToPostPage: onGoToPostPage,
         ),
-        ForumTabBar(
-          tabController: tabController,
-        ),
-        Expanded(
-          child: TabBarView(
-            controller: tabController,
-            children: [
-              ThreadListView(
-                onLoad: loadThreads,
-                onTaped: onThreadTaped,
-              ),
-              ThreadListView(
-                onLoad: loadThreads,
-                onTaped: onThreadTaped,
-              ),
-            ],
-          ),
+        MultiTabsThreadList(
+          key: _forumKey,
+          tabs: _kTabs,
+          onThreadTaped: onThreadTaped,
+          requestData: requestThreads,
         ),
       ],
     );
   }
 
-  void updateParams({facultyID, int? orderID, String? quary}) {
-    if (facultyID != null) this.facultyID = facultyID;
+  void refreshList({int? orderID, String? queryText}) {
     if (orderID != null) this.orderID = orderID;
-    if (quary != null) this.quary = quary;
+    if (queryText != null) this.queryText = queryText;
+    _forumKey.currentState!.refreshCurrentView();
   }
 
-  void loadThreads(String? nextCursor, void Function(ThreadsModel?) onLoaded) {
-    getThreads(
-      pageID: tabController.index + 1,
+  Future<ThreadsModel> requestThreads(
+      int pageID, int facultyID, String nextCursor) {
+    return getThreads(
+      pageID: pageID,
       facultyID: facultyID,
       orderID: orderID,
+      queryText: queryText,
       nextCursor: nextCursor,
-    )
-        .then((result) => onLoaded(result))
-        .onError((error, stackTrace) => onLoaded(null));
+    );
   }
 
   void onThreadTaped(int threadID) {
-    print(threadID);
+    //TODO: 跳轉到貼文頁面
   }
 
-  @override
-  void dispose() {
-    tabController.dispose();
-    super.dispose();
+  void onGoToPostPage() {
+    //TODO: 跳轉到發佈頁面
   }
 }
+
+const List<TabInfo> _kTabs = [
+  TabInfo(key: 'casual'),
+  TabInfo(key: 'academic', categoryKey: 'faculty', categoriesQuantity: 6),
+];
