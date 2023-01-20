@@ -1,5 +1,4 @@
-import 'dart:convert';
-import 'dart:io';
+import 'dart:convert' show jsonDecode, jsonEncode;
 import 'package:http/http.dart';
 import 'package:http/testing.dart';
 import 'package:space_station/api/mocking/interfaces.dart';
@@ -45,29 +44,35 @@ class TestClient extends MockClient {
       //如果所有段位都匹配，則表是找到路由
       if (isPathMatched) {
         //解析請求內文
-        Map<String, dynamic>? body;
+        Map<String, dynamic> body = {};
         if (req.body.isNotEmpty) {
           body = jsonDecode(req.body);
         }
 
         //獲取假數據
-        response = route.onResponse(params, body);
+        final simReq = SimpleRequest(
+          parameters: params,
+          quaries: req.url.queryParameters,
+          bodies: body,
+        );
+        response = route.onResponse(simReq);
         break;
       }
     }
 
     if (response == null) {
-      return Future.value(Response('URL error, data could not be found', 400));
+      return Future.value(Response('URL error, data could not be found', 499));
     }
 
     return Future.value(Response(
       jsonEncode(response.body),
-      headers: {HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8'},
+      headers: {'content-type': 'application/json; charset=utf-8'},
       response.statusCode,
     ));
   }
 
-  static void _onRecieved(HttpMethod method, String path, HandleReqeust onResponse) {
+  static void _onRecieved(
+      HttpMethod method, String path, HandleReqeust onResponse) {
     List<String> pathSegments = path.split('/');
     if (pathSegments.length < 2) return;
     pathSegments.removeAt(0);
@@ -75,11 +80,14 @@ class TestClient extends MockClient {
     _routes.add(route);
   }
 
-  static void onGet(String path, HandleReqeust onResponse) => _onRecieved(HttpMethod.GET, path, onResponse);
+  static void onGet(String path, HandleReqeust onResponse) =>
+      _onRecieved(HttpMethod.GET, path, onResponse);
 
-  static void onPost(String path, HandleReqeust onResponse) => _onRecieved(HttpMethod.POST, path, onResponse);
+  static void onPost(String path, HandleReqeust onResponse) =>
+      _onRecieved(HttpMethod.POST, path, onResponse);
 
-  static void onPatch(String path, HandleReqeust onResponse) => _onRecieved(HttpMethod.PATCH, path, onResponse);
+  static void onPatch(String path, HandleReqeust onResponse) =>
+      _onRecieved(HttpMethod.PATCH, path, onResponse);
 }
 
 class Route {
@@ -122,4 +130,16 @@ class SimpleResponse {
   const SimpleResponse(this.body, {this.statusCode = 200});
 }
 
-typedef HandleReqeust = SimpleResponse Function(Map<String, String>? params, Map<String, dynamic>? body);
+class SimpleRequest {
+  final Map<String, String> parameters;
+  final Map<String, String> quaries;
+  final Map<String, dynamic> bodies;
+
+  const SimpleRequest({
+    this.parameters = const {},
+    this.quaries = const {},
+    this.bodies = const {},
+  });
+}
+
+typedef HandleReqeust = SimpleResponse Function(SimpleRequest req);
