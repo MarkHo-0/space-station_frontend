@@ -75,13 +75,35 @@ class ThreadListViewState extends State<ThreadListView>
     return RefreshIndicator(
       onRefresh: refresh,
       child: ListView.builder(
-        itemCount: threads.length,
-        itemBuilder: ((_, i) => ThreadItem(
-              data: threads[i],
-              onTap: ((threadID) => widget.onTaped(threadID)),
-            )),
+        itemCount: threads.length + 1,
+        itemBuilder: buildItem,
         controller: _scrollController,
       ),
+    );
+  }
+
+  Widget buildItem(BuildContext context, int index) {
+    if (index == threads.length) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: Center(
+          child: isLoading
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    CircularProgressIndicator(),
+                    SizedBox(width: 15),
+                    Text('正在加載中...'),
+                  ],
+                )
+              : const Text('空即是色 色即是空'),
+        ),
+      );
+    }
+
+    return ThreadItem(
+      data: threads[index],
+      onTap: ((threadID) => widget.onTaped(threadID)),
     );
   }
 
