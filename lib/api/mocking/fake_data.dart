@@ -1,6 +1,103 @@
 import 'dart:math';
 
-import 'package:space_station/utils/parse_time.dart';
+import '../../utils/parse_time.dart';
+
+//假數據處理
+
+List<dynamic> sortByHotness(List<dynamic>? threads, int quantity, int offset) {
+  return _sort(threads, quantity, offset, 'heat');
+}
+
+List<dynamic> sortByTime(List<dynamic>? threads, int quantity, int offset) {
+  return _sort(threads, quantity, offset, 'last_update_time');
+}
+
+List<dynamic> _sort(List? threads, int quantity, int offset, String compkey) {
+  final data = threads ?? fakeThreads.sublist(0);
+  data.sort((a, b) => (b[compkey] as int).compareTo(a[compkey] as int));
+  return data.skip(offset).take(quantity).toList();
+}
+
+List<dynamic> filterThreads({pageID = 0, facultyID = 0, queryText = ''}) {
+  return fakeThreads.where((t) {
+    if (pageID > 0 && t['pid'] != pageID) return false;
+    if (facultyID > 0 && t['fid'] != facultyID) return false;
+    if (queryText != '') {
+      if (!((t['title'] as String).contains(queryText))) return false;
+    }
+    return true;
+  }).toList();
+}
+
+//單例類型假數據生成
+
+List<dynamic> fakeThreads = [];
+
+void generateRandomThreads(int quantity) {
+  fakeThreads.clear();
+
+  for (var i = 1; i < quantity; i++) {
+    int pid = getRandomPID();
+    int fid = pid == 2 ? getRandomFID() : 0;
+    int lastUpdateTime = getRandomPassTime(getCurrUnixTime());
+    int createTime = getRandomPassTime(lastUpdateTime, percentInSameDay: 0.3);
+    Map<String, int> stats = getRandomThreadStats();
+    int heat =
+        ((stats['like']! + stats['dislike']!) / 2).floor() + stats['comment']!;
+
+    dynamic thread = {
+      'tid': i,
+      'pid': pid,
+      'fid': fid,
+      'title': getRandomTitle(pid),
+      'sender': getRandomUser(),
+      'create_time': createTime,
+      'last_update_time': lastUpdateTime,
+      'stats': stats,
+      'content_cid': 1,
+      'pined_cid': getRandomThreadPinCid(),
+      'heat': heat,
+    };
+
+    fakeThreads.add(thread);
+  }
+}
+
+//復合類型假數據生成
+
+dynamic getRandomUser() {
+  final uid = Random().nextInt(_nicknames.length - 1);
+  return {'uid': uid, 'nickname': _nicknames[uid]};
+}
+
+Map<String, int> getRandomThreadStats() {
+  return <String, int>{
+    'like': getRandomInt(50, 0.1),
+    'dislike': getRandomInt(50, 0.1),
+    'comment': getRandomInt(30, 0.2),
+  };
+}
+
+List<dynamic> getNews() {
+  int uuidCounter = 1;
+  int pTime = getCurrUnixTime();
+  return (_news..shuffle())
+      .map((n) => {
+            'title': n[1],
+            'content': n[2],
+            'uuid': uuidCounter++,
+            'public_time': pTime = getRandomPassTime(pTime),
+          })
+      .toList();
+}
+
+//基礎類型假數據生成
+
+String getRandomTitle(int pid) {
+  final targetList = pid == 1 ? _casualTitles : _academicTitles;
+  final i = Random().nextInt(targetList.length - 1);
+  return targetList[i];
+}
 
 int getRandomPassTime(int curr, {double percentInSameDay = 0.7}) {
   final bool isSameDay = Random().nextDouble() < percentInSameDay;
@@ -22,42 +119,12 @@ int getRandomThreadPinCid() {
   return i < 3 ? 0 : Random().nextInt(100) + 1;
 }
 
-String getRandomTitle(int pid) {
-  final targetList = pid == 1 ? _casualTitles : _academicTitles;
-  final i = Random().nextInt(targetList.length - 1);
-  return targetList[i];
-}
-
-dynamic getRandomUser() {
-  final uid = Random().nextInt(_nicknames.length - 1);
-  return {'uid': uid, 'nickname': _nicknames[uid]};
-}
-
-Map<String, int> getRandomThreadStats() {
-  return <String, int>{
-    'like': getRandomInt(50, 0.1),
-    'dislike': getRandomInt(50, 0.1),
-    'comment': getRandomInt(30, 0.2),
-  };
-}
-
 int getRandomInt(int max, double percentIsZero) {
   final isZero = Random().nextDouble() <= percentIsZero;
   return isZero ? 0 : Random().nextInt(max) + 1;
 }
 
-List<dynamic> getNews() {
-  int uuidCounter = 1;
-  int pTime = getCurrUnixTime();
-  return (_news..shuffle())
-      .map((n) => {
-            'title': n[1],
-            'content': n[2],
-            'uuid': uuidCounter++,
-            'public_time': pTime = getRandomPassTime(pTime),
-          })
-      .toList();
-}
+//手動輸入假資料
 
 List<String> _casualTitles = [
   '爛左龜，好灰吖',
@@ -120,4 +187,4 @@ List<dynamic> _news = [
   {1: "HDIT即將成為全校最成功嘅科目", 2: "預計該科在2333年擁有100%的升學率"},
   {1: "全新校內論壇上線", 2: "快啲來留低你地嘅諗法"},
   {1: "繳交下學期學費", 2: "再唔交學費就打電話同你地屋企人講"},
-];
+]; /* #endregion */
