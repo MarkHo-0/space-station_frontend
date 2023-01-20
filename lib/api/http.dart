@@ -54,8 +54,8 @@ class HttpClient {
     return res;
   }
 
-  Future<Response> get(String path, {Map<String, dynamic>? parameters}) {
-    return _send(HttpMethod.GET, path, parameters, null);
+  Future<Response> get(String path, {Map<String, dynamic>? queryParameters}) {
+    return _send(HttpMethod.GET, path, queryParameters, null);
   }
 
   Future<Response> post(String path, {Map<String, dynamic>? bodyItems}) {

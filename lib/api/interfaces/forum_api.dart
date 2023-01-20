@@ -21,17 +21,17 @@ Future<ThreadsModel> getThreads({
   String queryText = '',
   String nextCursor = '',
 }) async {
-  Map<String, dynamic> params = {};
-  if (orderID > 1) params.addAll({"order": orderID});
-  if (pageID > 0) params.addAll({"pid": pageID});
-  if (facultyID > 0) params.addAll({"fid": facultyID});
-  if (nextCursor.isNotEmpty) params.addAll({"cursor": nextCursor});
+  Map<String, dynamic> query = {};
+  if (orderID > 1) query.addAll({"order": orderID});
+  if (pageID > 0) query.addAll({"pid": pageID});
+  if (facultyID > 0) query.addAll({"fid": facultyID});
+  if (nextCursor.isNotEmpty) query.addAll({"cursor": nextCursor});
   if ((queryText.isNotEmpty) && (queryText.length <= 10)) {
-    params.addAll({"q": queryText});
+    query.addAll({"q": queryText});
   }
 
   return HttpClient()
-      .get('/thread', parameters: params)
+      .get('/thread', queryParameters: query)
       .then((res) => ThreadsModel.fromJson(jsonDecode(res.body)));
 }
 
