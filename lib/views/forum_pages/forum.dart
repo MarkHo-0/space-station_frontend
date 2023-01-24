@@ -40,7 +40,7 @@ class _ForumPageState extends State<ForumPage> {
   void refreshList({int? orderID, String? queryText}) {
     if (orderID != null) this.orderID = orderID;
     if (queryText != null) this.queryText = queryText;
-    _forumKey.currentState!.refreshCurrentView();
+    _forumKey.currentState!.notifyParametersChanged();
   }
 
   Future<ThreadsModel> requestThreads(

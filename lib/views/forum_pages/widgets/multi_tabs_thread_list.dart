@@ -78,23 +78,39 @@ class MultiTabsThreadListState extends State<MultiTabsThreadList>
   }
 
   int get currentCategoryID {
-    DynamicTabState? tab = _keysList.tabs[_tabController.index].currentState;
+    final tab = _keysList.tabs[_tabController.index].currentState;
     if (tab == null) return 0;
     return tab.categoryID;
   }
 
   void _onTabSwitched() {
     if (_tabController.indexIsChanging == true) return; //防止重複呼叫
+
+    //隱藏上個分頁的子分頁選項
     _keysList.tabs[_tabController.previousIndex].currentState!.hideSelector();
-    _keysList.tabs[_tabController.index].currentState!.showSelector();
+
+    //顯示當前頁面的子分頁選項
+    final currentTab = _keysList.tabs[_tabController.index].currentState!;
+    currentTab.showSelector();
+
+    //假如資為舊則刷新列表
+    if (currentTab.isDataOutdated) {
+      notifyParametersChanged();
+      currentTab.isDataOutdated = false;
+    }
   }
 
-  void refreshCurrentView() {
-    if (_keysList.views.isEmpty) return;
-    ThreadListViewState? view =
-        _keysList.views[_tabController.index].currentState;
-    if (view == null) return;
+  void notifyParametersChanged() {
+    //刷新當前頁面
+    final view = _keysList.views[_tabController.index].currentState!;
     view.refresh();
+
+    //將其它頁面的資料標記為舊，下次顯示時自動刷新
+    for (var pageIndex = 0; pageIndex < _keysList.length; pageIndex++) {
+      if (pageIndex != _tabController.index) {
+        _keysList.tabs[pageIndex].currentState!.isDataOutdated = true;
+      }
+    }
   }
 
   @override
@@ -121,6 +137,7 @@ class DynamicTab extends StatefulWidget {
 class DynamicTabState extends State<DynamicTab> {
   bool _shouldShowSelector = false;
   int categoryID = 0;
+  bool isDataOutdated = false;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -199,4 +216,11 @@ class KeysList {
     tabs.clear();
     views.clear();
   }
+
+  int get length {
+    if (tabs.length != views.length) return 0;
+    return views.length;
+  }
+
+  bool get isEmpty => length == 0;
 }
