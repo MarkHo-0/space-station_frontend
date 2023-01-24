@@ -134,10 +134,29 @@ class DynamicTab extends StatefulWidget {
   State<DynamicTab> createState() => DynamicTabState();
 }
 
-class DynamicTabState extends State<DynamicTab> {
-  bool _shouldShowSelector = false;
+class DynamicTabState extends State<DynamicTab>
+    with SingleTickerProviderStateMixin {
   int categoryID = 0;
   bool isDataOutdated = false;
+
+  AnimationController? expandController;
+  Animation<double>? animation;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.tabInfo.hasCategorySelector) {
+      expandController = AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 300),
+      );
+      animation = CurvedAnimation(
+        parent: expandController!,
+        curve: Curves.ease,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -154,37 +173,54 @@ class DynamicTabState extends State<DynamicTab> {
               ),
             ),
             if (widget.tabInfo.hasCategorySelector)
-              Visibility(
-                visible: _shouldShowSelector,
-                child: CategorySelector(
-                  categoryKey: widget.tabInfo.categoryKey!,
-                  quantity: widget.tabInfo.categoriesQuantity!,
-                  categoryID: categoryID,
-                  onChanged: ((categoryID) {
-                    this.categoryID = categoryID;
-                    widget.onCategoryChanged(categoryID);
-                    setState(() {});
-                  }),
-                ),
-              )
+              buildCategorySelector(context),
           ],
         ),
       ),
     );
   }
 
+  Widget buildCategorySelector(BuildContext context) {
+    return SizeTransition(
+      axis: Axis.horizontal,
+      axisAlignment: -1.0,
+      sizeFactor: animation!,
+      child: Align(
+        alignment: AlignmentDirectional.center,
+        child: CategorySelector(
+          categoryKey: widget.tabInfo.categoryKey!,
+          quantity: widget.tabInfo.categoriesQuantity!,
+          categoryID: categoryID,
+          onChanged: ((categoryID) {
+            if (animation!.isCompleted) {
+              this.categoryID = categoryID;
+              widget.onCategoryChanged(categoryID);
+              setState(() {});
+            }
+          }),
+        ),
+      ),
+    );
+  }
+
   void showSelector() {
-    if (widget.tabInfo.hasCategorySelector == false) return;
-    setState(() {
-      _shouldShowSelector = true;
-    });
+    if (widget.tabInfo.hasCategorySelector) {
+      expandController!.forward();
+    }
   }
 
   void hideSelector() {
-    if (widget.tabInfo.hasCategorySelector == false) return;
-    setState(() {
-      _shouldShowSelector = false;
-    });
+    if (widget.tabInfo.hasCategorySelector) {
+      expandController!.reverse();
+    }
+  }
+
+  @override
+  void dispose() {
+    if (widget.tabInfo.hasCategorySelector) {
+      expandController!.dispose();
+    }
+    super.dispose();
   }
 }
 
