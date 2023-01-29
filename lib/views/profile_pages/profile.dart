@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:localization/localization.dart';
 import 'package:provider/provider.dart';
-import 'package:space_station/main.dart';
 import 'package:space_station/providers/localization_provider.dart';
 import 'package:space_station/providers/theme_provider.dart';
-
-import '../application.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
