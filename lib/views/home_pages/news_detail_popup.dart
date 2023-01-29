@@ -39,9 +39,7 @@ class NewsDetail extends StatelessWidget {
                 ),
                 Text(
                   unixTime2Text(news.publicTime),
-                  style: TextStyle(
-                    color: Theme.of(context).textTheme.bodyText1!.color!.withAlpha(130),
-                  ),
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],
             ),

@@ -168,9 +168,7 @@ class DynamicTabState extends State<DynamicTab>
             Text(
               "page_${widget.tabInfo.key}".i18n(),
               softWrap: false,
-              style: TextStyle(
-                color: Theme.of(context).textTheme.bodyText1?.color,
-              ),
+              style: Theme.of(context).textTheme.labelLarge,
             ),
             if (widget.tabInfo.hasCategorySelector)
               buildCategorySelector(context),
