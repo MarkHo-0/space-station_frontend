@@ -8,6 +8,7 @@ import 'methods.dart';
 
 class HttpClient {
   final ClientConfig _config;
+  String _authKey = '';
 
   HttpClient._(this._config);
 
@@ -31,9 +32,8 @@ class HttpClient {
     }
 
     //如果有身份令牌，則添加進 Authorization 欄。
-    String? authKey = _config.authKey;
-    if (authKey != null && authKey.isNotEmpty) {
-      req.headers.addAll({'Authorization': _config.authKey!});
+    if (_authKey.isNotEmpty) {
+      req.headers.addAll({'Authorization': _authKey});
     }
 
     //發出請求
@@ -65,13 +65,16 @@ class HttpClient {
   Future<Response> patch(String path, {Map<String, dynamic>? bodyItems}) {
     return _send(HttpMethod.PATCH, path, null, bodyItems);
   }
+
+  void setAuthKey(String key) {
+    _authKey = key;
+  }
 }
 
 class ClientConfig {
   late final String host;
   late final int port;
   late final Client baseClient;
-  String? authKey;
 
   ClientConfig(
       {bool shouldUseFakeData = false,
