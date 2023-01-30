@@ -23,7 +23,7 @@ class HomePage extends StatelessWidget {
           return SingleChildScrollView(
             child: Column(
               children: [
-                WellcomeBox(data.user),
+                const WellcomeBox(),
                 NewsRow(data.newsArray),
                 HotestThreadList(data.threadsArray),
               ],

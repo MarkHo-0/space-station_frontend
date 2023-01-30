@@ -1,11 +1,11 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import 'package:space_station/models/user.dart';
+import 'package:provider/provider.dart';
+import 'package:space_station/providers/auth_provider.dart';
+import 'package:space_station/views/login_pages/login_lobby.dart';
 
 class WellcomeBox extends StatelessWidget {
-  final User data;
-  const WellcomeBox(this.data, {Key? key, required}) : super(key: key);
+  const WellcomeBox({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,43 +19,91 @@ class WellcomeBox extends StatelessWidget {
           height: 172,
           child: InkWell(
             onTap: () => {},
-            child: Stack(
-              children: [
-                Positioned(
-                    top: 100,
-                    left: 25,
-                    child: Text(
-                      data.nickname,
-                      style: const TextStyle(
-                        fontSize: 15,
-                        color: Color.fromRGBO(192, 206, 255, 1),
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.w300,
-                      ),
-                    )),
-                Positioned(
-                  top: 60,
-                  left: 25,
-                  child: Image.asset(
-                    'assets/images/welcome.png',
-                    width: 131,
-                    height: 44,
-                  ),
-                ),
-                Positioned(
-                  top: 14,
-                  right: 0,
-                  child: Image.asset(
-                    'assets/images/people.png',
-                    width: 150,
-                    height: 159,
-                  ),
-                )
-              ],
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(30, 5, 5, 5),
+              child: Consumer<AuthProvider>(builder: (context, auth, _) {
+                return auth.isLogined
+                    ? buildWellcomeScreen(context, auth.user!.nickname)
+                    : buildDefaultScreen(context);
+              }),
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildDefaultScreen(BuildContext context) {
+    const kColor = Color.fromRGBO(192, 206, 255, 1);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Expanded(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Connect to the Space Station',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: kColor,
+                ),
+              ),
+              const SizedBox(height: 15),
+              OutlinedButton(
+                onPressed: () => onGoToLoginPage(context),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: kColor,
+                  side: const BorderSide(width: 1.5, color: kColor),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 3),
+                  child: Text('Login', style: TextStyle(fontSize: 18)),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Image.asset('assets/images/people.png'),
+      ],
+    );
+  }
+
+  void onGoToLoginPage(BuildContext context) {
+    Navigator.of(context).push(
+      CupertinoPageRoute(builder: ((_) => const LoginLobby())),
+    );
+  }
+
+  Widget buildWellcomeScreen(BuildContext context, String username) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Image.asset(
+              'assets/images/welcome.png',
+              width: 130,
+            ),
+            Text(
+              username,
+              style: const TextStyle(
+                fontSize: 15,
+                color: Color.fromRGBO(192, 206, 255, 1),
+                fontWeight: FontWeight.w300,
+              ),
+            )
+          ],
+        ),
+        Image.asset('assets/images/people.png'),
+      ],
     );
   }
 }

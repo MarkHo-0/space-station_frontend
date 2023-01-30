@@ -16,6 +16,10 @@ class ThemeProvider extends ChangeNotifier {
       useMaterial3: true,
       brightness: isBlackTheme ? Brightness.dark : Brightness.light,
       primaryColor: isBlackTheme ? lightPrimary : darkPrimary,
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: isBlackTheme ? lightPrimary : darkPrimary,
+        selectionColor: isBlackTheme ? darkPrimary : lightPrimary,
+      ),
       appBarTheme: AppBarTheme(
         titleTextStyle: TextStyle(
           color: isBlackTheme ? lightPrimary : darkPrimary,
@@ -28,6 +32,16 @@ class ThemeProvider extends ChangeNotifier {
         shadowColor: Colors.grey,
         surfaceTintColor: Colors.transparent,
         elevation: 2,
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        border: const OutlineInputBorder(),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            width: 2,
+            color: isBlackTheme ? lightPrimary : darkPrimary,
+          ),
+        ),
+        isDense: true,
       ),
       switchTheme: isBlackTheme
           ? SwitchThemeData(
