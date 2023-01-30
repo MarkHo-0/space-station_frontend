@@ -10,6 +10,7 @@ import 'package:space_station/providers/theme_provider.dart';
 import 'package:space_station/views/application.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   HttpClient.init(ClientConfig(
     shouldUseFakeData: true,
     host: '192.168.128.143',
