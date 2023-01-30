@@ -2,21 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:localization/localization.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:space_station/api/http.dart';
+import 'package:space_station/providers/auth_provider.dart';
 import 'package:space_station/providers/localization_provider.dart';
 import 'package:space_station/providers/theme_provider.dart';
 import 'package:space_station/views/application.dart';
 
-void main() {
+void main() async {
   HttpClient.init(ClientConfig(
     shouldUseFakeData: true,
     host: '192.168.128.143',
   ));
 
+  //讀取本地設定
+  final pref = await SharedPreferences.getInstance();
+
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider(create: ((context) => ThemeProvider())),
-      ChangeNotifierProvider(create: ((context) => LanguageProvider())),
+      ChangeNotifierProvider(create: ((_) => ThemeProvider())),
+      ChangeNotifierProvider(create: ((_) => LanguageProvider())),
+      ChangeNotifierProvider(create: ((_) => AuthProvider(pref)))
     ],
     child: const MyApp(),
   ));
