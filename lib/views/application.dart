@@ -20,25 +20,24 @@ class _ApplicationContainerState extends State<ApplicationContainer> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      bottom: false,
-      child: Scaffold(
-        body: PageView(
+    return Scaffold(
+      body: SafeArea(
+        child: PageView(
           controller: pageController,
           physics: const NeverScrollableScrollPhysics(),
           children: pages,
         ),
-        bottomNavigationBar: NavigationBar(
-          selectedIndex: pageIndex,
-          onDestinationSelected: onDestinationClicked,
-          labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-          destinations: [
-            NavigationDestination(icon: const Icon(Icons.home), label: 'home_page'.i18n()),
-            NavigationDestination(icon: const Icon(Icons.forum), label: 'forum_page'.i18n()),
-            NavigationDestination(icon: const Icon(Icons.home_repair_service), label: 'toolbox_page'.i18n()),
-            NavigationDestination(icon: const Icon(Icons.people), label: 'profile_page'.i18n()),
-          ],
-        ),
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: pageIndex,
+        onDestinationSelected: onDestinationClicked,
+        labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+        destinations: [
+          NavigationDestination(icon: const Icon(Icons.home), label: 'home_page'.i18n()),
+          NavigationDestination(icon: const Icon(Icons.forum), label: 'forum_page'.i18n()),
+          NavigationDestination(icon: const Icon(Icons.home_repair_service), label: 'toolbox_page'.i18n()),
+          NavigationDestination(icon: const Icon(Icons.people), label: 'profile_page'.i18n()),
+        ],
       ),
     );
   }
