@@ -12,7 +12,8 @@ class ForumPage extends StatefulWidget {
   State<ForumPage> createState() => _ForumPageState();
 }
 
-class _ForumPageState extends State<ForumPage> {
+class _ForumPageState extends State<ForumPage>
+    with AutomaticKeepAliveClientMixin<ForumPage> {
   final _forumKey = GlobalKey<MultiTabsThreadListState>();
 
   int orderID = 1;
@@ -20,6 +21,7 @@ class _ForumPageState extends State<ForumPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Column(
       children: [
         ForumTopPanel(
@@ -61,6 +63,9 @@ class _ForumPageState extends State<ForumPage> {
   void onGoToPostPage() {
     //TODO: 跳轉到發佈頁面
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 const List<TabInfo> _kTabs = [

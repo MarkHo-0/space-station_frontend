@@ -16,13 +16,18 @@ class ApplicationContainer extends StatefulWidget {
 class _ApplicationContainerState extends State<ApplicationContainer> {
   int pageIndex = 0;
   final pages = const [HomePage(), ForumPage(), ToolboxPage(), ProfilePage()];
+  final pageController = PageController();
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       bottom: false,
       child: Scaffold(
-        body: pages[pageIndex],
+        body: PageView(
+          controller: pageController,
+          physics: const NeverScrollableScrollPhysics(),
+          children: pages,
+        ),
         bottomNavigationBar: NavigationBar(
           selectedIndex: pageIndex,
           onDestinationSelected: onDestinationClicked,
@@ -41,6 +46,7 @@ class _ApplicationContainerState extends State<ApplicationContainer> {
   void onDestinationClicked(int index) {
     setState(() {
       pageIndex = index;
+      pageController.jumpToPage(index);
     });
   }
 }

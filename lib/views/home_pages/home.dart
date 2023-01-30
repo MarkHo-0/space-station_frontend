@@ -6,11 +6,18 @@ import 'package:space_station/views/home_pages/widgets/hotest_thread_list.dart';
 import 'package:space_station/views/home_pages/widgets/news_row.dart';
 import 'package:space_station/views/home_pages/widgets/wellcome_box.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage>
+    with AutomaticKeepAliveClientMixin<HomePage> {
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return FutureBuilder(
       future: getHomeData(),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -35,4 +42,7 @@ class HomePage extends StatelessWidget {
       },
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

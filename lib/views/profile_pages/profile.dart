@@ -4,11 +4,18 @@ import 'package:provider/provider.dart';
 import 'package:space_station/providers/localization_provider.dart';
 import 'package:space_station/providers/theme_provider.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
   @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage>
+    with AutomaticKeepAliveClientMixin<ProfilePage> {
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Padding(
       padding: const EdgeInsets.only(top: 100),
       child: ListView(
@@ -42,4 +49,7 @@ class ProfilePage extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
