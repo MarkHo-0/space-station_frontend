@@ -33,25 +33,3 @@ class API extends http.BaseClient {
     return super.patch(uri, body: mybody);
   }
 }
-
-Future<bool> sendverification(int sid) async {
-  http.Response response =
-      await API("").myPost("/vfcode/send", {}, {'sid': sid}); //no query
-  if (response.statusCode == 200) {
-    return true; //if 200, return ture and send code to email
-  } else {
-    int reason = jsonDecode(response.body)["reason_id"];
-    throw Exception("Failed to send,ReasonID:$reason");
-  }
-}
-
-Future<bool> checkverification(int sid, int vfcode) async {
-  Map<String, dynamic> bodyMap = {'sid': sid, 'vf_code': vfcode};
-  http.Response response =
-      await API("").myPost("/vfcode/check", {}, bodyMap); //no query
-  if (response.statusCode == 200) {
-    return true;
-  } else {
-    throw Exception("Fail to verify!");
-  }
-}

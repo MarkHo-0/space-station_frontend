@@ -2,6 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:space_station/api/api.dart';
 import 'package:crypto/crypto.dart';
+import 'package:space_station/api/http.dart';
 import '../../models/user.dart';
 
 Future<UserInfo> getUserData(int uid) async {
@@ -42,51 +43,36 @@ Future<UserThreads> getUserThreads(int uid) async {
 
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
-Future<int?> getUserState(String sid) async {
-  http.Response response = await API("").myGet("/user/state/$sid", {});
-  switch (response.statusCode) {
-    case 200:
-      dynamic responsemap = jsonDecode(response.body);
-      return responsemap["sid_state"];
-    case 400:
-      throw Exception("Invalid student number");
-    case 422:
-      throw Exception("Missing required parameters /illegal");
-    default:
-      throw Exception("Error.Please try again.");
-  }
+Future<int> getUserState(int sid) async {
+  return HttpClient()
+      .get('/user/state/$sid')
+      .then((res) => jsonDecode(res.body)["sid_state"] as int);
 }
 //if statecode==200 ,return sid_state:int? ( int or null)
 
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 Future<bool> registerUser(int sid, String pwd, String nickname) async {
-  var bytes = utf8.encode(pwd);
-  String hasedpwd = sha256.convert(bytes).toString();
-  Map<String, dynamic> bodyMap = {"sid": sid, "pwd": hasedpwd, 'nickname': nickname};
-  http.Response response = await API("").myPost("/user/register", {}, bodyMap); //no query
-  if (response.statusCode == 200) {
-    return true;
-  } else {
-    throw Exception("Wrong Input format");
-  }
+  final hasedpwd = sha256.convert(utf8.encode(pwd)).toString();
+  final user = {"sid": sid, "pwd": hasedpwd, 'nickname': nickname};
+  return HttpClient().post('/user/register', bodyItems: user).then((_) => true);
 }
 //if code==200, return true
 
 /////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 //input usernameController.text, passwordController.text , function device_name();
-Future<LoginData> login(int sid, String pwd, String? device_name) async {
-  var bytes = utf8.encode(pwd);
-  String hasedpwd = sha256.convert(bytes).toString();
-  Map<String, dynamic> bodyMap = {"sid": sid, "pwd": hasedpwd, 'device_name': device_name};
+Future<LoginData> loginUser(int sid, String pwd) async {
+  final hasedpwd = sha256.convert(utf8.encode(pwd)).toString();
+  final loginForm = {
+    "sid": sid,
+    "pwd": hasedpwd,
+    'device_name': '', //TODO
+  };
 
-  http.Response response = await API("").myPost("/user/login", {}, bodyMap);
-  if (response.statusCode == 200) {
-    return LoginData.fromjson(jsonDecode(response.body));
-  } else {
-    throw Exception("Wrong username or password");
-  }
+  return HttpClient()
+      .post('/user/login', bodyItems: loginForm)
+      .then((res) => LoginData.fromjson(jsonDecode(res.body)));
 }
 
 //if http response==200,
@@ -95,22 +81,20 @@ Future<LoginData> login(int sid, String pwd, String? device_name) async {
 
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
-Future<bool> logout() async {
-  http.Response response = await API("").myPost("/user/logout", {}, {}); //no query and body
-  if (response.statusCode == 200) {
-    return true;
-  } else {
-    throw Exception("No Authorization!"); //401
-  }
+Future<bool> logoutUser() async {
+  return HttpClient().post('user/logout').then((_) => true);
 }
 
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 Future<NewFaculty> changeFaculty(String coursename) async {
-  http.Response response = await API("").myPatch("/user/faculty", {}, {"course_name": coursename}); //由 Controller 選擇course input as parameter body , no query
+  http.Response response = await API("").myPatch("/user/faculty", {}, {
+    "course_name": coursename
+  }); //由 Controller 選擇course input as parameter body , no query
   switch (response.statusCode) {
     case 200:
-      return NewFaculty.fromjson(jsonDecode(response.body)); //if 200, return PathchedInfo object(field:fid:int,faculty_name:String)
+      return NewFaculty.fromjson(jsonDecode(response
+          .body)); //if 200, return PathchedInfo object(field:fid:int,faculty_name:String)
     case 422:
       throw Exception("Wrong input Format");
     case 403:
@@ -128,7 +112,9 @@ Future<NewFaculty> changeFaculty(String coursename) async {
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 Future<String?> changeNickname(String newname) async {
-  http.Response response = await API("").myPatch("/user/nickname", {}, {'nickname': newname}); //由 Controller.text input newname as parameter, no query
+  http.Response response = await API("").myPatch("/user/nickname", {}, {
+    'nickname': newname
+  }); //由 Controller.text input newname as parameter, no query
   switch (response.statusCode) {
     case 200:
       Map<String, String?> responsemap = jsonDecode(response.body);
@@ -152,8 +138,12 @@ Future<bool> changePassword(String oldpwd, String newpwd) async {
   String hasedoldpwd = sha256.convert(utf8.encode(oldpwd)).toString();
   String hasednewpwd = sha256.convert(utf8.encode(newpwd)).toString();
 
-  Map<String, String> bodyMap = {"old_pwd": hasedoldpwd, "new_pwd": hasednewpwd};
-  http.Response response = await API("").myPatch("/user/pwd", {}, bodyMap); //no query
+  Map<String, String> bodyMap = {
+    "old_pwd": hasedoldpwd,
+    "new_pwd": hasednewpwd
+  };
+  http.Response response =
+      await API("").myPatch("/user/pwd", {}, bodyMap); //no query
   switch (response.statusCode) {
     case 200:
       return true; //if 200, return ture;
@@ -166,4 +156,16 @@ Future<bool> changePassword(String oldpwd, String newpwd) async {
     default:
       return false;
   }
+}
+
+Future<bool> sendVfCode(int studentID) async {
+  final user = {'sid': studentID};
+  return HttpClient().post('/vfcode/send', bodyItems: user).then((_) => true);
+}
+
+Future<bool> checkVfCode(int studentID, int vfcode) async {
+  final vfData = {'sid': studentID, 'vf_code': vfcode};
+  return HttpClient()
+      .post('/vfcode/check', bodyItems: vfData)
+      .then((_) => true);
 }
