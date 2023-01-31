@@ -12,7 +12,7 @@ import 'package:space_station/views/application.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   HttpClient.init(ClientConfig(
-    shouldUseFakeData: true,
+    shouldUseFakeData: false,
     host: '192.168.128.143',
   ));
 
@@ -41,7 +41,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   @override
-  Widget build(BuildContext context) { 
+  Widget build(BuildContext context) {
     LanguageProvider langProvider = Provider.of<LanguageProvider>(context);
 
     return MaterialApp(

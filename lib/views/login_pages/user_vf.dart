@@ -1,31 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:localization/localization.dart';
+import 'package:space_station/api/interfaces/user_api.dart';
+import 'package:space_station/views/login_pages/user_register.dart';
 
-class EmailVerificationPage extends StatelessWidget {
+class EmailVerificationPage extends StatefulWidget {
   final int studentID;
-  final inputs = List<int>.filled(4, 0, growable: false);
-  final inputFormKey = GlobalKey<FormState>();
-  EmailVerificationPage(this.studentID, {super.key});
+
+  const EmailVerificationPage(this.studentID, {super.key});
+
+  @override
+  State<EmailVerificationPage> createState() => _EmailVerificationPageState();
+}
+
+class _EmailVerificationPageState extends State<EmailVerificationPage> {
+  late List<int> inputs;
+  late GlobalKey<FormState> inputFormKey;
+  @override
+  void initState() {
+    super.initState();
+    inputs = List<int>.filled(4, 0, growable: false);
+    inputFormKey = GlobalKey<FormState>();
+    sendVfCode(widget.studentID).ignore();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Register'),
+        title: Text('page_regester'.i18n()),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 30),
         child: Column(
           children: [
-            const Text(
-              'We have sent you a verification code to the following email:',
+            Text(
+              'send_email_title'.i18n(),
               textAlign: TextAlign.justify,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 20),
               child: Text(
-                '$studentID@learner.hkuspace.hku.hk',
+                '${widget.studentID}@learner.hkuspace.hku.hk',
                 style: Theme.of(context).textTheme.titleMedium,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -33,8 +50,8 @@ class EmailVerificationPage extends StatelessWidget {
             buildCodeInput(context, 4),
             const SizedBox(height: 20),
             TextButton(
-              onPressed: () {},
-              child: const Text('Next'),
+              onPressed: () => onSumbitVerificationCode(context),
+              child: Text('next'.i18n()),
             )
           ],
         ),
@@ -42,13 +59,20 @@ class EmailVerificationPage extends StatelessWidget {
     );
   }
 
-  void sendVerificationCode() {
-    //TODO
-  }
-
-  void onSumbitVerificationCode() {
-    //TODO
-    inputFormKey.currentState!.reset();
+  void onSumbitVerificationCode(BuildContext context) {
+    final code = int.parse(inputs.join(''));
+    if (code < 1000) {
+      return inputFormKey.currentState!.reset();
+    }
+    checkVfCode(widget.studentID, code).then((_) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => RegisterPage(widget.studentID),
+        ),
+      );
+    }).onError((error, _) {
+      inputFormKey.currentState!.reset();
+    });
   }
 
   Widget buildCodeInput(BuildContext context, int length) {
@@ -82,7 +106,7 @@ class EmailVerificationPage extends StatelessWidget {
                 if (value.isEmpty) return;
                 if (index == length - 1) {
                   FocusScope.of(context).unfocus();
-                  onSumbitVerificationCode();
+                  onSumbitVerificationCode(context);
                 } else {
                   FocusScope.of(context).nextFocus();
                 }
