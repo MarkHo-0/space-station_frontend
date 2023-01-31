@@ -114,7 +114,7 @@ class Thread {
 class HomePageModel {
   final List<News> newsArray;
   final List<Thread> threadsArray;
-  final User user;
+  final User? user;
 
   HomePageModel(
     this.newsArray,
@@ -128,9 +128,7 @@ class HomePageModel {
         (json["news"] as Iterable).map((n) => News.fromjson(n)).toList();
     List<Thread> threads =
         (json["threads"] as Iterable).map((t) => Thread.fromJson(t)).toList();
-    User user = json["user"] != null
-        ? User.fromjson(json["user"])
-        : User(uid: 0, nickname: 'Test User');
+    User? user = json["user"] == null ? null : User.fromjson(json["user"]);
 
     return HomePageModel(news, threads, user); //json["user"] is a Map
   }

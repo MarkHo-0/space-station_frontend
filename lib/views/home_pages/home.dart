@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:space_station/api/interfaces/forum_api.dart' show getHomeData;
 import 'package:space_station/models/thread.dart' show HomePageModel;
+import 'package:space_station/providers/auth_provider.dart';
 import 'package:space_station/views/_share/loading_page.dart';
 import 'package:space_station/views/home_pages/widgets/hotest_thread_list.dart';
 import 'package:space_station/views/home_pages/widgets/news_row.dart';
@@ -27,6 +29,13 @@ class _HomePageState extends State<HomePage>
           }
 
           HomePageModel data = snapshot.data;
+
+          //檢查當前本地的登入訊息是否還有效，如沒則刪除
+          final currAuth = Provider.of<AuthProvider>(context, listen: false);
+          if (currAuth.isLogined && data.user == null) {
+            currAuth.clearLoginData();
+          }
+
           return SingleChildScrollView(
             child: Column(
               children: [

@@ -45,6 +45,7 @@ class AuthProvider extends ChangeNotifier {
   Future<void> logout() async {
     await logoutUser();
     clearLoginData();
+    notifyListeners();
     return Future.value();
   }
 
@@ -53,7 +54,6 @@ class AuthProvider extends ChangeNotifier {
     user = null;
     HttpClient().setAuthKey('');
     //清楚本地資料
-    pref.remove(_kDataKey);
-    notifyListeners();
+    pref.remove(_kDataKey);  
   }
 }

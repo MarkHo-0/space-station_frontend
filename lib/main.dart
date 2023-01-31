@@ -19,11 +19,14 @@ void main() async {
   //讀取本地設定
   final pref = await SharedPreferences.getInstance();
 
+  //設定語言檔位置
+  LocalJsonLocalization.delegate.directories = ['assets/localization'];
+
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider(create: ((_) => ThemeProvider())),
-      ChangeNotifierProvider(create: ((_) => LanguageProvider())),
-      ChangeNotifierProvider(create: ((_) => AuthProvider(pref)))
+      ChangeNotifierProvider(create: ((_) => ThemeProvider()), lazy: false),
+      ChangeNotifierProvider(create: ((_) => LanguageProvider()), lazy: false),
+      ChangeNotifierProvider(create: ((_) => AuthProvider(pref)), lazy: false)
     ],
     child: const MyApp(),
   ));
@@ -38,8 +41,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   @override
-  Widget build(BuildContext context) {
-    LocalJsonLocalization.delegate.directories = ['assets/localization'];
+  Widget build(BuildContext context) { 
     LanguageProvider langProvider = Provider.of<LanguageProvider>(context);
 
     return MaterialApp(
