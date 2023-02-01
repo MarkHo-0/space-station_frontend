@@ -68,7 +68,14 @@ class WellcomeBox extends StatelessWidget {
             ],
           ),
         ),
-        RiveAnimation.asset('assets/animations/spinning_animation.riv'),
+        const SizedBox(
+          height: 100,
+          width: 100,
+          child: RiveAnimation.asset(
+            'assets/animations/spinning_animation.riv',
+            animations: ["Defult"],
+          ),
+        ),
       ],
     );
   }
