@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:space_station/providers/auth_provider.dart';
 import 'package:space_station/views/login_pages/login_lobby.dart';
+import 'package:rive/rive.dart';
 
 class WellcomeBox extends StatelessWidget {
   const WellcomeBox({Key? key}) : super(key: key);
@@ -67,7 +68,7 @@ class WellcomeBox extends StatelessWidget {
             ],
           ),
         ),
-        Image.asset('assets/images/people.png'),
+        RiveAnimation.asset('assets/animations/spinning_animation.riv'),
       ],
     );
   }
