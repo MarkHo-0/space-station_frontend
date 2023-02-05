@@ -59,6 +59,7 @@ class ForumTopPanel extends StatelessWidget {
               border: InputBorder.none,
               isDense: true,
               hintText: "forum_searchbar_hit_text".i18n(),
+              focusedBorder: InputBorder.none,
             ),
             onSubmitted: (value) => onSearch(value),
           ),
