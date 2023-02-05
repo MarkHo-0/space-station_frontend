@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'user.dart';
 
 class News {
@@ -48,25 +47,6 @@ class Stats {
 
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
-class Sender {
-  final int uid;
-  final String nickname;
-
-  Sender({
-    required this.uid,
-    required this.nickname,
-  });
-
-  factory Sender.fromjson(Map<String, dynamic> json) {
-    return Sender(
-      uid: json["uid"],
-      nickname: json["nickname"],
-    );
-  }
-}
-
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
 class Thread {
   final int tid;
   final int pid;
@@ -77,7 +57,7 @@ class Thread {
   final int contentCid;
   final int? pinedCid;
   final Stats stats;
-  final Sender sender;
+  final User sender;
 
   Thread({
     required this.tid,
@@ -103,7 +83,7 @@ class Thread {
       contentCid: json["content_cid"],
       pinedCid: json["pined_cid"],
       stats: Stats.fromjson(json["stats"]), //json["stats"] return map
-      sender: Sender.fromjson(json["sender"]), //json["threadsender"] return map
+      sender: User.fromjson(json["sender"]), //json["threadsender"] return map
     ); //homedata 將 json "threads"的array 的 單獨index 的Map 比threads object
   }
 }

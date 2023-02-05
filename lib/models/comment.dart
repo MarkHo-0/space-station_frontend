@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:space_station/models/user.dart';
+
 import '../models/thread.dart';
 
 class CommentStats {
@@ -28,7 +30,7 @@ class Comment {
   final int createTime;
   final Comment? replyto;
   CommentStats stats;
-  final Sender sender;
+  final User sender;
   final int status;
   Comment(
       {required this.cid,
@@ -45,7 +47,7 @@ class Comment {
         createTime: json["createTime"],
         replyto: Comment.fromjson(json["reply_to"]), //json["reply_to"] is a map
         stats: CommentStats.fromjson(json["stats"]),
-        sender: Sender.fromjson(json["sender"]),
+        sender: User.fromjson(json["sender"]),
         status: json["status"]);
   }
 }
@@ -73,7 +75,7 @@ class CommentReplies {
   final String content;
   final int createTime;
   CommentStats stats;
-  final Sender sender;
+  final User sender;
   final int status;
 
   CommentReplies(
@@ -90,7 +92,7 @@ class CommentReplies {
         content: json["content"],
         createTime: json["create_time"],
         stats: CommentStats.fromjson(json["stats"]),
-        sender: Sender.fromjson(json["sender"]),
+        sender: User.fromjson(json["sender"]),
         status: json["status"]);
   }
 }

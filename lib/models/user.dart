@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'thread.dart';
 
 class User {
