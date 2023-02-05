@@ -1,6 +1,8 @@
 import 'dart:convert' show jsonDecode, jsonEncode;
+import 'dart:math';
 import 'package:http/http.dart';
 import 'package:http/testing.dart';
+import 'package:space_station/api/mocking/fake_data.dart';
 import 'package:space_station/api/mocking/interfaces.dart';
 
 import '../methods.dart';
@@ -50,10 +52,12 @@ class TestClient extends MockClient {
         }
 
         //獲取假數據
+        final token = req.headers['Authorization'];
         final simReq = SimpleRequest(
           parameters: params,
           quaries: req.url.queryParameters,
           bodies: body,
+          isLogined: token != null && token == fakeUserToken,
         );
         response = route.onResponse(simReq);
         break;
@@ -64,11 +68,14 @@ class TestClient extends MockClient {
       return Future.value(Response('URL error, data could not be found', 499));
     }
 
-    return Future.value(Response(
-      jsonEncode(response.body),
-      headers: {'content-type': 'application/json; charset=utf-8'},
-      response.statusCode,
-    ));
+    return Future.delayed(
+      Duration(milliseconds: Random().nextInt(2000)),
+      () => Response(
+        jsonEncode(response!.body),
+        headers: {'content-type': 'application/json; charset=utf-8'},
+        response.statusCode,
+      ),
+    );
   }
 
   static void _onRecieved(
@@ -134,11 +141,13 @@ class SimpleRequest {
   final Map<String, String> parameters;
   final Map<String, String> quaries;
   final Map<String, dynamic> bodies;
+  final bool isLogined;
 
   const SimpleRequest({
     this.parameters = const {},
     this.quaries = const {},
     this.bodies = const {},
+    this.isLogined = false,
   });
 }
 
