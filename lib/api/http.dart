@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart';
 import 'mocking/client.dart' show TestClient;
@@ -42,7 +43,10 @@ class HttpClient {
       StreamedResponse streamResponse = await _config.baseClient.send(req);
       res = await Response.fromStream(streamResponse);
     } catch (e) {
-      return Future.error(Exception('Server Not Found'));
+      if (e is SocketException) {
+        return Future.error(NetworkError());
+      }
+      return Future.error(e);
     }
 
     //全局錯誤處理

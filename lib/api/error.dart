@@ -13,7 +13,7 @@ Exception handleException(int statusCode) {
     case 460:
       return FrquentError();
     default:
-      return NetWorkError();
+      return NetworkError();
   }
 }
 
@@ -41,6 +41,10 @@ class FrquentError implements Exception {
   FrquentError() : super();
 }
 
-class NetWorkError implements Exception {
-  NetWorkError() : super();
+class NetworkError implements Exception {
+  NetworkError() : super();
+}
+
+class UnknownError implements Exception {
+  UnknownError() : super();
 }
