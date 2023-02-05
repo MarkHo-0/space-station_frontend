@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rive/rive.dart';
 
 class LoadingPage extends StatelessWidget {
   const LoadingPage({super.key});
@@ -7,18 +8,16 @@ class LoadingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      height: double.infinity,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
-          SizedBox(
-            height: 50,
-            width: 50,
-            child: CircularProgressIndicator(),
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: Transform.scale(
+          scale: 1.5,
+          child: const RiveAnimation.asset(
+            'assets/animations/spaceman_jump.riv',
+            fit: BoxFit.contain,
+            animations: ['Timeline 1', 'Timeline 2'],
           ),
-          SizedBox(height: 20),
-          Text("Loading...."),
-        ],
+        ),
       ),
     );
   }
