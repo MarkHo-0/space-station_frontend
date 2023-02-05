@@ -34,7 +34,7 @@
   "field_sid_hint": "Enter your 8 digits student ID",
   "field_sid_invlid": "Invalid Student ID",
   "__RegesterPages__": "----------------------------------",
-  "page_regester": "Regester:",
+  "page_regester": "Regester",
   "send_email_title": "We have sent you a verification code to the following email:",
   "field_nickname": "User Nickname",
   "field_is_required": "This field is required",
