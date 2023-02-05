@@ -11,11 +11,19 @@ final _toBase64 = utf8.fuse(base64);
 void initializationInterfaces() {
   generateRandomThreads(50);
 
-  TestClient.onGet('/home', (_) {
+  TestClient.onGet('/home', (req) {
     Map<String, dynamic> body = {
       'threads': sortByTime(null, 5, 0),
       'news': getNews(),
     };
+    if (req.isLogined) {
+      body.addAll({
+        'user': {
+          'uid': fakeUser!.uid,
+          'nickname': fakeUser!.nickname,
+        }
+      });
+    }
     return SimpleResponse(body);
   });
 
@@ -59,5 +67,56 @@ void initializationInterfaces() {
     };
 
     return SimpleResponse(body);
+  });
+
+  TestClient.onGet('/user/state/:sid', (req) {
+    final sid = int.parse(req.parameters['sid'] ?? '0');
+    final body = {
+      'sid_state': isFakeUser(sid) ? 1 : 0,
+    };
+    return SimpleResponse(body);
+  });
+
+  TestClient.onPost('/vfcode/send', (req) {
+    return const SimpleResponse({});
+  });
+
+  TestClient.onPost('/vfcode/check', (req) {
+    final sid = req.bodies['sid'] as int;
+    final vfCode = req.bodies['vf_code'] as int;
+
+    if (!isVfCodeValid(sid, vfCode)) {
+      return const SimpleResponse({}, statusCode: 400);
+    }
+
+    return const SimpleResponse({});
+  });
+
+  TestClient.onPost('/user/register', (req) {
+    final sid = req.bodies['sid'] as int;
+    final pwd = req.bodies['pwd'];
+    final nickname = req.bodies['nickname'];
+    createFakeUser(sid, pwd, nickname);
+    return const SimpleResponse({});
+  });
+
+  TestClient.onPost('/user/login', (req) {
+    final sid = req.bodies['sid'] as int;
+    final pwd = req.bodies['pwd'];
+
+    if (!performLogin(sid, pwd)) {
+      return const SimpleResponse({}, statusCode: 400);
+    }
+
+    final logined = {
+      'token': fakeUserToken,
+      'valid_time': 180,
+      'user': {
+        'uid': fakeUser!.uid,
+        'nickname': fakeUser!.nickname,
+      },
+    };
+
+    return SimpleResponse(logined);
   });
 }

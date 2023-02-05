@@ -1,6 +1,9 @@
+import 'dart:convert';
 import 'dart:math';
 
+import '../../models/user.dart';
 import '../../utils/parse_time.dart';
+import 'package:crypto/crypto.dart';
 
 //假數據處理
 
@@ -29,9 +32,32 @@ List<dynamic> filterThreads({pageID = 0, facultyID = 0, queryText = ''}) {
   }).toList();
 }
 
+bool isFakeUser(int sid) => fakeUserSid == sid;
+
+bool isVfCodeValid(int sid, int code) =>
+    code.toString() == sid.toString().substring(3, 7);
+
+int createFakeUser(int sid, String pwd, String nickname) {
+  final fakeUserID = Random().nextInt(100) + _nicknames.length;
+  fakeUser = User(uid: fakeUserID, nickname: nickname);
+  fakeUserSid = sid;
+  fakeUserPwd = pwd;
+  return fakeUserID;
+}
+
+bool performLogin(int sid, String pwd) {
+  if (sid != fakeUserSid || pwd != fakeUserPwd) return false;
+  fakeUserToken = sha512.convert(utf8.encode('${sid}_123')).toString();
+  return true;
+}
+
 //單例類型假數據生成
 
 List<dynamic> fakeThreads = [];
+User? fakeUser;
+int? fakeUserSid;
+String? fakeUserPwd;
+String? fakeUserToken;
 
 void generateRandomThreads(int quantity) {
   fakeThreads.clear();
