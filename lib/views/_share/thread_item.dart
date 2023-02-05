@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:localization/localization.dart';
 import 'package:space_station/models/thread.dart';
-import 'package:space_station/utils/parse_time.dart';
+import 'package:space_station/views/_share/owner_tag.dart';
 
 class ThreadItem extends StatelessWidget {
   final Thread data;
   final void Function(int threadID) onTap;
-  const ThreadItem({Key? key, required this.data, required this.onTap}) : super(key: key);
+  const ThreadItem({Key? key, required this.data, required this.onTap})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,63 +15,46 @@ class ThreadItem extends StatelessWidget {
       onTap: () => onTap(data.tid),
       child: Ink(
         child: Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             border: Border(
-              top: BorderSide(color: Color.fromRGBO(188, 188, 188, 1), width: 1),
+              top: BorderSide(
+                color: Theme.of(context).dividerColor.withAlpha(150),
+              ),
             ),
           ),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 15,
-            vertical: 5,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              //username   day
-              Container(
-                height: 24,
-                alignment: Alignment.centerLeft,
-                child: Row(
-                  children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  OwnerTag(
+                    owner: data.sender,
+                    lastUpdateTime: data.lastUpdateTime,
+                  ),
+                  if (data.pid == 2)
                     Text(
-                      data.sender.nickname,
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontSize: 14,
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.w400,
+                      'faculty_${data.fid}'.i18n(),
+                      style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                            color: Theme.of(context).hintColor,
+                          ),
+                      strutStyle: const StrutStyle(
+                        forceStrutHeight: true,
+                        height: 1,
                       ),
                     ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      unixTime2DiffText(data.lastUpdateTime),
-                      style: const TextStyle(
-                        color: Color.fromRGBO(116, 116, 116, 1),
-                        fontSize: 10,
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ],
-                ),
+                ],
               ),
-              //title
-              Container(
-                alignment: Alignment.topLeft,
-                padding: const EdgeInsets.only(bottom: 15),
+              Padding(
+                padding: const EdgeInsets.only(top: 3, bottom: 10),
                 child: Text(
                   data.title,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    decoration: TextDecoration.underline,
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.normal,
-                  ),
+                  style: const TextStyle(fontSize: 20, height: 1.2),
                 ),
               ),
-              // menus
-              ThreadItemBottom(data: data.stats)
+              ThreadItemBottom(stats: data.stats),
             ],
           ),
         ),
@@ -79,17 +64,18 @@ class ThreadItem extends StatelessWidget {
 }
 
 class ThreadItemBottom extends StatelessWidget {
-  final Stats data;
-  const ThreadItemBottom({Key? key, required this.data}) : super(key: key);
+  final Stats stats;
+  const ThreadItemBottom({Key? key, required this.stats}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        if (data.like > 0) CouterTag(iconPath: 'up.png', count: data.like),
-        if (data.dislike > 0) CouterTag(iconPath: 'down.png', count: data.dislike),
-        CouterTag(iconPath: 'msg.png', count: data.comment),
+        if (stats.like > 0) CouterTag(iconPath: 'up.png', count: stats.like),
+        if (stats.dislike > 0)
+          CouterTag(iconPath: 'down.png', count: stats.dislike),
+        CouterTag(iconPath: 'msg.png', count: stats.comment),
       ],
     );
   }
@@ -98,7 +84,8 @@ class ThreadItemBottom extends StatelessWidget {
 class CouterTag extends StatelessWidget {
   final String iconPath;
   final int count;
-  const CouterTag({Key? key, required this.iconPath, required this.count}) : super(key: key);
+  const CouterTag({Key? key, required this.iconPath, required this.count})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -106,15 +93,18 @@ class CouterTag extends StatelessWidget {
       padding: const EdgeInsets.only(left: 10),
       child: Row(
         children: [
-          Image.asset('assets/images/$iconPath', width: 10, height: 11),
-          const SizedBox(width: 3),
+          Image.asset(
+            'assets/images/$iconPath',
+            scale: 5,
+            color: Theme.of(context).primaryColor.withOpacity(0.9),
+          ),
+          const SizedBox(width: 5),
           Text(
             count.toString(),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 10,
-              fontStyle: FontStyle.normal,
-              fontWeight: FontWeight.w400,
-              color: Color.fromRGBO(110, 127, 183, 1),
+              color: Theme.of(context).primaryColor.withOpacity(0.9),
+              height: 1,
             ),
           ),
         ],
