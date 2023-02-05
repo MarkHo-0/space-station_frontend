@@ -26,6 +26,8 @@
   "post_thread_tooltip": "Post a new thread",
   "thread_order_1": "Newer last updated time First",
   "thread_order_2": "Higher hotness First",
+  "no_threads_found": "Space is Empty",
+  "no_more_threads": "Down to the Earth",
   "__LoginPages__": "----------------------------------",
   "page_login": "Login",
   "field_sid": "Student ID:",

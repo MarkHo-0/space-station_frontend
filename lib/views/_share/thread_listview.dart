@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:localization/localization.dart';
+import 'package:rive/rive.dart';
+import 'package:space_station/views/_share/network_error_page.dart';
 
+import '../../api/error.dart';
 import '../../models/thread.dart';
 import '../_share/loading_page.dart';
 import '../_share/thread_item.dart';
@@ -21,6 +25,7 @@ class ThreadListViewState extends State<ThreadListView>
   final ScrollController _scrollController = ScrollController();
 
   bool isLoading = false;
+  bool isNetError = false;
   String nextCursor = '';
   List<Thread> threads = [];
 
@@ -51,6 +56,7 @@ class ThreadListViewState extends State<ThreadListView>
 
       nextCursor = data.continuous;
     } catch (e) {
+      if (e is NetworkError) isNetError = true;
       nextCursor = '';
     }
 
@@ -69,7 +75,8 @@ class ThreadListViewState extends State<ThreadListView>
 
     if (threads.isEmpty) {
       if (isLoading) return const LoadingPage();
-      return const Text('沒有數據');
+      if (isNetError) return const NetworkErrorPage();
+      return Text('no_threads_found'.i18n(), textAlign: TextAlign.center);
     }
 
     return RefreshIndicator(
@@ -83,22 +90,28 @@ class ThreadListViewState extends State<ThreadListView>
   }
 
   Widget buildItem(BuildContext context, int index) {
-    if (index == threads.length) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        child: Center(
-          child: isLoading
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    CircularProgressIndicator(),
-                    SizedBox(width: 15),
-                    Text('正在加載中...'),
-                  ],
-                )
-              : const Text('空即是色 色即是空'),
+    final bottomLoadingWidget = ColorFiltered(
+      colorFilter:
+          ColorFilter.mode(Theme.of(context).primaryColor, BlendMode.srcIn),
+      child: const AspectRatio(
+        aspectRatio: 6 / 1,
+        child: RiveAnimation.asset(
+          'assets/animations/stars_twinkle.riv',
         ),
-      );
+      ),
+    );
+
+    final bottomNoMoreWidget = Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Text(
+        'no_more_threads'.i18n(),
+        textAlign: TextAlign.center,
+      ),
+    );
+
+    //列表最後的組件顯示
+    if (index == threads.length) {
+      return isLoading ? bottomLoadingWidget : bottomNoMoreWidget;
     }
 
     return ThreadItem(
