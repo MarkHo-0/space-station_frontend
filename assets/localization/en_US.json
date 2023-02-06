@@ -33,9 +33,12 @@
   "field_sid": "Student ID:",
   "field_sid_hint": "Enter your 8 digits student ID",
   "field_sid_invlid": "Invalid Student ID",
+  "field_password_incorrect": "Incorrect password",
+  "login_action": "Log in",
   "__RegesterPages__": "----------------------------------",
   "page_regester": "Regester",
   "send_email_title": "We have sent you a verification code to the following email:",
+  "field_vfcode_invlid": "Invalid verification code",
   "field_nickname": "User Nickname",
   "field_is_required": "This field is required",
   "field_min_len": "Minimum %s characters required",
@@ -59,8 +62,11 @@
   "finish": "Finish",
   "next": "Next",
   "back": "Back",
-  "__NetworkErrorPage__": "----------------------------------",
+  "conform": "Conform",
+  "__Errors__": "----------------------------------",
   "net_err_title": "Network Exception",
   "net_err_subtitle": "Unable to connect to the Server",
-  "net_err_solution": "This may due to your current unstable network, please try to reload a few times. If the situation persists, it is likely that the server is offline for various reasons, please contact the administrators for more information."
+  "net_err_solution": "This may due to your current unstable network, please try to reload a few times. If the situation persists, it is likely that the server is offline for various reasons, please contact the administrators for more information.",
+  "unknown_err_title": "Error",
+  "unknown_err_solution": "An unknown error occurred, please try again later"
 }

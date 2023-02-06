@@ -1,19 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:localization/localization.dart';
-import 'package:space_station/api/interfaces/user_api.dart' show registerUser;
-import 'package:space_station/views/login_pages/user_register_success.dart';
+import 'package:space_station/views/_share/loadable_button.dart';
+import '../../api/interfaces/user_api.dart' show registerUser;
+import '../_share/unknown_error_popup.dart';
+import './user_register_success.dart';
 
 final pwdChecker = RegExp(r"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$");
 
-class RegisterPage extends StatelessWidget {
+class RegisterPage extends StatefulWidget {
   final int studentID;
-  RegisterPage(this.studentID, {super.key});
+  const RegisterPage(this.studentID, {super.key});
 
+  @override
+  State<RegisterPage> createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
   final inputFormKey = GlobalKey<FormState>();
   final nickname = TextEditingController();
   final password = TextEditingController();
   final cpassword = TextEditingController();
+
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +46,11 @@ class RegisterPage extends StatelessWidget {
                 ),
               ),
               TextFormField(
+                enabled: !isLoading,
                 controller: nickname,
                 autofocus: true,
                 keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
                   hintText: 'field_nickname_hint'.i18n(),
                 ),
@@ -65,9 +76,11 @@ class RegisterPage extends StatelessWidget {
                 ),
               ),
               TextFormField(
+                enabled: !isLoading,
                 controller: password,
                 obscureText: true,
                 keyboardType: TextInputType.visiblePassword,
+                textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
                   hintText: 'field_password_hint'.i18n(),
                 ),
@@ -92,9 +105,11 @@ class RegisterPage extends StatelessWidget {
                 ),
               ),
               TextFormField(
+                enabled: !isLoading,
                 controller: cpassword,
                 obscureText: true,
                 keyboardType: TextInputType.visiblePassword,
+                textInputAction: TextInputAction.done,
                 inputFormatters: [LengthLimitingTextInputFormatter(20)],
                 decoration: InputDecoration(
                   hintText: 'field_cpassword_hint'.i18n(),
@@ -111,9 +126,10 @@ class RegisterPage extends StatelessWidget {
                 onEditingComplete: () => onSumbitForm(context),
               ),
               const SizedBox(height: 30),
-              TextButton(
+              LoadableButton(
+                text: 'finish'.i18n(),
+                isLoading: isLoading,
                 onPressed: () => onSumbitForm(context),
-                child: Text('finish'.i18n()),
               ),
             ],
           ),
@@ -124,12 +140,19 @@ class RegisterPage extends StatelessWidget {
 
   void onSumbitForm(BuildContext context) {
     if (!inputFormKey.currentState!.validate()) return;
-    registerUser(studentID, password.text, nickname.text).then((_) {
+
+    setState(() => isLoading = true);
+
+    registerUser(widget.studentID, password.text, nickname.text).then((_) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (_) => const RegisterSuccessPage(),
         ),
       );
-    }).onError((error, stackTrace) => null);
+    }).catchError((_) {
+      showUnkownErrorDialog(context);
+    }).whenComplete(() {
+      setState(() => isLoading = false);
+    });
   }
 }

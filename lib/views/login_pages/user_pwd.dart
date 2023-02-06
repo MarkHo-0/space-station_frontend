@@ -1,14 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:localization/localization.dart';
 import 'package:provider/provider.dart';
-import 'package:space_station/api/error.dart';
-import 'package:space_station/providers/auth_provider.dart';
+import '../_share/loadable_button.dart';
+import '../_share/unknown_error_popup.dart';
+import '../../api/error.dart';
+import '../../providers/auth_provider.dart';
 
-class PasswordInputPage extends StatelessWidget {
+class PasswordInputPage extends StatefulWidget {
   final int studentID;
+
+  const PasswordInputPage(this.studentID, {super.key});
+
+  @override
+  State<PasswordInputPage> createState() => _PasswordInputPageState();
+}
+
+class _PasswordInputPageState extends State<PasswordInputPage> {
   final passwordController = TextEditingController();
   final passwordField = FocusNode();
-  PasswordInputPage(this.studentID, {super.key});
+  bool isLoading = false;
+  bool isPwdCorrect = true;
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +35,14 @@ class PasswordInputPage extends StatelessWidget {
           Align(
             alignment: Alignment.bottomLeft,
             child: Text(
-              'Password:',
+              'field_password'.i18n(),
               style: Theme.of(context).textTheme.titleMedium,
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),
-            child: TextFormField(
+            child: TextField(
+              enabled: !isLoading,
               controller: passwordController,
               focusNode: passwordField,
               autofocus: true,
@@ -37,15 +50,25 @@ class PasswordInputPage extends StatelessWidget {
               inputFormatters: <TextInputFormatter>[
                 LengthLimitingTextInputFormatter(20)
               ],
+              decoration: InputDecoration(
+                errorText:
+                    isPwdCorrect ? null : 'field_password_incorrect'.i18n(),
+              ),
               keyboardType: TextInputType.visiblePassword,
               onEditingComplete: () => onSumbitPassword(context),
+              onChanged: (_) {
+                if (!isPwdCorrect) {
+                  setState(() => isPwdCorrect = true);
+                }
+              },
             ),
           ),
           const SizedBox(height: 50),
-          TextButton(
+          LoadableButton(
+            text: 'login_action'.i18n(),
+            isLoading: isLoading,
             onPressed: () => onSumbitPassword(context),
-            child: const Text('Log in'),
-          )
+          ),
         ]),
       ),
     );
@@ -54,17 +77,26 @@ class PasswordInputPage extends StatelessWidget {
   void onSumbitPassword(BuildContext context) {
     final password = passwordController.text;
     if (password.isEmpty) return;
+
+    setLoading(true);
+
     Provider.of<AuthProvider>(context, listen: false)
-        .login(studentID, password)
+        .login(widget.studentID, password)
         .then((_) => Navigator.of(context).pop())
-        .onError((error, _) => handleLoginError(error as Exception));
+        .catchError(onIncorrectPassword, test: (e) => e is AuthorizationError)
+        .onError((_, __) => showUnkownErrorDialog(context))
+        .whenComplete(() => setLoading(false));
   }
 
-  void handleLoginError(Exception error) {
-    if (error is AuthorizationError) {
+  void setLoading(bool b) {
+    setState(() => isLoading = b);
+  }
+
+  void onIncorrectPassword(err) {
+    setState(() => isPwdCorrect = false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       passwordController.clear();
       passwordField.requestFocus();
-      return;
-    }
+    });
   }
 }

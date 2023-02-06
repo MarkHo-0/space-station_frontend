@@ -54,7 +54,7 @@ class ThemeProvider extends ChangeNotifier {
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: Colors.white,
-          backgroundColor: darkPrimary,
+          backgroundColor: isBlackTheme ? lightPrimary : darkPrimary,
           padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
         ),
       ),
