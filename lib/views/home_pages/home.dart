@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:space_station/api/error.dart';
 import 'package:space_station/api/interfaces/forum_api.dart' show getHomeData;
 import 'package:space_station/models/thread.dart' show HomePageModel;
 import 'package:space_station/providers/auth_provider.dart';
 import 'package:space_station/views/_share/loading_page.dart';
+import 'package:space_station/views/_share/network_error_page.dart';
 import 'package:space_station/views/home_pages/widgets/hotest_thread_list.dart';
 import 'package:space_station/views/home_pages/widgets/news_row.dart';
 import 'package:space_station/views/home_pages/widgets/wellcome_box.dart';
@@ -25,7 +27,10 @@ class _HomePageState extends State<HomePage>
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {
-            return const Text('Error!');
+            if (snapshot.error is NetworkError) {
+              return const NetworkErrorPage();
+            }
+            return const SizedBox();
           }
 
           HomePageModel data = snapshot.data;
@@ -39,7 +44,7 @@ class _HomePageState extends State<HomePage>
           return SingleChildScrollView(
             child: Column(
               children: [
-                const WellcomeBox(),
+                WellcomeBox(),
                 NewsRow(data.newsArray),
                 HotestThreadList(data.threadsArray),
               ],

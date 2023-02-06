@@ -6,7 +6,7 @@ import 'package:space_station/views/login_pages/login_lobby.dart';
 import 'package:rive/rive.dart';
 
 class WellcomeBox extends StatelessWidget {
-  const WellcomeBox({Key? key}) : super(key: key);
+  WellcomeBox({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,44 +36,45 @@ class WellcomeBox extends StatelessWidget {
 
   Widget buildDefaultScreen(BuildContext context) {
     const kColor = Color.fromRGBO(192, 206, 255, 1);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       mainAxisSize: MainAxisSize.max,
       children: [
-        Expanded(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Connect to the Space Station',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: kColor,
-                ),
+        Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Connect to the Space Station',
+              style: TextStyle(
+                fontSize: 16,
+                color: kColor,
               ),
-              const SizedBox(height: 15),
-              OutlinedButton(
-                onPressed: () => onGoToLoginPage(context),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: kColor,
-                  side: const BorderSide(width: 1.5, color: kColor),
-                ),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 3),
-                  child: Text('Login', style: TextStyle(fontSize: 18)),
-                ),
+            ),
+            const SizedBox(height: 15),
+            OutlinedButton(
+              onPressed: () => onGoToLoginPage(context),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: kColor,
+                side: const BorderSide(width: 1.5, color: kColor),
               ),
-            ],
-          ),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 3),
+                child: Text('Login', style: TextStyle(fontSize: 18)),
+              ),
+            ),
+          ],
         ),
-        const SizedBox(
-          height: 100,
-          width: 100,
-          child: RiveAnimation.asset(
-            'assets/animations/spinning_animation.riv',
-            animations: ["Defult"],
+        Transform.scale(
+          scaleX: -1,
+          child: const AspectRatio(
+            aspectRatio: 1,
+            child: RiveAnimation.asset(
+              'assets/animations/rocket_float.riv',
+              animations: ['rocket_up', 'Timeline 1'],
+            ),
           ),
         ),
       ],
@@ -110,7 +111,16 @@ class WellcomeBox extends StatelessWidget {
             )
           ],
         ),
-        Image.asset('assets/images/people.png'),
+        Transform.scale(
+          scaleX: -1,
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: RiveAnimation.asset(
+              'assets/animations/spaceman_spin.riv',
+              controllers: [SimpleAnimation('default')],
+            ),
+          ),
+        )
       ],
     );
   }
