@@ -35,7 +35,7 @@ List<dynamic> filterThreads({pageID = 0, facultyID = 0, queryText = ''}) {
 bool isFakeUser(int sid) => fakeUserSid == sid;
 
 bool isVfCodeValid(int sid, int code) =>
-    code.toString() == sid.toString().substring(3, 7);
+    code.toString() == sid.toString().substring(4, 8);
 
 int createFakeUser(int sid, String pwd, String nickname) {
   final fakeUserID = Random().nextInt(100) + _nicknames.length;

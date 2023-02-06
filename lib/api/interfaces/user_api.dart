@@ -38,20 +38,14 @@ Future<UserThreads> getUserThreads(int uid) async {
   }
 }
 
-//if statecode==200 ,return UserThreads object:(field: threads:{Threads Class},
-//stats:{Stats Class})
-
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
+///獲取用戶狀態，0: 不存在，1: 正常, 2: 被禁止登入
 Future<int> getUserState(int sid) async {
   return HttpClient()
       .get('/user/state/$sid')
       .then((res) => jsonDecode(res.body)["sid_state"] as int);
 }
-//if statecode==200 ,return sid_state:int? ( int or null)
 
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
+///用戶進行註冊
 Future<bool> registerUser(int sid, String pwd, String nickname) async {
   final hasedpwd = sha256.convert(utf8.encode(pwd)).toString();
   final user = {"sid": sid, "pwd": hasedpwd, 'nickname': nickname};

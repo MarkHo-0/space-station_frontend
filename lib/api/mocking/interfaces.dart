@@ -105,7 +105,7 @@ void initializationInterfaces() {
     final pwd = req.bodies['pwd'];
 
     if (!performLogin(sid, pwd)) {
-      return const SimpleResponse({}, statusCode: 400);
+      return const SimpleResponse({}, statusCode: 401);
     }
 
     final logined = {
