@@ -1,16 +1,16 @@
+import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:localization/localization.dart';
 
 void showUnkownErrorDialog(BuildContext context) {
   showDialog<void>(
     context: context,
     builder: (context) => AlertDialog(
-      title: Text('unknown_err_title'.i18n()),
-      content: Text('unknown_err_solution'.i18n()),
+      title: Text(context.getString('unknown_err_title')),
+      content: Text(context.getString('unknown_err_solution')),
       actions: [
         TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text('back'.i18n()))
+            child: Text(context.getString('back')))
       ],
     ),
   );

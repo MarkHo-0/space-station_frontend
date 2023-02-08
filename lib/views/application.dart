@@ -1,10 +1,10 @@
+import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
 
 import './forum_pages/forum.dart';
 import './home_pages/home.dart';
 import 'profile_pages/profile.dart';
 import './toolbox_pages/toolbox.dart';
-import 'package:localization/localization.dart';
 
 class ApplicationContainer extends StatefulWidget {
   const ApplicationContainer({super.key});
@@ -33,10 +33,22 @@ class _ApplicationContainerState extends State<ApplicationContainer> {
         onDestinationSelected: onDestinationClicked,
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         destinations: [
-          NavigationDestination(icon: const Icon(Icons.home), label: 'home_page'.i18n()),
-          NavigationDestination(icon: const Icon(Icons.forum), label: 'forum_page'.i18n()),
-          NavigationDestination(icon: const Icon(Icons.home_repair_service), label: 'toolbox_page'.i18n()),
-          NavigationDestination(icon: const Icon(Icons.people), label: 'profile_page'.i18n()),
+          NavigationDestination(
+            icon: const Icon(Icons.home),
+            label: context.getString('home_page'),
+          ),
+          NavigationDestination(
+            icon: const Icon(Icons.forum),
+            label: context.getString('forum_page'),
+          ),
+          NavigationDestination(
+            icon: const Icon(Icons.home_repair_service),
+            label: context.getString('toolbox_page'),
+          ),
+          NavigationDestination(
+            icon: const Icon(Icons.people),
+            label: context.getString('profile_page'),
+          ),
         ],
       ),
     );

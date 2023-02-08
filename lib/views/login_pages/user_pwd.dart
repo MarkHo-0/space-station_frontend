@@ -1,6 +1,6 @@
+import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:localization/localization.dart';
 import 'package:provider/provider.dart';
 import '../_share/loadable_button.dart';
 import '../_share/unknown_error_popup.dart';
@@ -27,7 +27,7 @@ class _PasswordInputPageState extends State<PasswordInputPage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Login'),
+        title: Text(context.getString('page_login')),
       ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(40, 60, 40, 0),
@@ -35,7 +35,7 @@ class _PasswordInputPageState extends State<PasswordInputPage> {
           Align(
             alignment: Alignment.bottomLeft,
             child: Text(
-              'field_password'.i18n(),
+              context.getString('field_password'),
               style: Theme.of(context).textTheme.titleMedium,
             ),
           ),
@@ -51,8 +51,9 @@ class _PasswordInputPageState extends State<PasswordInputPage> {
                 LengthLimitingTextInputFormatter(20)
               ],
               decoration: InputDecoration(
-                errorText:
-                    isPwdCorrect ? null : 'field_password_incorrect'.i18n(),
+                errorText: isPwdCorrect
+                    ? null
+                    : context.getString('field_password_incorrect'),
               ),
               keyboardType: TextInputType.visiblePassword,
               onEditingComplete: () => onSumbitPassword(context),
@@ -65,7 +66,7 @@ class _PasswordInputPageState extends State<PasswordInputPage> {
           ),
           const SizedBox(height: 50),
           LoadableButton(
-            text: 'login_action'.i18n(),
+            text: context.getString('login_action'),
             isLoading: isLoading,
             onPressed: () => onSumbitPassword(context),
           ),

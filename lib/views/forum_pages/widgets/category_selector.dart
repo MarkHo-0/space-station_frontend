@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:localization/localization.dart';
 
 class CategorySelector extends StatelessWidget {
   final String categoryKey;
@@ -45,7 +45,7 @@ class CategorySelector extends StatelessWidget {
       (index) => DropdownMenuItem<int>(
         value: index,
         child: Text(
-          "${categoryKey}_$index".i18n(),
+          context.getString("${categoryKey}_$index"),
           style:
               index == 0 ? TextStyle(color: Theme.of(context).hintColor) : null,
         ),

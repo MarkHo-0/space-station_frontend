@@ -1,6 +1,6 @@
+import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:localization/localization.dart';
 import 'package:space_station/views/_share/loadable_button.dart';
 import '../../api/interfaces/user_api.dart' show registerUser;
 import '../_share/unknown_error_popup.dart';
@@ -29,7 +29,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('page_regester'.i18n()),
+        title: Text(context.getString('page_regester')),
       ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(50, 30, 50, 0),
@@ -41,7 +41,7 @@ class _RegisterPageState extends State<RegisterPage> {
               Align(
                 alignment: Alignment.bottomLeft,
                 child: Text(
-                  'field_nickname'.i18n(),
+                  context.getString('field_nickname'),
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
@@ -52,16 +52,16 @@ class _RegisterPageState extends State<RegisterPage> {
                 keyboardType: TextInputType.text,
                 textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
-                  hintText: 'field_nickname_hint'.i18n(),
+                  hintText: context.getString('field_nickname_hint'),
                 ),
                 inputFormatters: [LengthLimitingTextInputFormatter(10)],
                 validator: (name) {
                   if (name == null || name.isEmpty) {
-                    return 'field_is_required'.i18n();
+                    return context.getString('field_is_required');
                   }
                   name = name.trim();
                   if (name.length < 2) {
-                    return 'field_min_len'.i18n(['2']);
+                    return context.getString('field_min_len');
                   }
                   return null;
                 },
@@ -71,7 +71,7 @@ class _RegisterPageState extends State<RegisterPage> {
               Align(
                 alignment: Alignment.bottomLeft,
                 child: Text(
-                  'field_password'.i18n(),
+                  context.getString('field_password'),
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
@@ -82,15 +82,15 @@ class _RegisterPageState extends State<RegisterPage> {
                 keyboardType: TextInputType.visiblePassword,
                 textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
-                  hintText: 'field_password_hint'.i18n(),
+                  hintText: context.getString('field_password_hint'),
                 ),
                 inputFormatters: [LengthLimitingTextInputFormatter(20)],
                 validator: (pwd) {
                   if (pwd == null || pwd.isEmpty) {
-                    return 'field_is_required'.i18n();
+                    return context.getString('field_is_required');
                   }
                   if (pwdChecker.hasMatch(pwd) == false) {
-                    return 'field_password_easy'.i18n();
+                    return context.getString('field_password_easy');
                   }
                   return null;
                 },
@@ -100,7 +100,7 @@ class _RegisterPageState extends State<RegisterPage> {
               Align(
                 alignment: Alignment.bottomLeft,
                 child: Text(
-                  'field_cpassword'.i18n(),
+                  context.getString('field_cpassword'),
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
@@ -112,14 +112,14 @@ class _RegisterPageState extends State<RegisterPage> {
                 textInputAction: TextInputAction.done,
                 inputFormatters: [LengthLimitingTextInputFormatter(20)],
                 decoration: InputDecoration(
-                  hintText: 'field_cpassword_hint'.i18n(),
+                  hintText: context.getString('field_cpassword_hint'),
                 ),
                 validator: (rpwd) {
                   if (rpwd == null || rpwd.isEmpty) {
-                    return 'field_is_required'.i18n();
+                    return context.getString('field_is_required');
                   }
                   if (rpwd != password.text) {
-                    return 'field_cpassword_notmatch'.i18n();
+                    return context.getString('field_cpassword_notmatch');
                   }
                   return null;
                 },
@@ -127,7 +127,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
               const SizedBox(height: 30),
               LoadableButton(
-                text: 'finish'.i18n(),
+                text: context.getString('finish'),
                 isLoading: isLoading,
                 onPressed: () => onSumbitForm(context),
               ),

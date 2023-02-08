@@ -1,5 +1,5 @@
+import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:localization/localization.dart';
 
 class NetworkErrorPage extends StatelessWidget {
   const NetworkErrorPage({super.key});
@@ -18,18 +18,18 @@ class NetworkErrorPage extends StatelessWidget {
             size: 100,
           ),
           Text(
-            'net_err_title'.i18n(),
+            context.getString('net_err_title'),
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           Text(
-            'net_err_subtitle'.i18n(),
+            context.getString('net_err_subtitle'),
             style: Theme.of(context).textTheme.bodyLarge,
           ),
           const SizedBox(height: 20),
           SizedBox(
             width: 300,
             child: Text(
-              'net_err_solution'.i18n(),
+              context.getString('net_err_solution'),
               style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.justify,
             ),

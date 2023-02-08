@@ -1,5 +1,5 @@
+import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:localization/localization.dart';
 import 'package:rive/rive.dart';
 import 'package:space_station/views/_share/network_error_page.dart';
 
@@ -76,7 +76,10 @@ class ThreadListViewState extends State<ThreadListView>
     if (threads.isEmpty) {
       if (isLoading) return const LoadingPage();
       if (isNetError) return const NetworkErrorPage();
-      return Text('no_threads_found'.i18n(), textAlign: TextAlign.center);
+      return Text(
+        context.getString('no_threads_found'),
+        textAlign: TextAlign.center,
+      );
     }
 
     return RefreshIndicator(
@@ -104,7 +107,7 @@ class ThreadListViewState extends State<ThreadListView>
     final bottomNoMoreWidget = Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: Text(
-        'no_more_threads'.i18n(),
+        context.getString('no_more_threads'),
         textAlign: TextAlign.center,
       ),
     );

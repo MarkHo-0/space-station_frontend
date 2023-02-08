@@ -1,6 +1,6 @@
+import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:localization/localization.dart';
 import '../../api/error.dart';
 import '../../api/interfaces/user_api.dart';
 import '../_share/loadable_button.dart';
@@ -44,14 +44,14 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('page_regester'.i18n()),
+        title: Text(context.getString('page_regester')),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 30),
         child: Column(
           children: [
             Text(
-              'send_email_title'.i18n(),
+              context.getString('send_email_title'),
               textAlign: TextAlign.justify,
             ),
             Padding(
@@ -66,7 +66,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
             if (!isCodeValid) buildInvalidText(context),
             const SizedBox(height: 40),
             LoadableButton(
-              text: 'conform'.i18n(),
+              text: context.getString('conform'),
               isLoading: isLoading,
               onPressed: () => onSumbitCode(context),
             )
@@ -114,7 +114,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
       child: Align(
         alignment: Alignment.bottomRight,
         child: Text(
-          'field_vfcode_invlid'.i18n(),
+          context.getString('field_vfcode_invlid'),
           style: Theme.of(context)
               .textTheme
               .labelLarge!

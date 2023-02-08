@@ -1,5 +1,5 @@
+import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:localization/localization.dart';
 import 'package:space_station/models/thread.dart';
 import 'package:space_station/views/_share/owner_tag.dart';
 
@@ -36,7 +36,7 @@ class ThreadItem extends StatelessWidget {
                   ),
                   if (data.pid == 2)
                     Text(
-                      'faculty_${data.fid}'.i18n(),
+                      context.getString('faculty_${data.fid}'),
                       style: Theme.of(context).textTheme.labelSmall!.copyWith(
                             color: Theme.of(context).hintColor,
                           ),

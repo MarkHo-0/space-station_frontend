@@ -1,5 +1,5 @@
+import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/widgets.dart';
-import 'package:localization/localization.dart';
 import 'package:space_station/models/thread.dart';
 import 'package:space_station/views/_share/thread_item.dart';
 
@@ -12,7 +12,7 @@ class HotestThreadList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TitledContainer(
-      title: 'hit_topics'.i18n(),
+      title: context.getString('hit_topics'),
       body: Column(
         children: List<ThreadItem>.generate(
           threads.length,

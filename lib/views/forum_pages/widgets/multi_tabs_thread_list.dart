@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:localization/localization.dart';
 
 import 'package:space_station/models/thread.dart';
 import 'package:space_station/views/_share/thread_listview.dart';
@@ -166,7 +166,7 @@ class DynamicTabState extends State<DynamicTab>
         child: Row(
           children: [
             Text(
-              "page_${widget.tabInfo.key}".i18n(),
+              context.getString("page_${widget.tabInfo.key}"),
               softWrap: false,
               style: Theme.of(context).textTheme.labelLarge,
             ),

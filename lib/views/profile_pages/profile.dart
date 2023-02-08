@@ -1,8 +1,8 @@
+import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:localization/localization.dart';
 import 'package:provider/provider.dart';
-import 'package:space_station/providers/localization_provider.dart';
 import 'package:space_station/providers/theme_provider.dart';
+import 'package:space_station/utils/locals.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -21,7 +21,7 @@ class _ProfilePageState extends State<ProfilePage>
       child: ListView(
         children: [
           ListTile(
-            title: Text('black_theme'.i18n()),
+            title: Text(context.getString('black_theme')),
             trailing: Consumer<ThemeProvider>(
               builder: (_, tProvider, __) => Switch(
                 value: tProvider.isBlackTheme,
@@ -30,21 +30,20 @@ class _ProfilePageState extends State<ProfilePage>
             ),
           ),
           ListTile(
-            title: Text('language'.i18n()),
-            trailing: Consumer<LanguageProvider>(
-                builder: ((_, langProvider, __) => DropdownButton<Language>(
-                      items: langProvider.supportedLanguages
-                          .map((lang) => DropdownMenuItem<Language>(
-                                value: lang,
-                                child: Text(lang.name),
-                              ))
-                          .toList(),
-                      value: langProvider.currLanguage,
-                      onChanged: (newLang) {
-                        langProvider.updateLanguage(newLang!);
-                      },
-                    ))),
-          )
+              title: Text(context.getString('language')),
+              trailing: DropdownButton<Locale>(
+                  value: EzLocalization.of(context)!.locale,
+                  items: kSupportedLocales
+                      .map(
+                        (l) => DropdownMenuItem(
+                          value: l.locale,
+                          child: Text(l.name),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (l) {
+                    EzLocalizationBuilder.of(context)!.changeLocale(l);
+                  }))
         ],
       ),
     );

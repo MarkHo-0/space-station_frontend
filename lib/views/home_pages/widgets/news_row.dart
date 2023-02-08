@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:localization/localization.dart';
 import 'package:space_station/views/home_pages/news_detail_popup.dart';
 
 import '../../../models/thread.dart';
@@ -14,7 +14,7 @@ class NewsRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TitledContainer(
-      title: 'latest_info'.i18n(),
+      title: context.getString('latest_info'),
       body: SizedBox(
         height: 170,
         child: ListView.separated(
@@ -40,7 +40,8 @@ class NewsCard extends StatelessWidget {
   final News news;
   final void Function(News news) onTap;
 
-  const NewsCard({Key? key, required this.news, required this.onTap}) : super(key: key);
+  const NewsCard({Key? key, required this.news, required this.onTap})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

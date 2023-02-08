@@ -1,3 +1,4 @@
+import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -6,7 +7,7 @@ import 'package:space_station/views/login_pages/login_lobby.dart';
 import 'package:rive/rive.dart';
 
 class WellcomeBox extends StatelessWidget {
-  WellcomeBox({Key? key}) : super(key: key);
+  const WellcomeBox({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -46,12 +47,9 @@ class WellcomeBox extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Connect to the Space Station',
-              style: TextStyle(
-                fontSize: 16,
-                color: kColor,
-              ),
+            Text(
+              context.getString("connect_to_station"),
+              style: const TextStyle(fontSize: 16, color: kColor),
             ),
             const SizedBox(height: 15),
             OutlinedButton(
@@ -60,9 +58,13 @@ class WellcomeBox extends StatelessWidget {
                 foregroundColor: kColor,
                 side: const BorderSide(width: 1.5, color: kColor),
               ),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 3),
-                child: Text('Login', style: TextStyle(fontSize: 18)),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 15, vertical: 3),
+                child: Text(
+                  context.getString("login_action"),
+                  style: const TextStyle(fontSize: 18),
+                ),
               ),
             ),
           ],

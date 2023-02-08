@@ -1,5 +1,5 @@
+import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:localization/localization.dart';
 import 'package:space_station/views/login_pages/login_lobby.dart';
 
 class RegisterSuccessPage extends StatelessWidget {
@@ -10,7 +10,7 @@ class RegisterSuccessPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('page_regester'.i18n()),
+        title: Text(context.getString('page_regester')),
       ),
       body: Center(
         child: Column(
@@ -23,7 +23,7 @@ class RegisterSuccessPage extends StatelessWidget {
               size: 100,
             ),
             Text(
-              'regester_successed'.i18n(),
+              context.getString('regester_successed'),
               style: Theme.of(context).textTheme.headlineLarge,
             ),
             Padding(
@@ -34,7 +34,7 @@ class RegisterSuccessPage extends StatelessWidget {
                     builder: (_) => const LoginLobby(),
                   ));
                 },
-                child: Text('back'.i18n()),
+                child: Text(context.getString('back')),
               ),
             )
           ],

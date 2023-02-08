@@ -1,5 +1,5 @@
+import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:localization/localization.dart';
 
 class ForumTopPanel extends StatelessWidget {
   final void Function(int orderID) onOrderChanged;
@@ -36,7 +36,7 @@ class ForumTopPanel extends StatelessWidget {
           onOrderChanged(isOrderByTime ? 1 : 2);
         },
         icon: Icon(isOrderByTime ? Icons.timer_outlined : Icons.whatshot),
-        tooltip: 'thread_order_${isOrderByTime ? 1 : 2}'.i18n(),
+        tooltip: context.getString('thread_order_${isOrderByTime ? 1 : 2}'),
       );
     });
   }
@@ -58,7 +58,7 @@ class ForumTopPanel extends StatelessWidget {
               counterText: "",
               border: InputBorder.none,
               isDense: true,
-              hintText: "forum_searchbar_hit_text".i18n(),
+              hintText: context.getString("forum_searchbar_hit_text"),
               focusedBorder: InputBorder.none,
             ),
             onSubmitted: (value) => onSearch(value),
@@ -73,7 +73,7 @@ class ForumTopPanel extends StatelessWidget {
       onPressed: onGoToPostPage,
       icon: const Icon(Icons.edit),
       color: Theme.of(context).primaryColor,
-      tooltip: 'post_thread_tooltip'.i18n(),
+      tooltip: context.getString('post_thread_tooltip'),
     );
   }
 }

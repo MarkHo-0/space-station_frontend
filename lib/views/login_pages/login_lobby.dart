@@ -1,6 +1,6 @@
+import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:localization/localization.dart';
 import '../../api/interfaces/user_api.dart';
 import '../_share/loadable_button.dart';
 import './user_banned.dart';
@@ -29,7 +29,7 @@ class _LoginLobbyState extends State<LoginLobby> {
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text('page_login'.i18n()),
+        title: Text(context.getString('page_login')),
       ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(50, 60, 50, 0),
@@ -37,7 +37,7 @@ class _LoginLobbyState extends State<LoginLobby> {
           Align(
             alignment: Alignment.bottomLeft,
             child: Text(
-              'field_sid'.i18n(),
+              context.getString('field_sid'),
               style: Theme.of(context).textTheme.titleMedium,
             ),
           ),
@@ -48,9 +48,10 @@ class _LoginLobbyState extends State<LoginLobby> {
               maxLength: 8,
               autofocus: true,
               decoration: InputDecoration(
-                hintText: 'field_sid_hint'.i18n(),
+                hintText: context.getString('field_sid_hint'),
                 counterText: "",
-                errorText: isSidValid ? null : 'field_sid_invlid'.i18n(),
+                errorText:
+                    isSidValid ? null : context.getString('field_sid_invlid'),
               ),
               controller: sidController,
               keyboardType: TextInputType.number,
@@ -60,7 +61,7 @@ class _LoginLobbyState extends State<LoginLobby> {
           ),
           const SizedBox(height: 50),
           LoadableButton(
-            text: 'next'.i18n(),
+            text: context.getString('next'),
             isLoading: isLoading,
             onPressed: () => onPressNext(context),
           ),
