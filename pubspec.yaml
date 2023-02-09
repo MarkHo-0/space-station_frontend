@@ -64,7 +64,19 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/
+    - assets/animations/rocket_float.riv
+    - assets/animations/spaceman_jump.riv
+    - assets/animations/spaceman_spin.riv
+    - assets/animations/stars_twinkle.riv
+    - assets/images/msg.png
+    - assets/images/people.png
+    - assets/images/up.png
+    - assets/images/down.png
+    - assets/images/welcome.png
+    - assets/languages/en.json
+    - assets/languages/zh-CN.json
+    - assets/languages/zh-HK.json
+    - assets/languages/zh-TW.json
 
 icons_launcher:
   image_path: "assets/launcher/icon.jpg"

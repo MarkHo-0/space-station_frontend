@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:space_station/models/thread.dart';
+import 'forum_create.dart';
 import 'widgets/multi_tabs_thread_list.dart';
 import './widgets/forum_top_panel.dart';
 import '../../api/interfaces/forum_api.dart';
@@ -61,7 +63,9 @@ class _ForumPageState extends State<ForumPage>
   }
 
   void onGoToPostPage() {
-    //TODO: 跳轉到發佈頁面
+    Navigator.of(context).push(
+      CupertinoPageRoute(builder: ((_) => const ForumPostPage())),
+    );
   }
 
   @override
