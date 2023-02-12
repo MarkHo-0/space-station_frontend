@@ -43,18 +43,19 @@ class ThemeProvider extends ChangeNotifier {
         ),
         isDense: true,
       ),
-      switchTheme: isBlackTheme
-          ? SwitchThemeData(
-              thumbColor: MaterialStateProperty.resolveWith<Color?>(
-                  (callback) => lightPrimary),
-              trackColor: MaterialStateProperty.resolveWith<Color?>(
-                  (callback) => darkPrimary),
-            )
-          : null,
+      switchTheme: SwitchThemeData(
+        thumbColor: MaterialStateProperty.resolveWith<Color?>(
+            (callback) => lightPrimary),
+        trackColor: MaterialStateProperty.resolveWith<Color?>(
+          (callback) {
+            if (callback.contains(MaterialState.selected)) return darkPrimary;
+          },
+        ),
+      ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: Colors.white,
-          backgroundColor: isBlackTheme ? lightPrimary : darkPrimary,
+          backgroundColor: darkPrimary,
           padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
         ),
       ),
