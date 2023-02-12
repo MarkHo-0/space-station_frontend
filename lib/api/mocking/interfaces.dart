@@ -119,4 +119,11 @@ void initializationInterfaces() {
 
     return SimpleResponse(logined);
   });
+
+  TestClient.onPost('/user/logout', (req) {
+    if (req.isLogined == false) {
+      return const SimpleResponse({}, statusCode: 400);
+    }
+    return const SimpleResponse({});
+  });
 }

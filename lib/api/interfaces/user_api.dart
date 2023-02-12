@@ -69,18 +69,10 @@ Future<LoginData> loginUser(int sid, String pwd) async {
       .then((res) => LoginData.fromjson(jsonDecode(res.body)));
 }
 
-//if http response==200,
-//return 一個LoginData object （有field : token:String, valid_time:int , user:{User object})
-//如果error 要catch返Exception
-
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
-Future<bool> logoutUser() async {
-  return HttpClient().post('user/logout').then((_) => true);
+Future<void> logoutUser() async {
+  return HttpClient().post('/user/logout').then((_) => true);
 }
 
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
 Future<NewFaculty> changeFaculty(String coursename) async {
   http.Response response = await API("").myPatch("/user/faculty", {}, {
     "course_name": coursename
