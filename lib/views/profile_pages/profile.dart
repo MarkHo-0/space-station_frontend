@@ -1,8 +1,11 @@
-import 'package:ez_localization/ez_localization.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:space_station/providers/theme_provider.dart';
-import 'package:space_station/utils/locals.dart';
+import 'package:space_station/providers/auth_provider.dart';
+import 'package:space_station/views/profile_pages/widgets/logout_button.dart';
+import 'package:space_station/views/profile_pages/widgets/user_info_box.dart';
+
+import 'settings/setting_lobby.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -16,36 +19,18 @@ class _ProfilePageState extends State<ProfilePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Padding(
-      padding: const EdgeInsets.only(top: 100),
-      child: ListView(
-        children: [
-          ListTile(
-            title: Text(context.getString('black_theme')),
-            trailing: Consumer<ThemeProvider>(
-              builder: (_, tProvider, __) => Switch(
-                value: tProvider.isBlackTheme,
-                onChanged: (b) => tProvider.setTheme(b),
-              ),
-            ),
-          ),
-          ListTile(
-              title: Text(context.getString('language')),
-              trailing: DropdownButton<Locale>(
-                  value: EzLocalization.of(context)!.locale,
-                  items: kSupportedLocales
-                      .map(
-                        (l) => DropdownMenuItem(
-                          value: l.locale,
-                          child: Text(l.name),
-                        ),
-                      )
-                      .toList(),
-                  onChanged: (l) {
-                    EzLocalizationBuilder.of(context)!.changeLocale(l);
-                  }))
-        ],
-      ),
+
+    final islogined = Provider.of<AuthProvider>(context).isLogined;
+    return ListView(
+      children: [
+        const UserInfoBox(),
+        const SettingContainer(),
+        const SizedBox(height: 80),
+        Visibility(
+          visible: islogined,
+          child: const LogoutButton(),
+        ),
+      ],
     );
   }
 
