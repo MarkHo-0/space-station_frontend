@@ -73,6 +73,8 @@ flutter:
     - assets/images/up.png
     - assets/images/down.png
     - assets/images/welcome.png
+    - assets/images/bookshelf.jpg
+    - assets/images/discuss.jpg
     - assets/languages/en.json
     - assets/languages/zh-CN.json
     - assets/languages/zh-HK.json

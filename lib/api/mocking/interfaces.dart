@@ -126,4 +126,8 @@ void initializationInterfaces() {
     }
     return const SimpleResponse({});
   });
+
+  TestClient.onGet('/toolbox', (_) {
+    return const SimpleResponse({'class_swapping': true, 'study_parner': true});
+  });
 }
