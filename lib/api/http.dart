@@ -82,7 +82,7 @@ class ClientConfig {
 
   ClientConfig(
       {bool shouldUseFakeData = false,
-      this.host = 'localhost',
+      this.host = 'www.spacestation.nets.hk',
       this.port = 3000}) {
     baseClient = shouldUseFakeData ? TestClient() : Client();
   }
