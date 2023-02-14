@@ -1,10 +1,7 @@
 import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:space_station/views/_share/loading_page.dart';
-
+import '../_share/future_page.dart';
 import '../../api/interfaces/other_api.dart';
-import '../../api/error.dart';
-import '../_share/network_error_page.dart';
 
 class ToolboxPage extends StatefulWidget {
   const ToolboxPage({super.key});
@@ -19,25 +16,13 @@ class _ToolboxPageState extends State<ToolboxPage>
   Widget build(BuildContext context) {
     super.build(context);
 
-    return FutureBuilder(
-      future: getToolboxAvailabilities(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const LoadingPage();
-        }
-
-        if (snapshot.hasError) {
-          if (snapshot.error is NetworkError) {
-            return const NetworkErrorPage();
-          }
-          return const SizedBox();
-        }
-
-        final stauts = snapshot.data!;
-
+    return FuturePage(
+      future: getToolboxAvailabilities,
+      builder: (context, stauts) {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: ListView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
                 padding: const EdgeInsets.only(top: 30, bottom: 15),
@@ -99,6 +84,7 @@ class ToolboxItem extends StatelessWidget {
         },
         borderRadius: BorderRadius.circular(15),
         child: Container(
+          width: double.infinity,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
             image: DecorationImage(
