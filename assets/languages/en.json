@@ -79,6 +79,8 @@
   "legal_notices": "Legal notices",
   "logout_action": "Log out",
   "conform_logout": "Confirm Logout?",
+  "create_post": "Create post",
+  "send_thread":"Send",
   "__Faculties__": "----------------------------------",
   "faculty_0": "All Faculties",
   "faculty_1": "Arts and Humanities",
