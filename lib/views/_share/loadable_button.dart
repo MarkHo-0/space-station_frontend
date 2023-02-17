@@ -22,8 +22,16 @@ class LoadableButton extends StatelessWidget {
       ),
     );
 
-    return TextButton(
+    const defaultPadding = EdgeInsets.symmetric(vertical: 15, horizontal: 50);
+
+    return ElevatedButton(
       onPressed: isLoading ? null : onPressed,
+      style: TextButton.styleFrom(
+        padding: isLoading ? null : defaultPadding,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30), // <-- Radius
+        ),
+      ),
       child: isLoading ? loader : Text(text),
     );
   }

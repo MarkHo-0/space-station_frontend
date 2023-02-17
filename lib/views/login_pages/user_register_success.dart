@@ -1,5 +1,6 @@
 import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:space_station/views/_share/loadable_button.dart';
 import 'package:space_station/views/login_pages/login_lobby.dart';
 
 class RegisterSuccessPage extends StatelessWidget {
@@ -28,13 +29,14 @@ class RegisterSuccessPage extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 40),
-              child: TextButton(
+              child: LoadableButton(
+                isLoading: false,
+                text: context.getString('back'),
                 onPressed: () {
                   Navigator.of(context).pushReplacement(MaterialPageRoute(
                     builder: (_) => const LoginLobby(),
                   ));
                 },
-                child: Text(context.getString('back')),
               ),
             )
           ],

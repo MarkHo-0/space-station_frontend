@@ -49,7 +49,7 @@ class _ForumPostPageState extends State<ForumPostPage> {
                 ),
                 Directionality(
                     textDirection: TextDirection.rtl,
-                    child: TextButton.icon(
+                    child: ElevatedButton.icon(
                       icon: Transform.rotate(
                         angle: -3.1415926,
                         child: const Icon(Icons.send),

@@ -52,11 +52,13 @@ class ThemeProvider extends ChangeNotifier {
           },
         ),
       ),
-      textButtonTheme: TextButtonThemeData(
+      elevatedButtonTheme: ElevatedButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: Colors.white,
           backgroundColor: darkPrimary,
-          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(3), // <-- Radius
+          ),
         ),
       ),
       navigationBarTheme: NavigationBarThemeData(
