@@ -3,19 +3,19 @@ import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:space_station/models/thread.dart';
+import 'package:space_station/utils/constant.dart';
 import 'package:space_station/views/_share/thread_listview.dart';
 
+import '../../../models/tab_info.dart';
 import 'category_selector.dart';
 
 class MultiTabsThreadList extends StatefulWidget {
-  final List<TabInfo> tabs;
   final void Function(int threadID) onThreadTaped;
   final Future<ThreadsModel> Function(
       int pageID, int categoryID, String nextCursor) requestData;
 
   const MultiTabsThreadList({
     Key? key,
-    required this.tabs,
     required this.onThreadTaped,
     required this.requestData,
   }) : super(key: key);
@@ -28,13 +28,14 @@ class MultiTabsThreadListState extends State<MultiTabsThreadList>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late KeysList _keysList;
+  final tabs = kForumTabs;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: widget.tabs.length, vsync: this);
+    _tabController = TabController(length: tabs.length, vsync: this);
     _tabController.addListener(_onTabSwitched);
-    _keysList = KeysList(widget.tabs.length);
+    _keysList = KeysList(tabs.length);
   }
 
   @override
@@ -48,10 +49,10 @@ class MultiTabsThreadListState extends State<MultiTabsThreadList>
             isScrollable: true,
             indicatorColor: Theme.of(context).primaryColor,
             tabs: List.generate(
-              widget.tabs.length,
+              tabs.length,
               (pageID) => DynamicTab(
                 key: _keysList.tabs[pageID],
-                tabInfo: widget.tabs[pageID],
+                tabInfo: tabs[pageID],
                 onCategoryChanged: ((_) {
                   _keysList.views[pageID].currentState!.refresh();
                 }),
@@ -62,7 +63,7 @@ class MultiTabsThreadListState extends State<MultiTabsThreadList>
             child: TabBarView(
               controller: _tabController,
               children: List.generate(
-                widget.tabs.length,
+                tabs.length,
                 (pageID) => ThreadListView(
                   key: _keysList.views[pageID],
                   requestData: (nextCursor) => widget.requestData(
@@ -220,23 +221,6 @@ class DynamicTabState extends State<DynamicTab>
     }
     super.dispose();
   }
-}
-
-class TabInfo {
-  final String key;
-  final String? categoryKey;
-  final int? categoriesQuantity;
-  const TabInfo({
-    required this.key,
-    this.categoryKey,
-    this.categoriesQuantity,
-  });
-
-  bool get hasCategorySelector =>
-      categoryKey != null &&
-      categoryKey!.isNotEmpty &&
-      categoriesQuantity != null &&
-      categoriesQuantity! > 0;
 }
 
 class KeysList {

@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 import 'package:space_station/models/thread.dart';
 import 'forum_create.dart';
@@ -33,7 +32,6 @@ class _ForumPageState extends State<ForumPage>
         ),
         MultiTabsThreadList(
           key: _forumKey,
-          tabs: _kTabs,
           onThreadTaped: onThreadTaped,
           requestData: requestThreads,
         ),
@@ -64,15 +62,12 @@ class _ForumPageState extends State<ForumPage>
 
   void onGoToPostPage() {
     Navigator.of(context).push(
-      CupertinoPageRoute(builder: ((_) => const ForumPostPage())),
+      CupertinoPageRoute(
+        builder: ((_) => const ForumPostPage()),
+      ),
     );
   }
 
   @override
   bool get wantKeepAlive => true;
 }
-
-const List<TabInfo> _kTabs = [
-  TabInfo(key: 'casual'),
-  TabInfo(key: 'academic', categoryKey: 'faculty', categoriesQuantity: 6),
-];
