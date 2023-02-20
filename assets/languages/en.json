@@ -81,6 +81,7 @@
   "conform_logout": "Confirm Logout?",
   "create_post": "Create post",
   "post_action": "Post",
+  "preview_mode":"Preview mode",
   "page_dropdown_hint": "Select the page you want to post",
   "thread_title_hint": "Enter title (At most 50 characters)",
   "content_hint": "Enter content (At most 5000 characters) \nSupport math formulas and program codes",
