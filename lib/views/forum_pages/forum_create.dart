@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:ez_localization/ez_localization.dart';
@@ -25,7 +26,9 @@ class _ForumPostPageState extends State<ForumPostPage> {
         title: appbarText,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
         actions: [
           Switch(
@@ -35,18 +38,22 @@ class _ForumPostPageState extends State<ForumPostPage> {
                 isPreview = value;
                 if (value == true) {
                   mode = "preview_mode";
-                  bodywidget = const ScaffoldPreViewBody();
                 }
+
                 if (value == false) {
                   mode = "create_post";
-                  bodywidget = const ScaffoldBody();
                 }
               });
             }),
           ),
         ],
       ),
-      body: bodywidget,
+      body: Stack(
+        children: <Widget>[
+          Offstage(offstage: isPreview, child: const ScaffoldBody()),
+          Offstage(offstage: !isPreview, child: const ScaffoldPreViewBody()),
+        ],
+      ),
     );
   }
 }
@@ -151,7 +158,7 @@ class ScaffoldPreViewBody extends StatefulWidget {
 class _ScaffoldPreViewBodyState extends State<ScaffoldPreViewBody> {
   @override
   Widget build(BuildContext context) {
-    return const Text("123");
+    return Text("123");
     /////////
     ///////// not finished
   }
