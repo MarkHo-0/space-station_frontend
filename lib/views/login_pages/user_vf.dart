@@ -44,7 +44,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text(context.getString('page_regester')),
+        title: Text(context.getString('page_register')),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 30),

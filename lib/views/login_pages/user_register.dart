@@ -29,7 +29,7 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text(context.getString('page_regester')),
+        title: Text(context.getString('page_register')),
       ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(50, 30, 50, 0),
