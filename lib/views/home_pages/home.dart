@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:space_station/models/thread.dart';
 import '../../api/interfaces/forum_api.dart' show getHomeData;
 import '../../providers/auth_provider.dart';
 import '../_share/future_page.dart';
 import 'widgets/hotest_thread_list.dart';
 import 'widgets/news_row.dart';
-import 'widgets/wellcome_box.dart';
+import 'widgets/welcome_box.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -31,7 +30,7 @@ class _HomePageState extends State<HomePage>
 
         return Column(
           children: [
-            WellcomeBox(),
+            WelcomeBox(),
             NewsRow(data.newsArray),
             HotestThreadList(data.threadsArray),
           ],
