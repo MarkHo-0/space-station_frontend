@@ -6,9 +6,7 @@ import '../../models/comment.dart';
 import '../api.dart';
 
 Future<HomePageModel> getHomeData() async {
-  return HttpClient()
-      .get('/home')
-      .then((res) => HomePageModel.fromJson(jsonDecode(res.body)));
+  return HttpClient().get('/home').then((res) => HomePageModel.fromJson(res));
 }
 
 //////////////////////////////////////////////////////
@@ -32,7 +30,7 @@ Future<ThreadsModel> getThreads({
 
   return HttpClient()
       .get('/thread', queryParameters: query)
-      .then((res) => ThreadsModel.fromJson(jsonDecode(res.body)));
+      .then((res) => ThreadsModel.fromJson(res));
 }
 
 //////////////////////////////////////////////////////

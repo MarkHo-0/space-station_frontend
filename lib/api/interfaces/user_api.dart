@@ -42,7 +42,7 @@ Future<UserThreads> getUserThreads(int uid) async {
 Future<int> getUserState(int sid) async {
   return HttpClient()
       .get('/user/state/$sid')
-      .then((res) => jsonDecode(res.body)["sid_state"] as int);
+      .then((res) => res["sid_state"] as int);
 }
 
 ///用戶進行註冊
@@ -66,7 +66,7 @@ Future<LoginData> loginUser(int sid, String pwd) async {
 
   return HttpClient()
       .post('/user/login', bodyItems: loginForm)
-      .then((res) => LoginData.fromjson(jsonDecode(res.body)));
+      .then((res) => LoginData.fromjson(res));
 }
 
 Future<void> logoutUser() async {

@@ -7,6 +7,8 @@ import 'mocking/client.dart' show TestClient;
 import 'error.dart';
 import 'methods.dart';
 
+typedef JsonObj = Map<String, dynamic>;
+
 class HttpClient {
   final ClientConfig _config;
   String _authKey = '';
@@ -20,8 +22,8 @@ class HttpClient {
     _singleton ??= HttpClient._(config);
   }
 
-  Future<Response> _send(HttpMethod methold, String path,
-      Map<String, dynamic>? query, Map<String, dynamic>? body) async {
+  Future<JsonObj> _send(
+      HttpMethod methold, String path, JsonObj? query, JsonObj? body) async {
     //構建請求網址
     final url = _config.pasteUrl(path, query);
     Request req = Request(methold.name, url);
@@ -49,24 +51,30 @@ class HttpClient {
       return Future.error(e);
     }
 
+    //嘗試將 body 轉為Json Object
+    JsonObj decodedBody = {};
+    if (res.body.isNotEmpty) {
+      decodedBody = jsonDecode(res.body);
+    }
+
     //全局錯誤處理
     if (res.statusCode != 200) {
-      return Future.error(handleException(res.statusCode));
+      return Future.error(handleException(res.statusCode, decodedBody));
     }
 
     //返回結果
-    return res;
+    return decodedBody;
   }
 
-  Future<Response> get(String path, {Map<String, dynamic>? queryParameters}) {
+  Future<JsonObj> get(String path, {JsonObj? queryParameters}) {
     return _send(HttpMethod.GET, path, queryParameters, null);
   }
 
-  Future<Response> post(String path, {Map<String, dynamic>? bodyItems}) {
+  Future<JsonObj> post(String path, {JsonObj? bodyItems}) {
     return _send(HttpMethod.POST, path, null, bodyItems);
   }
 
-  Future<Response> patch(String path, {Map<String, dynamic>? bodyItems}) {
+  Future<JsonObj> patch(String path, {JsonObj? bodyItems}) {
     return _send(HttpMethod.PATCH, path, null, bodyItems);
   }
 
