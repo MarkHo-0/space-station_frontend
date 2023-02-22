@@ -1,10 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:ez_localization/ez_localization.dart';
-import 'package:space_station/views/forum_pages/widgets/page_dropdown.dart';
-import 'dart:developer';
 
+import 'widgets/dynamic_textbox/dynamic_textbox.dart';
+import 'widgets/page_dropdown.dart';
 import '../_styles/textfield.dart';
 
 class ForumPostPage extends StatefulWidget {
@@ -15,15 +14,17 @@ class ForumPostPage extends StatefulWidget {
 }
 
 class _ForumPostPageState extends State<ForumPostPage> {
+  final titleController = TextEditingController();
+  final bodyController = TextEditingController();
   bool isPreview = false;
-  String mode = "create_post";
-  Widget bodywidget = const ScaffoldBody(); // changeable body widget
   @override
   Widget build(BuildContext context) {
-    Text appbarText = Text(context.getString(mode)); //changeble appbar title
+    //changeble appbar title
     return Scaffold(
       appBar: AppBar(
-        title: appbarText,
+        title: Text(
+          context.getString(isPreview ? 'preview_mode' : 'create_post'),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
@@ -34,42 +35,31 @@ class _ForumPostPageState extends State<ForumPostPage> {
           Switch(
             value: isPreview,
             onChanged: ((value) {
-              setState(() {
-                isPreview = value;
-                if (value == true) {
-                  mode = "preview_mode";
-                }
-
-                if (value == false) {
-                  mode = "create_post";
-                }
-              });
+              setState(() => isPreview = value);
             }),
           ),
         ],
       ),
-      body: Stack(
-        children: <Widget>[
-          Offstage(offstage: isPreview, child: const ScaffoldBody()),
-          Offstage(offstage: !isPreview, child: const ScaffoldPreViewBody()),
-        ],
-      ),
+      body: isPreview
+          ? BodyPreviewPage(bodyController)
+          : InputForm(titleController, bodyController),
     );
   }
 }
 
-class ScaffoldBody extends StatefulWidget {
-  const ScaffoldBody({super.key});
+// ignore: must_be_immutable
+class InputForm extends StatelessWidget {
+  final TextEditingController titleController;
+  final TextEditingController bodyController;
+  InputForm(
+    this.titleController,
+    this.bodyController, {
+    super.key,
+  });
 
-  @override
-  State<ScaffoldBody> createState() => _ScaffoldBodyState();
-}
-
-class _ScaffoldBodyState extends State<ScaffoldBody> {
   int selectedPageID = 0;
   int selectedCategoryID = 0;
-  TextEditingController titleController = TextEditingController();
-  TextEditingController bodyController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -145,21 +135,12 @@ class _ScaffoldBodyState extends State<ScaffoldBody> {
   }
 }
 
-////////////////////////////////////////////
-////////////////////////////////////////////
+class BodyPreviewPage extends StatelessWidget {
+  final TextEditingController bodyController;
+  const BodyPreviewPage(this.bodyController, {super.key});
 
-class ScaffoldPreViewBody extends StatefulWidget {
-  const ScaffoldPreViewBody({super.key});
-
-  @override
-  State<ScaffoldPreViewBody> createState() => _ScaffoldPreViewBodyState();
-}
-
-class _ScaffoldPreViewBodyState extends State<ScaffoldPreViewBody> {
   @override
   Widget build(BuildContext context) {
-    return Text("123");
-    /////////
-    ///////// not finished
+    return DynamicTextBox(bodyController.text);
   }
 }
