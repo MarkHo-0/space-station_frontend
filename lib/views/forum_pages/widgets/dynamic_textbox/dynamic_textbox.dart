@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
+import 'elements/headline.dart';
 import 'elements/base.dart';
 import 'elements/normal_text.dart';
 import 'elements/math_block.dart';
@@ -13,7 +14,10 @@ class DynamicTextBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (text.isEmpty) {
-      return const Text('Empty');
+      return const SizedBox(
+        width: double.infinity,
+        height: 10,
+      );
     }
 
     final List<String> lines = const LineSplitter().convert(text);
@@ -21,7 +25,7 @@ class DynamicTextBox extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: elements.map((e) {
           final rawLines = lines.sublist(e.startLine, e.endLine + 1).toList();
           return e.type.build(context, rawLines);
@@ -35,37 +39,38 @@ class DynamicTextBox extends StatelessWidget {
 
     final List<MatchedElement> elements = [];
     int currLine = 0;
-    int lastElementEndLine = 0;
+    int lastElementEndLine = -1;
 
     while (currLine < lines.length) {
       for (final element in specialElements) {
         //如果沒有匹配的首行，則配對下一個元素
         if (!element.isFirstLine(lines[currLine])) continue;
 
-        //如果元素屬於一行，則完成匹配
-        if (element.isOneLine) {
-          elements.add(MatchedElement(currLine, currLine, element));
-          lastElementEndLine++;
-          break;
-        }
-
-        //如果往後剩餘的行數不足兩行，則表示沒有可能有內容
-        if (currLine + 2 >= lines.length) break;
-
-        //往後尋找完結標示，如果到最後一行都找不到，則匹配失敗
         bool matched = false;
-        int endLine = currLine + 2;
-        for (; endLine < lines.length; endLine++) {
-          if (element.isLastLine(lines[endLine])) {
-            matched = true;
-            break;
+        int endLine = currLine;
+
+        //逐行檢查，直到匹配到元素的尾行
+        if (element.isOneLine) {
+          matched = true;
+        } else {
+          //如果往後剩餘的行數不足兩行，則表示沒有可能有內容
+          endLine += 2;
+          if (endLine >= lines.length) continue;
+
+          //往後尋找完結標示，如果到最後一行都找不到，則匹配失敗
+          for (; endLine < lines.length; endLine++) {
+            if (element.isLastLine(lines[endLine])) {
+              matched = true;
+              break;
+            }
           }
         }
+
         if (matched == false) continue;
 
         //檢查和上個成功匹配元素之間是否有空隙
         //如有則將空隙的內容先設為普通文字元素
-        final possibleStartLine = addOneIfNonZero(lastElementEndLine);
+        final possibleStartLine = lastElementEndLine + 1;
         if (possibleStartLine != currLine) {
           final textEndLine = currLine - 1;
           elements.add(MatchedElement(
@@ -75,17 +80,18 @@ class DynamicTextBox extends StatelessWidget {
           ));
         }
 
-        //儲存匹配到的所有行數和其元素類型
+        //將匹配到的內容儲存
         elements.add(MatchedElement(currLine, endLine, element));
         lastElementEndLine = endLine;
         currLine = endLine;
+
         break;
       }
       currLine++;
     }
 
     //如有剩下行數，則全部轉為普通文字
-    final possibleStartLine = addOneIfNonZero(lastElementEndLine);
+    final possibleStartLine = lastElementEndLine + 1;
     if (possibleStartLine < lines.length) {
       elements.add(MatchedElement(
         possibleStartLine,
@@ -98,11 +104,6 @@ class DynamicTextBox extends StatelessWidget {
   }
 }
 
-int addOneIfNonZero(int value) {
-  if (value == 0) return 0;
-  return value + 1;
-}
-
 class MatchedElement {
   final int startLine;
   final int endLine;
@@ -112,6 +113,7 @@ class MatchedElement {
 }
 
 final List<ContentElement> specialElements = [
+  Headline(),
   CodeBlock(),
   MathBlock(),
 ];

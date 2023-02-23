@@ -5,10 +5,10 @@ import 'package:flutter_highlight/themes/atelier-cave-light.dart';
 
 import 'base.dart';
 
-final lineStartReg = RegExp(r'^```([a-z_]{1,15})$');
-final lineEndReg = RegExp(r'^```$');
-
 class CodeBlock implements ContentElement {
+  final lineStartReg = RegExp(r'^```([a-z_]{1,15})$');
+  final lineEndReg = RegExp(r'^```$');
+
   @override
   bool isFirstLine(String line) => lineStartReg.hasMatch(line);
 
@@ -17,6 +17,7 @@ class CodeBlock implements ContentElement {
 
   @override
   Widget build(BuildContext context, List<String> lines) {
+    final scrollCtl = ScrollController();
     final codeLanguage = lineStartReg.firstMatch(lines[0])!.group(1);
     final codeTheme = Theme.of(context).brightness == Brightness.light
         ? atelierCaveLightTheme
@@ -24,7 +25,6 @@ class CodeBlock implements ContentElement {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Container(
-        width: double.infinity,
         decoration: BoxDecoration(
           color: codeTheme['root']!.backgroundColor,
           borderRadius: const BorderRadius.all(Radius.circular(5)),
@@ -32,14 +32,23 @@ class CodeBlock implements ContentElement {
         clipBehavior: Clip.antiAlias,
         child: Stack(
           children: [
-            HighlightView(
-              lines.sublist(1, lines.length - 1).join('\n'),
-              language: codeLanguage,
-              theme: codeTheme,
-              padding: const EdgeInsets.all(10),
-              tabSize: 2,
-              textStyle: TextStyle(
-                fontSize: Theme.of(context).textTheme.bodySmall!.fontSize,
+            Scrollbar(
+              controller: scrollCtl,
+              scrollbarOrientation: ScrollbarOrientation.bottom,
+              child: SingleChildScrollView(
+                controller: scrollCtl,
+                scrollDirection: Axis.horizontal,
+                child: HighlightView(
+                  lines.sublist(1, lines.length - 1).join('\n'),
+                  language: codeLanguage,
+                  theme: codeTheme,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                  tabSize: 2,
+                  textStyle: TextStyle(
+                    fontSize: Theme.of(context).textTheme.bodySmall!.fontSize,
+                  ),
+                ),
               ),
             ),
             Container(

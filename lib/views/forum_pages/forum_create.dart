@@ -114,11 +114,11 @@ class InputForm extends StatelessWidget {
           Expanded(
             child: TextField(
               maxLines: null,
-              minLines: null,
               expands: true,
               textAlignVertical: TextAlignVertical.top,
               controller: bodyController,
               keyboardType: TextInputType.multiline,
+              autocorrect: false,
               decoration: InputDecoration(
                 border: kRoundedBorder,
                 focusedBorder: kRoundedBorder,

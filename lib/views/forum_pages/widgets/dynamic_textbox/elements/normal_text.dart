@@ -11,11 +11,9 @@ class NormalText implements ContentElement {
 
   @override
   Widget build(BuildContext context, List<String> lines) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: lines.map((line) {
-        return Text(line, style: Theme.of(context).textTheme.bodyMedium);
-      }).toList(),
+    return SelectableText(
+      lines.join('\n'),
+      style: Theme.of(context).textTheme.bodyLarge,
     );
   }
 
