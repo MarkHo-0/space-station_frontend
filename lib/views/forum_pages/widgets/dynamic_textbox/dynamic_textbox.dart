@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
+import 'elements/quote_block.dart';
 import 'elements/headline.dart';
-import 'elements/base.dart';
 import 'elements/normal_text.dart';
 import 'elements/math_block.dart';
 import 'elements/code_block.dart';
+import 'elements/base.dart';
 
 class DynamicTextBox extends StatelessWidget {
   final String text;
@@ -114,6 +115,7 @@ class MatchedElement {
 
 final List<ContentElement> specialElements = [
   Headline(),
+  QuoteBlock(),
   CodeBlock(),
   MathBlock(),
 ];
