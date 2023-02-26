@@ -131,4 +131,5 @@ class PageDropdownController extends ValueNotifier<double?> {
   }
 
   bool get isEmpty => super.value == null;
+  void clear() => super.value = null;
 }

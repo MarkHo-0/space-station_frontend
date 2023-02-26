@@ -2,8 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:ez_localization/ez_localization.dart';
-import 'package:space_station/views/forum_pages/thread.dart';
 
+import '../_share/unsave_warning_popup.dart';
+import 'thread.dart';
 import '../../api/interfaces/forum_api.dart';
 import 'widgets/post_dialog.dart';
 import 'widgets/dynamic_textbox/dynamic_textbox.dart';
@@ -34,26 +35,40 @@ class _ThreadPostPageState extends State<ThreadPostPage> {
 
   @override
   Widget build(BuildContext context) {
-    //changeble appbar title
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(context.getString('create_thread')),
-        actions: [
-          Visibility(
-            visible: canPost,
-            child: TextButton(
-              onPressed: (() => setState(() => isPreview = !isPreview)),
-              child: Text(
-                context.getString(isPreview ? "edit_action" : "preview_action"),
+    return WillPopScope(
+      onWillPop: beforeExit,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(context.getString('create_thread')),
+          automaticallyImplyLeading: !isPreview,
+          actions: [
+            Visibility(
+              visible: canPost,
+              child: TextButton(
+                onPressed: (() => setState(() => isPreview = !isPreview)),
+                child: Text(
+                  context.getString(isPreview ? "back" : "preview_action"),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
+        body: isPreview
+            ? BodyPreviewPage(contentInput)
+            : InputForm(titleInput, contentInput, destDropdown, canPost),
       ),
-      body: isPreview
-          ? BodyPreviewPage(contentInput)
-          : InputForm(titleInput, contentInput, destDropdown, canPost),
     );
+  }
+
+  Future<bool> beforeExit() async {
+    if (titleInput.text.isEmpty &&
+        contentInput.text.isEmpty &&
+        destDropdown.isEmpty) {
+      return Future.value(true);
+    }
+    final shouldExit = await showUnsaveDialog(context);
+    if (shouldExit == null) return Future.value(false);
+    return Future.value(shouldExit);
   }
 
   void checkCanPost() {
@@ -170,6 +185,11 @@ class InputForm extends StatelessWidget {
       ),
     ).then((threadID) {
       if (threadID == null) return;
+
+      destDropdown.clear();
+      titleInput.clear();
+      contentInput.clear();
+
       if (threadID >= 0) Navigator.pop(context);
       if (threadID > 0) {
         Future.delayed(const Duration(microseconds: 500), () {

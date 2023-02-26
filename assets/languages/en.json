@@ -106,11 +106,14 @@
   "conform": "Conform",
   "cancel": "Cancel",
   "retry": "Retry",
-  "feature_need_login": "This feature requires login to use.",
+  "discard": "Discard",
   "__Errors__": "----------------------------------",
   "net_err_title": "Network Exception",
   "net_err_subtitle": "Unable to connect to the Server",
   "net_err_solution": "This may due to your current unstable network, please try to reload a few times. If the situation persists, it is likely that the server is offline for various reasons, please contact the administrators for more information.",
   "unknown_err_title": "Error",
-  "unknown_err_solution": "An unknown error occurred, please try again later"
+  "unknown_err_solution": "An unknown error occurred, please try again later",
+  "feature_need_login": "This feature requires login to use.",
+  "unsave_warning_title": "Discard changes",
+  "unsave_warning_body": "You have made changes that haven't saved yet. Are you sure to discard changes?"
 }
