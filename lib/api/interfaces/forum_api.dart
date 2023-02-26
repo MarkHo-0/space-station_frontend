@@ -9,9 +9,6 @@ Future<HomePageModel> getHomeData() async {
   return HttpClient().get('/home').then((res) => HomePageModel.fromJson(res));
 }
 
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
-
 Future<ThreadsModel> getThreads({
   int orderID = 1,
   int pageID = 0,
@@ -33,8 +30,6 @@ Future<ThreadsModel> getThreads({
       .then((res) => ThreadsModel.fromJson(res));
 }
 
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
 Future<ThreadDetailModel> getThreadDetail(String tid, String cursor) async {
   http.Response response;
   response = await API("").myGet("/thread/$tid", {"cursor": cursor});
@@ -58,32 +53,11 @@ Future<CommentDetail> getComment(String cid) async {
   }
 }
 
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
-Future<int?> postThread(int cid, int fid, String title, String content) async {
-  Map<String, dynamic> bodyMap = {
-    "cid": cid,
-    "fid": fid,
-    "title": title,
-    "content": content
-  };
-  http.Response response = await API("").myPost("/thread", {}, bodyMap);
-  switch (response.statusCode) {
-    case 200:
-      Map<String, dynamic> x = jsonDecode(response.body);
-      return (x["new_tid"]);
-    case 413:
-      throw Exception("Thread title/body have over the word limit");
-    case 403:
-      Map<String, dynamic> responsemap = jsonDecode(response.body);
-      String exceptionString =
-          "Limited:${responsemap["reason_id"]}\n${responsemap["extra_data"]}\nPlease contect the admin!";
-      throw Exception(exceptionString);
-    case 401:
-      throw Exception("No Authorization!");
-    default:
-      throw Exception("Error.Please try again.");
-  }
+Future<int> postThread(int pid, int fid, String title, String content) async {
+  final thread = {"pid": pid, "fid": fid, "title": title, "content": content};
+  return HttpClient()
+      .post('/thread', bodyItems: thread)
+      .then((res) => res["new_tid"] as int);
 }
 
 ////如果200 ,return true

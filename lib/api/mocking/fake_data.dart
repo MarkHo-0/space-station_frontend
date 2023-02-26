@@ -89,6 +89,24 @@ void generateRandomThreads(int quantity) {
   }
 }
 
+int createNewThread(String title, String content, int pid, int fid) {
+  dynamic thread = {
+    'tid': fakeThreads.length,
+    'pid': pid,
+    'fid': fid,
+    'title': title,
+    'sender': {'uid': fakeUser!.uid, 'nickname': fakeUser!.nickname},
+    'create_time': getCurrUnixTime(),
+    'last_update_time': getCurrUnixTime(),
+    'stats': {'like': 0, 'dislike': 0, 'comment': 0},
+    'content_cid': 1,
+    'pined_cid': null,
+    'heat': 0,
+  };
+  fakeThreads.add(thread);
+  return fakeThreads.length - 1;
+}
+
 //復合類型假數據生成
 
 dynamic getRandomUser() {

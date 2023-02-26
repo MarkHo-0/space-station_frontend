@@ -69,6 +69,18 @@ void initializationInterfaces() {
     return SimpleResponse(body);
   });
 
+  TestClient.onPost('/thread', (req) {
+    if (req.isLogined == false) {
+      return const SimpleResponse({}, statusCode: 401);
+    }
+    final pid = req.bodies['pid'] as int;
+    final fid = req.bodies['fid'] as int;
+    final title = req.bodies['title'] as String;
+    final content = req.bodies['content'] as String;
+    final tid = createNewThread(title, content, pid, fid);
+    return SimpleResponse({'new_tid': tid});
+  });
+
   TestClient.onGet('/user/state/:sid', (req) {
     final sid = int.parse(req.parameters['sid'] ?? '0');
     final body = {
