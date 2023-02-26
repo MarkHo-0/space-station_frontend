@@ -61,6 +61,9 @@ class ThemeProvider extends ChangeNotifier {
           ),
         ),
       ),
+      textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+              foregroundColor: isBlackTheme ? lightPrimary : darkPrimary)),
       navigationBarTheme: NavigationBarThemeData(
         indicatorColor: isBlackTheme ? darkPrimary : lightPrimary,
         surfaceTintColor: Colors.transparent,
