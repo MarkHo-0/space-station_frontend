@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 
-import 'package:space_station/models/thread.dart';
-import 'forum_create.dart';
+import '../_share/need_login_popup.dart';
+import '../../models/thread.dart';
+import '../../providers/auth_provider.dart';
+import 'thread_post.dart';
 import 'widgets/multi_tabs_thread_list.dart';
 import './widgets/forum_top_panel.dart';
 import '../../api/interfaces/forum_api.dart';
@@ -28,7 +31,7 @@ class _ForumPageState extends State<ForumPage>
         ForumTopPanel(
           onSearch: (value) => refreshList(queryText: value),
           onOrderChanged: (value) => refreshList(orderID: value),
-          onGoToPostPage: onGoToPostPage,
+          onGoToPostPage: () => onGoToPostPage(context),
         ),
         MultiTabsThreadList(
           key: _forumKey,
@@ -60,10 +63,12 @@ class _ForumPageState extends State<ForumPage>
     //TODO: 跳轉到貼文頁面
   }
 
-  void onGoToPostPage() {
+  void onGoToPostPage(BuildContext context) {
+    final auth = Provider.of<AuthProvider>(context, listen: false);
+    if (auth.isLogined == false) return showNeedLoginDialog(context);
     Navigator.of(context).push(
       CupertinoPageRoute(
-        builder: ((_) => const ForumPostPage()),
+        builder: ((_) => const ThreadPostPage()),
       ),
     );
   }
