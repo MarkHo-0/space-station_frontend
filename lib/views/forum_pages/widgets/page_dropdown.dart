@@ -6,15 +6,19 @@ import '../../../utils/constant.dart';
 import '../../_styles/textfield.dart';
 
 class PageDropdown extends StatefulWidget {
-  final Function(int pageID, int categoryID) onChanged;
-  const PageDropdown({super.key, required this.onChanged});
+  final PageDropdownController controller;
+  const PageDropdown({super.key, required this.controller});
 
   @override
   State<PageDropdown> createState() => _PageDropdownState();
 }
 
 class _PageDropdownState extends State<PageDropdown> {
-  double? selectedValue;
+  @override
+  void initState() {
+    widget.controller.addListener(update);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,19 +32,13 @@ class _PageDropdownState extends State<PageDropdown> {
           child: DropdownButton<double>(
             elevation: 2,
             borderRadius: BorderRadius.circular(3),
-            value: selectedValue,
+            value: widget.controller.value,
             items: buildSelectorItems(context),
             selectedItemBuilder: (ctx) => buildSelectedItems(ctx),
             hint: buildItem(context.getString("page_dropdown_hint")),
             isDense: true,
             isExpanded: true,
-            onChanged: (value) {
-              setState(() => selectedValue = value);
-              final temp = value.toString().split('.');
-              final pageID = int.parse(temp[0]);
-              final categoryID = int.parse(temp[1]);
-              widget.onChanged(pageID, categoryID);
-            },
+            onChanged: (value) => widget.controller.update(value!),
           ),
         ),
       ),
@@ -109,4 +107,28 @@ class _PageDropdownState extends State<PageDropdown> {
       ),
     );
   }
+
+  void update() => setState(() {});
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(update);
+    super.dispose();
+  }
+}
+
+class PageDropdownController extends ValueNotifier<double?> {
+  int pageID = 0;
+  int categoryID = 0;
+
+  PageDropdownController() : super(null);
+
+  void update(double newValue) {
+    final temp = newValue.toString().split('.');
+    pageID = int.parse(temp[0]);
+    categoryID = int.parse(temp[1]);
+    super.value = newValue;
+  }
+
+  bool get isEmpty => super.value == null;
 }
