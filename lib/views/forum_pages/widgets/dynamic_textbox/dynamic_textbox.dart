@@ -23,15 +23,12 @@ class DynamicTextBox extends StatelessWidget {
 
     final List<String> lines = const LineSplitter().convert(text);
     final elements = parse(lines);
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: elements.map((e) {
-          final rawLines = lines.sublist(e.startLine, e.endLine + 1).toList();
-          return e.type.build(context, rawLines);
-        }).toList(),
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: elements.map((e) {
+        final rawLines = lines.sublist(e.startLine, e.endLine + 1).toList();
+        return e.type.build(context, rawLines);
+      }).toList(),
     );
   }
 

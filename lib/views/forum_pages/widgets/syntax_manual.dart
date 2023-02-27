@@ -17,7 +17,7 @@ OverlayEntry showSyntaxManual(BuildContext context) {
         title: Text(context.getString("syntax_manual")),
         actions: [
           IconButton(
-            onPressed: () => overlayEntry!.remove(),
+            onPressed: () => overlayEntry.remove(),
             icon: const Icon(Icons.close),
           )
         ],

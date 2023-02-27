@@ -3,17 +3,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:ez_localization/ez_localization.dart';
 
-import '../_share/unsave_warning_popup.dart';
-import 'thread.dart';
-import '../../api/interfaces/forum_api.dart';
+import 'widgets/dynamic_textbox/previewable_textfield.dart';
+import 'widgets/syntax_manual.dart';
 import 'widgets/post_dialog.dart';
-import 'widgets/dynamic_textbox/dynamic_textbox.dart';
 import 'widgets/page_dropdown.dart';
+import 'thread.dart';
+import '../_share/unsave_warning_popup.dart';
+import '../../api/interfaces/forum_api.dart';
 import '../_styles/textfield.dart';
 
 class ThreadPostPage extends StatefulWidget {
   const ThreadPostPage({super.key});
-
   @override
   State<ThreadPostPage> createState() => _ThreadPostPageState();
 }
@@ -22,16 +22,7 @@ class _ThreadPostPageState extends State<ThreadPostPage> {
   final titleInput = TextEditingController();
   final contentInput = TextEditingController();
   final destDropdown = PageDropdownController();
-  bool isPreview = false;
-  bool canPost = false;
-
-  @override
-  void initState() {
-    super.initState();
-    titleInput.addListener(checkCanPost);
-    contentInput.addListener(checkCanPost);
-    destDropdown.addListener(checkCanPost);
-  }
+  OverlayEntry? manualContoller;
 
   @override
   Widget build(BuildContext context) {
@@ -40,27 +31,81 @@ class _ThreadPostPageState extends State<ThreadPostPage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(context.getString('create_thread')),
-          automaticallyImplyLeading: !isPreview,
           actions: [
-            Visibility(
-              visible: canPost,
-              child: TextButton(
-                onPressed: (() => setState(() => isPreview = !isPreview)),
-                child: Text(
-                  context.getString(isPreview ? "back" : "preview_action"),
-                ),
-              ),
+            IconButton(
+              onPressed: () => manualContoller = showSyntaxManual(context),
+              icon: const Icon(Icons.help_outline),
             ),
           ],
         ),
-        body: isPreview
-            ? BodyPreviewPage(contentInput)
-            : InputForm(titleInput, contentInput, destDropdown, canPost),
+        body: Padding(
+          padding: const EdgeInsets.all(15),
+          child: Column(
+            children: [
+              buildPageSelectorAndButtom(context),
+              buildTitleInput(context),
+              PreviewableTextField(contentInput),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildPageSelectorAndButtom(BuildContext context) {
+    return SizedBox(
+      height: 36,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          PageDropdown(controller: destDropdown),
+          Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(elevation: 0),
+              onPressed: () => onPressedPost(context),
+              child: Row(
+                children: [
+                  Text(context.getString("post_action")),
+                  const SizedBox(width: 5),
+                  const Icon(Icons.send, size: 20),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget buildTitleInput(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: TextField(
+        autofocus: true,
+        controller: titleInput,
+        decoration: InputDecoration(
+          border: kRoundedBorder,
+          focusedBorder: kRoundedBorder,
+          filled: true,
+          fillColor: Theme.of(context).splashColor,
+          contentPadding: kContentPadding,
+          hintText: context.getString("thread_title_hint"),
+        ),
+        inputFormatters: [LengthLimitingTextInputFormatter(50)],
+        textInputAction: TextInputAction.next,
+        maxLines: 1,
       ),
     );
   }
 
   Future<bool> beforeExit() async {
+    if (manualContoller != null && manualContoller!.mounted) {
+      manualContoller!.remove();
+      return Future.value(false);
+    }
+
     if (titleInput.text.isEmpty &&
         contentInput.text.isEmpty &&
         destDropdown.isEmpty) {
@@ -71,107 +116,12 @@ class _ThreadPostPageState extends State<ThreadPostPage> {
     return Future.value(shouldExit);
   }
 
-  void checkCanPost() {
-    if (titleInput.text.trim().isEmpty ||
-        contentInput.text.trim().isEmpty ||
-        destDropdown.isEmpty) {
-      if (canPost == true) setState(() => canPost = false);
-    } else {
-      if (canPost == false) setState(() => canPost = true);
-    }
-  }
-}
-
-class InputForm extends StatelessWidget {
-  final TextEditingController titleInput;
-  final TextEditingController contentInput;
-  final PageDropdownController destDropdown;
-  final bool canPost;
-
-  const InputForm(
-    this.titleInput,
-    this.contentInput,
-    this.destDropdown,
-    this.canPost, {
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(15),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          SizedBox(
-            height: 36,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                PageDropdown(controller: destDropdown),
-                Visibility(
-                  visible: canPost,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(elevation: 0),
-                      onPressed: () => onPressedPost(context),
-                      child: Row(
-                        children: [
-                          Text(context.getString("post_action")),
-                          const SizedBox(width: 5),
-                          const Icon(Icons.send, size: 20),
-                        ],
-                      ),
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: TextField(
-              autofocus: true,
-              controller: titleInput,
-              decoration: InputDecoration(
-                border: kRoundedBorder,
-                focusedBorder: kRoundedBorder,
-                filled: true,
-                fillColor: Theme.of(context).splashColor,
-                contentPadding: kContentPadding,
-                hintText: context.getString("thread_title_hint"),
-              ),
-              inputFormatters: [LengthLimitingTextInputFormatter(50)],
-              textInputAction: TextInputAction.next,
-              maxLines: 1,
-            ),
-          ),
-          Expanded(
-            child: TextField(
-              maxLines: null,
-              expands: true,
-              textAlignVertical: TextAlignVertical.top,
-              controller: contentInput,
-              keyboardType: TextInputType.multiline,
-              autocorrect: false,
-              decoration: InputDecoration(
-                border: kRoundedBorder,
-                focusedBorder: kRoundedBorder,
-                filled: true,
-                fillColor: Theme.of(context).splashColor,
-                contentPadding: kContentPadding,
-                hintText: context.getString("content_hint"),
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
   void onPressedPost(BuildContext context) {
+    bool canPost = titleInput.text.trim().isNotEmpty &&
+        contentInput.text.trim().isNotEmpty &&
+        destDropdown.isEmpty == false;
+    if (canPost == false) return;
+
     showDialog<int?>(
       context: context,
       barrierDismissible: false,
@@ -201,15 +151,5 @@ class InputForm extends StatelessWidget {
         });
       }
     });
-  }
-}
-
-class BodyPreviewPage extends StatelessWidget {
-  final TextEditingController contentInput;
-  const BodyPreviewPage(this.contentInput, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return DynamicTextBox(contentInput.text);
   }
 }

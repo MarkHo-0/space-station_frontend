@@ -8,7 +8,6 @@ Future<bool?> showUnsaveDialog(BuildContext context) {
       return AlertDialog(
         title: Text(
           context.getString("unsave_warning_title"),
-          style: Theme.of(context).textTheme.titleMedium,
         ),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(3)),
