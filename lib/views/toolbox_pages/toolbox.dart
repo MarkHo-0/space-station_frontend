@@ -34,13 +34,11 @@ class _ToolboxPageState extends State<ToolboxPage>
               ),
               ToolboxItem(
                 nameKey: "class_swapping",
-                descriptionKey: "class_swapping_description",
                 backgroundImagePath: "assets/images/bookshelf.jpg",
                 enabled: stauts.classSwapping,
               ),
               ToolboxItem(
                 nameKey: "study_parner",
-                descriptionKey: "study_parner_description",
                 backgroundImagePath: "assets/images/discuss.jpg",
                 enabled: stauts.studyParner,
               ),
@@ -57,14 +55,12 @@ class _ToolboxPageState extends State<ToolboxPage>
 
 class ToolboxItem extends StatelessWidget {
   final String nameKey;
-  final String descriptionKey;
   final String backgroundImagePath;
   final Widget? page;
   final bool enabled;
   const ToolboxItem({
     super.key,
     required this.nameKey,
-    required this.descriptionKey,
     required this.backgroundImagePath,
     this.enabled = true,
     this.page,
@@ -113,7 +109,7 @@ class ToolboxItem extends StatelessWidget {
                   softWrap: false,
                 ),
                 Text(
-                  context.getString(descriptionKey),
+                  context.getString("${nameKey}_description"),
                   style: Theme.of(context).textTheme.bodyMedium,
                   maxLines: 2,
                   overflow: TextOverflow.fade,
