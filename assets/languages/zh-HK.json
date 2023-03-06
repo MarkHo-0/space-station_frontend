@@ -2,6 +2,8 @@
   "__HomePage__": "----------------------------------",
   "latest_info": "最新資訊",
   "hit_topics": "熱門話題",
+  "welcome_slogan": "Welcome",
+  "launch_rocket": "Launch the Space Rocket",
   "__Navbar__": "----------------------------------",
   "home_page": "主頁",
   "forum_page": "論壇",
@@ -19,5 +21,5 @@
   "__ProfilePage__": "----------------------------------",
   "black_theme": "黑夜主題",
   "language": "語言",
-  "create_post":"建立主題"
+  "create_post": "建立主題"
 }
