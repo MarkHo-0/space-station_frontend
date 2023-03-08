@@ -30,19 +30,12 @@ Future<ThreadsModel> getThreads({
       .then((res) => ThreadsModel.fromJson(res));
 }
 
-Future<ThreadDetailModel> getThreadDetail(String tid, String cursor) async {
-  http.Response response;
-  response = await API("").myGet("/thread/$tid", {"cursor": cursor});
-
-  if (response.statusCode == 200) {
-    return ThreadDetailModel.fromJson(jsonDecode(response.body));
-  } else {
-    throw Exception("Thread doesn't exist");
-  }
+Future<ThreadDetailModel> getThread(int tid, String cursor) async {
+  final query = {"cursor": cursor};
+  return HttpClient()
+      .get("/thread/$tid", queryParameters: query)
+      .then((res) => ThreadDetailModel.fromJson(res));
 }
-
-/////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
 
 Future<CommentDetail> getComment(String cid) async {
   http.Response response = await API("").myGet("/comment/$cid", {});

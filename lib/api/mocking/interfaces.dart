@@ -6,6 +6,7 @@ import 'client.dart';
 import 'fake_data.dart';
 
 const _kThreadsPerFetch = 15;
+const _kCommentsPerFetch = 15;
 final _toBase64 = utf8.fuse(base64);
 
 void initializationInterfaces() {
@@ -79,6 +80,41 @@ void initializationInterfaces() {
     final content = req.bodies['content'] as String;
     final tid = createNewThread(title, content, pid, fid);
     return SimpleResponse({'new_tid': tid});
+  });
+
+  TestClient.onGet('/thread/:tid', (req) {
+    final threadID = int.parse(req.parameters['tid'] ?? '0');
+    final encodedCursor = req.quaries['cursor'] ?? '';
+
+    int offset = 0;
+
+    //嘗試解析分頁指標
+    if (encodedCursor.isNotEmpty) {
+      final jsonCursor = _toBase64.decode(encodedCursor);
+      final mappedCursor = jsonDecode(jsonCursor);
+      offset = mappedCursor[0];
+    }
+
+    final thread = fakeThreads.firstWhere((t) => t['tid'] == threadID);
+    final comments = filterComments(tid: threadID, offset: offset);
+
+    //生成下一頁指標
+    String cursor = "";
+    if (comments.length >= _kCommentsPerFetch) {
+      cursor = "[${comments.length}]";
+      cursor = _toBase64.encode(cursor);
+    }
+
+    Map<String, dynamic> body = {
+      'threadDetail': thread,
+      'commentsList': comments,
+      'continuous': cursor,
+    };
+
+    print('---------------');
+    print(body);
+
+    return SimpleResponse(body);
   });
 
   TestClient.onGet('/user/state/:sid', (req) {

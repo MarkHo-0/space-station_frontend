@@ -32,6 +32,14 @@ List<dynamic> filterThreads({pageID = 0, facultyID = 0, queryText = ''}) {
   }).toList();
 }
 
+List<dynamic> filterComments({tid = 0, offset = 0, count = 15}) {
+  return fakeComments
+      .where((c) => c['tid'] == tid)
+      .skip(offset)
+      .take(count)
+      .toList();
+}
+
 bool isFakeUser(int sid) => fakeUserSid == sid;
 
 bool isVfCodeValid(int sid, int code) =>
@@ -54,6 +62,7 @@ bool performLogin(int sid, String pwd) {
 //單例類型假數據生成
 
 List<dynamic> fakeThreads = [];
+List<dynamic> fakeComments = [];
 User? fakeUser;
 int? fakeUserSid;
 String? fakeUserPwd;
@@ -61,22 +70,25 @@ String? fakeUserToken;
 
 void generateRandomThreads(int quantity) {
   fakeThreads.clear();
+  fakeComments.clear();
 
-  for (var i = 1; i < quantity; i++) {
+  for (var i = 1; i <= quantity; i++) {
     int pid = getRandomPID();
     int fid = pid == 2 ? getRandomFID() : 0;
     int lastUpdateTime = getRandomPassTime(getCurrUnixTime());
     int createTime = getRandomPassTime(lastUpdateTime, percentInSameDay: 0.3);
-    Map<String, int> stats = getRandomThreadStats();
+    Map<String, int> stats = getRandomStats();
     int heat =
         ((stats['like']! + stats['dislike']!) / 2).floor() + stats['comment']!;
+
+    dynamic threadSender = getRandomUser();
 
     dynamic thread = {
       'tid': i,
       'pid': pid,
       'fid': fid,
       'title': getRandomTitle(pid),
-      'sender': getRandomUser(),
+      'sender': threadSender,
       'create_time': createTime,
       'last_update_time': lastUpdateTime,
       'stats': stats,
@@ -85,25 +97,52 @@ void generateRandomThreads(int quantity) {
       'heat': heat,
     };
 
+    for (var j = 1; j <= stats['comment']!; j++) {
+      dynamic comment = {
+        'tid': i,
+        'cid': fakeComments.length + 1,
+        'content': getRandomContent(),
+        'createTime': createTime,
+        'replyto': null,
+        'stats': j == 1 ? stats : getRandomStats(),
+        'sender': j == 1 ? threadSender : getRandomUser(),
+        'status': j == 1 ? 0 : getRandomStatus(),
+      };
+      fakeComments.add(comment);
+    }
+
     fakeThreads.add(thread);
   }
 }
 
 int createNewThread(String title, String content, int pid, int fid) {
+  dynamic defaultStats = {'like': 0, 'dislike': 0, 'comment': 0};
+  dynamic sender = {'uid': fakeUser!.uid, 'nickname': fakeUser!.nickname};
   dynamic thread = {
     'tid': fakeThreads.length,
     'pid': pid,
     'fid': fid,
     'title': title,
-    'sender': {'uid': fakeUser!.uid, 'nickname': fakeUser!.nickname},
+    'sender': sender,
     'create_time': getCurrUnixTime(),
     'last_update_time': getCurrUnixTime(),
-    'stats': {'like': 0, 'dislike': 0, 'comment': 0},
+    'stats': defaultStats,
     'content_cid': 1,
     'pined_cid': null,
     'heat': 0,
   };
+  dynamic firstComment = {
+    'tid': fakeThreads.length,
+    'cid': fakeComments.length,
+    'content': content,
+    'createTime': getCurrUnixTime(),
+    'replyto': null,
+    'stats': defaultStats,
+    'sender': sender,
+    'status': 0,
+  };
   fakeThreads.add(thread);
+  fakeComments.add(firstComment);
   return fakeThreads.length - 1;
 }
 
@@ -114,11 +153,12 @@ dynamic getRandomUser() {
   return {'uid': uid, 'nickname': _nicknames[uid]};
 }
 
-Map<String, int> getRandomThreadStats() {
+Map<String, int> getRandomStats() {
   return <String, int>{
     'like': getRandomInt(50, 0.1),
     'dislike': getRandomInt(50, 0.1),
-    'comment': getRandomInt(30, 0.2),
+    'comment': getRandomInt(10, 0.2),
+    'me': 0
   };
 }
 
@@ -141,6 +181,20 @@ String getRandomTitle(int pid) {
   final targetList = pid == 1 ? _casualTitles : _academicTitles;
   final i = Random().nextInt(targetList.length - 1);
   return targetList[i];
+}
+
+String getRandomContent() {
+  final i = Random().nextInt(_comments.length - 1);
+  return _comments[i].toString();
+}
+
+int getRandomStatus() {
+  const normalThreshold = 90;
+  const hideThreshold = 70;
+  final i = Random().nextInt(100);
+  if (i < normalThreshold) return 0;
+  final j = Random().nextInt(100);
+  return j < hideThreshold ? 1 : 2;
 }
 
 int getRandomPassTime(int curr, {double percentInSameDay = 0.7}) {
@@ -184,7 +238,6 @@ List<String> _casualTitles = [
   'I want to know how everyone knows about this platform',
 ];
 
-
 List<String> _academicTitles = [
   'C vs C++ vs C#',
   'Explain that the speed of light cannot be surpassed? ',
@@ -201,6 +254,16 @@ List<String> _academicTitles = [
   'Read pneumonoultramicroscopicsilicovolcanoconiosis',
   'Evolution vs Creation',
   'I want to write a compiler by myself, do you have any resources to recommend?'
+];
+
+List<String> _comments = [
+  'I support you!',
+  'I don\'t know what you asking.',
+  'Base my understanding, you are wrong.',
+  '# Please report this thread!\nHe is posting sensitive thing',
+  'I can give some example:\n> www.google.com\n> www.youtube.com',
+  'This can be solve by the following equation:\n\$\$\nmx+y=c\n\$\$',
+  'You can try the following code:\n```js\nconsole.log("Hello world")\n````'
 ];
 
 List<String> _nicknames = [
@@ -226,10 +289,25 @@ List<String> _nicknames = [
 ];
 
 List<dynamic> _news = [
-  {1: "Travel with peace of mind is officially coming to an end", 2: "The mask order has also ended ..."},
-  {1: "The school has been fully changed to Microsoft", 2: "The biggest reason is that Google Education Edition IKEA no longer has unlimited storage space, I don't want to buy it"},
-  {1: "All students need to pass the National Security Law Examination before graduation", 2: "My land is more expensive than the Education Bureau, everyone makes a hard scene and makes a good scene"},
-  {1: "HDIT is about to become the most successful subject in the school", 2: "This subject is expected to have a 100% enrollment rate in 2333"},
+  {
+    1: "Travel with peace of mind is officially coming to an end",
+    2: "The mask order has also ended ..."
+  },
+  {
+    1: "The school has been fully changed to Microsoft",
+    2: "The biggest reason is that Google Education Edition IKEA no longer has unlimited storage space, I don't want to buy it"
+  },
+  {
+    1: "All students need to pass the National Security Law Examination before graduation",
+    2: "My land is more expensive than the Education Bureau, everyone makes a hard scene and makes a good scene"
+  },
+  {
+    1: "HDIT is about to become the most successful subject in the school",
+    2: "This subject is expected to have a 100% enrollment rate in 2333"
+  },
   {1: "The new school forum is online", 2: "Hurry up and leave your thoughts"},
-  {1: "Pay the tuition for next semester", 2: "If you don't pay the tuition any more, call and talk to your landlord"},
+  {
+    1: "Pay the tuition for next semester",
+    2: "If you don't pay the tuition any more, call and talk to your landlord"
+  },
 ]; /* #endregion */
