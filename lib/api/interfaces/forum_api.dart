@@ -78,10 +78,10 @@ Future<int?> postComment(int tid, int replyTo, String content) async {
   }
 }
 
-Future<int> reactComment(int commentID, int type) async {
-  final body = {"type": type};
+Future<int> reactComment(int commentID, int type) {
+  final reaction = {"type": type};
   return HttpClient()
-      .post("/comment/$commentID/reaction", bodyItems: body)
+      .post("/comment/$commentID/react", bodyItems: reaction)
       .then((res) => res['final_reaction'] as int);
 }
 

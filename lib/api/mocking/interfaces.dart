@@ -114,6 +114,17 @@ void initializationInterfaces() {
     return SimpleResponse(body);
   });
 
+  TestClient.onPost('/comment/:cid/react', (req) {
+    if (req.isLogined == false) {
+      return const SimpleResponse({}, statusCode: 401);
+    }
+    final commentID = int.parse(req.parameters['cid']!);
+    final newReaction = req.bodies['type'] as int;
+    final finalReaction = updateReaction(commentID, newReaction);
+
+    return SimpleResponse({'final_reaction': finalReaction});
+  });
+
   TestClient.onGet('/user/state/:sid', (req) {
     final sid = int.parse(req.parameters['sid'] ?? '0');
     final body = {

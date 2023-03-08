@@ -59,6 +59,17 @@ bool performLogin(int sid, String pwd) {
   return true;
 }
 
+int updateReaction(int commentID, int newReaction) {
+  final comment = fakeComments.firstWhere((c) => c['cid'] == commentID);
+  final oldReaction = comment['stats']['me'] as int;
+
+  if (oldReaction > 0 && oldReaction == newReaction) {
+    newReaction = 0;
+  }
+
+  return comment['stats']['me'] = newReaction;
+}
+
 //單例類型假數據生成
 
 List<dynamic> fakeThreads = [];
