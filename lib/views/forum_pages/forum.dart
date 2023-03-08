@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
+import 'package:space_station/views/forum_pages/thread.dart';
 
 import '../_share/need_login_popup.dart';
 import '../../models/thread.dart';
@@ -60,7 +61,11 @@ class _ForumPageState extends State<ForumPage>
   }
 
   void onThreadTaped(int threadID) {
-    //TODO: 跳轉到貼文頁面
+    Navigator.of(context).push(
+      CupertinoPageRoute(
+        builder: ((_) => const ThreadPage(1)),
+      ),
+    );
   }
 
   void onGoToPostPage(BuildContext context) {

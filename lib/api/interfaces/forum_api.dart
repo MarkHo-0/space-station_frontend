@@ -80,7 +80,7 @@ Future<int?> postComment(int tid, int replyTo, String content) async {
 
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
-Future<int?> postCommentReation(int cid, int type) async {
+Future<int> postCommentReation(int cid, int type) async {
   http.Response response =
       await API("").myPost("/comment/$cid/reaction", {"type": type}, {});
   switch (response.statusCode) {
