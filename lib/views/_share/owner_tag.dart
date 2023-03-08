@@ -16,7 +16,9 @@ class OwnerTag extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          owner.nickname,
+          owner.nickname.length > 25
+              ? "${owner.nickname.substring(0, 25)}..."
+              : owner.nickname,
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                 color: Theme.of(context).primaryColor,
               ),

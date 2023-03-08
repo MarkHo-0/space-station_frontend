@@ -69,7 +69,10 @@ class _CommentContinerState extends State<CommentContiner> {
         ]),
         Row(children: [
           if (thread.pinedCid == currentcomment.cid)
-            Text(context.getString("best_relpy")),
+            Text(context.getString("best_relpy"),
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.bold)),
           popupbutton(context)
         ])
       ],
@@ -95,10 +98,8 @@ class _CommentContinerState extends State<CommentContiner> {
   Widget _body(BuildContext context, Comment currentcomment, Thread thread) {
     return Column(children: [
       if (currentcomment.replyto != null)
-        Padding(
-          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-          child: Text(">>${currentcomment.replyto?.cid}"),
-        ),
+        Text(">>${currentcomment.replyto?.sender.nickname}",
+            style: TextStyle(color: Theme.of(context).hintColor)),
       Padding(
         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
         child: DynamicTextBox(currentcomment.content),
@@ -205,16 +206,13 @@ class _CommentContinerState extends State<CommentContiner> {
   }
 
   Widget commentRow(BuildContext context, Comment currentcomment) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-      child: Row(
-        children: [
-          TextButton.icon(
-              onPressed: () {},
-              icon: const Icon(Icons.comment),
-              label: Text(currentcomment.stats.reply.toString()))
-        ],
-      ),
+    return Row(
+      children: [
+        TextButton.icon(
+            onPressed: () {},
+            icon: const Icon(Icons.comment),
+            label: Text(currentcomment.stats.reply.toString()))
+      ],
     );
   }
 
@@ -224,7 +222,13 @@ class _CommentContinerState extends State<CommentContiner> {
       itemBuilder: (context) => [
         if (getUid(context, auth) == widget.thread.sender.uid)
           popUpPinItem(context),
-        PopupMenuItem(value: 2, child: Text(context.getString("report")))
+        PopupMenuItem(
+          value: 2,
+          padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
+          child: Text(
+            context.getString("report"),
+          ),
+        )
       ],
       offset: const Offset(0, 40),
       elevation: 2,
@@ -237,13 +241,14 @@ class _CommentContinerState extends State<CommentContiner> {
 
   PopupMenuItem<int> popUpPinItem(BuildContext context) {
     return PopupMenuItem(
-        value: 1,
-        child: Row(
-          children: [
-            const Icon(Icons.star_border_sharp),
-            Text(context.getString("pin_comment")),
-          ],
-        ));
+      value: 1,
+      child: Row(
+        children: [
+          const Icon(Icons.star_border_sharp),
+          Text(context.getString("pin_comment")),
+        ],
+      ),
+    );
   }
 
   int? getUid(BuildContext context, AuthProvider auth) {
