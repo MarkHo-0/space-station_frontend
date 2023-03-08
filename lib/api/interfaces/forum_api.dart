@@ -78,22 +78,11 @@ Future<int?> postComment(int tid, int replyTo, String content) async {
   }
 }
 
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
-Future<int> postCommentReation(int cid, int type) async {
-  http.Response response =
-      await API("").myPost("/comment/$cid/reaction", {"type": type}, {});
-  switch (response.statusCode) {
-    case 200:
-      Map<String, dynamic> x = jsonDecode(response.body);
-      return (x["final_reaction"]);
-    case 403:
-      throw Exception("You are not allow to do this,please call the admin.");
-    case 401:
-      throw Exception("No Authorization!");
-    default:
-      throw Exception("Error.Please try again.");
-  }
+Future<int> reactComment(int commentID, int type) async {
+  final body = {"type": type};
+  return HttpClient()
+      .post("/comment/$commentID/reaction", bodyItems: body)
+      .then((res) => res['final_reaction'] as int);
 }
 
 //if code==200 , return LikeDislikeCount object (Field: liked:int, disliked:int)

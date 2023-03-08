@@ -32,9 +32,9 @@ List<dynamic> filterThreads({pageID = 0, facultyID = 0, queryText = ''}) {
   }).toList();
 }
 
-List<dynamic> filterComments({tid = 0, offset = 0, count = 15}) {
+List<dynamic> filterComments(int threadID, int offset, {count = 15}) {
   return fakeComments
-      .where((c) => c['tid'] == tid)
+      .where((c) => c['tid'] == threadID)
       .skip(offset)
       .take(count)
       .toList();
@@ -72,44 +72,66 @@ void generateRandomThreads(int quantity) {
   fakeThreads.clear();
   fakeComments.clear();
 
-  for (var i = 1; i <= quantity; i++) {
-    int pid = getRandomPID();
-    int fid = pid == 2 ? getRandomFID() : 0;
-    int lastUpdateTime = getRandomPassTime(getCurrUnixTime());
-    int createTime = getRandomPassTime(lastUpdateTime, percentInSameDay: 0.3);
-    Map<String, int> stats = getRandomStats();
-    int heat =
-        ((stats['like']! + stats['dislike']!) / 2).floor() + stats['comment']!;
+  for (var tIndex = 1; tIndex <= quantity; tIndex++) {
+    final int pid = getRandomPID();
+    final int fid = pid == 2 ? getRandomFID() : 0;
+    final int createTime = getRandomPassTime(
+      getCurrUnixTime(),
+      percentInSameDay: 0.4,
+    );
+    final commentCount = getRandomInt(15, 0.3);
+    int lastUpdateTime = createTime;
 
-    dynamic threadSender = getRandomUser();
+    final dynamic threadSender = getRandomUser();
+    late Map<String, int> firstCommentStats;
 
-    dynamic thread = {
-      'tid': i,
+    for (var cIndex = 0; cIndex <= commentCount; cIndex++) {
+      //因為第1則留言是屬於發問者，所以時間一樣
+      //從第2則開始，每次加一個隨機數
+      if (cIndex > 0) {
+        final timeDiff = getCurrUnixTime() - lastUpdateTime;
+        lastUpdateTime += getRandomInt(timeDiff, 0.7);
+      }
+      final comment = {
+        'tid': tIndex,
+        'cid': fakeComments.length,
+        'content': getRandomCommentContent(),
+        'create_time': lastUpdateTime,
+        'reply_to': null,
+        'stats': getRandomCommentStats(),
+        'sender': cIndex == 0 ? threadSender : getRandomUser(),
+        'status': cIndex == 0 ? 0 : getRandomStatus(),
+      };
+
+      fakeComments.add(comment);
+      if (cIndex == 0) {
+        firstCommentStats = comment['stats'];
+      }
+    }
+
+    //預備貼文互動數據
+    final likeCount = firstCommentStats['like'] as int;
+    final dislikeCount = firstCommentStats['dislike'] as int;
+    final threadStats = {
+      'like': likeCount,
+      'dislike': dislikeCount,
+      'comment': commentCount,
+    };
+    final heat = ((likeCount + dislikeCount) / 8).floor() + commentCount;
+
+    final thread = {
+      'tid': tIndex,
       'pid': pid,
       'fid': fid,
       'title': getRandomTitle(pid),
       'sender': threadSender,
       'create_time': createTime,
       'last_update_time': lastUpdateTime,
-      'stats': stats,
+      'stats': threadStats,
       'content_cid': 1,
       'pined_cid': getRandomThreadPinCid(),
       'heat': heat,
     };
-
-    for (var j = 1; j <= stats['comment']!; j++) {
-      dynamic comment = {
-        'tid': i,
-        'cid': fakeComments.length + 1,
-        'content': getRandomContent(),
-        'createTime': createTime,
-        'replyto': null,
-        'stats': j == 1 ? stats : getRandomStats(),
-        'sender': j == 1 ? threadSender : getRandomUser(),
-        'status': j == 1 ? 0 : getRandomStatus(),
-      };
-      fakeComments.add(comment);
-    }
 
     fakeThreads.add(thread);
   }
@@ -153,12 +175,12 @@ dynamic getRandomUser() {
   return {'uid': uid, 'nickname': _nicknames[uid]};
 }
 
-Map<String, int> getRandomStats() {
+Map<String, int> getRandomCommentStats() {
   return <String, int>{
-    'like': getRandomInt(50, 0.1),
-    'dislike': getRandomInt(50, 0.1),
-    'comment': getRandomInt(10, 0.2),
-    'me': 0
+    'like': getRandomInt(50, 0.3),
+    'dislike': getRandomInt(50, 0.3),
+    'reply': 0,
+    'me': 0,
   };
 }
 
@@ -183,7 +205,7 @@ String getRandomTitle(int pid) {
   return targetList[i];
 }
 
-String getRandomContent() {
+String getRandomCommentContent() {
   final i = Random().nextInt(_comments.length - 1);
   return _comments[i].toString();
 }
@@ -218,6 +240,7 @@ int getRandomThreadPinCid() {
 }
 
 int getRandomInt(int max, double percentIsZero) {
+  if (max == 0) return max;
   final isZero = Random().nextDouble() <= percentIsZero;
   return isZero ? 0 : Random().nextInt(max) + 1;
 }

@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:space_station/models/user.dart';
 
 import '../models/thread.dart';
@@ -29,7 +28,7 @@ class Comment {
   final String content;
   final int createTime;
   final Comment? replyto;
-  CommentStats stats;
+  final CommentStats stats;
   final User sender;
   final int status;
   Comment(
@@ -41,11 +40,14 @@ class Comment {
       required this.sender,
       required this.status});
   factory Comment.fromjson(Map<String, dynamic> json) {
+    bool hasParentComment = json["reply_to"] != null;
     return Comment(
         cid: json["cid"],
         content: json["content"],
-        createTime: json["createTime"],
-        replyto: Comment.fromjson(json["reply_to"]), //json["reply_to"] is a map
+        createTime: json["create_time"],
+        replyto: hasParentComment
+            ? Comment.fromjson(json["reply_to"])
+            : null, //json["reply_to"] is a map
         stats: CommentStats.fromjson(json["stats"]),
         sender: User.fromjson(json["sender"]),
         status: json["status"]);
@@ -64,9 +66,10 @@ class ThreadDetailModel {
         (json["comments"] as Iterable).map((t) => Comment.fromjson(t)).toList();
 
     return ThreadDetailModel(
-        comments,
-        json["continuous"], //json["has_next"] is map, b is <List>Comments
-        Thread.fromJson(json["thread_detail"])); //json["thread_detail"] is map
+      comments,
+      json["continuous"],
+      Thread.fromJson(json["thread"]),
+    );
   }
 }
 

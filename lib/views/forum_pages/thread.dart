@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 import 'package:space_station/models/thread.dart';
 import 'package:space_station/views/forum_pages/widgets/comment_continer.dart';
-import '../../api/error.dart';
 import '../../api/interfaces/forum_api.dart';
 import '../../models/comment.dart';
 import '../_share/loading_page.dart';
@@ -37,15 +36,15 @@ class _ThreadPageState extends State<ThreadPage> {
     });
   }
 
-  Future<void> _loadMore() async {
+  void _loadMore() async {
     //如果正在正在加載則退出
     if (isLoading) return Future.value();
     //如果沒有下一頁也退出
     if (comments.isNotEmpty && nextCursor.isEmpty) return;
     setState(() => isLoading = true);
-    return getThread(widget.threadID, nextCursor)
+    getThread(widget.threadID, nextCursor)
         .then((value) => updateCommentList(value))
-        .onError((e, __) => print(e))
+        .onError((e, __) => showUnkownErrorDialog(context))
         .whenComplete(() => setState(() => isLoading = false));
   }
 
@@ -75,7 +74,7 @@ class _ThreadPageState extends State<ThreadPage> {
     }
   }
 
-  Widget buildItem(BuildContext context, int index) {
+  Widget buildItem(BuildContext context, int currentIndex) {
     final bottomLoadingWidget = ColorFiltered(
       colorFilter:
           ColorFilter.mode(Theme.of(context).primaryColor, BlendMode.srcIn),
@@ -96,10 +95,14 @@ class _ThreadPageState extends State<ThreadPage> {
     );
 
     //列表最後的組件顯示
-    if (index == comments.length) {
+    if (currentIndex == comments.length) {
       return isLoading ? bottomLoadingWidget : bottomNoMoreWidget;
     }
-    return CommentContiner(comment: comments[index], thread: thread!);
+    return CommentContiner(
+      comment: comments[currentIndex],
+      thread: thread!,
+      index: currentIndex,
+    );
   }
 
   @override

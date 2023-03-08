@@ -2,14 +2,23 @@ import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:space_station/models/comment.dart';
 import 'package:space_station/views/_share/owner_tag.dart';
-import '../../../models/thread.dart';
 import 'dynamic_textbox/dynamic_textbox.dart';
+import '../../../api/error.dart';
+import '../../../api/interfaces/forum_api.dart';
+import '../../../models/thread.dart';
+import '../../_share/need_login_popup.dart';
+import '../../_share/unknown_error_popup.dart';
 
 class CommentContiner extends StatefulWidget {
   final Comment comment;
   final Thread thread;
-  const CommentContiner(
-      {super.key, required this.comment, required this.thread});
+  final int index;
+  const CommentContiner({
+    super.key,
+    required this.comment,
+    required this.thread,
+    required this.index,
+  });
 
   @override
   State<CommentContiner> createState() => _CommentContinerState();
@@ -17,51 +26,58 @@ class CommentContiner extends StatefulWidget {
 
 class _CommentContinerState extends State<CommentContiner> {
   bool isShowComment = false;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(children: <Widget>[
-      Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
+    return Wrap(
+      children: <Widget>[
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          decoration: BoxDecoration(
             border: Border(
-          bottom: BorderSide(width: 1.5, color: Theme.of(context).dividerColor),
-        )),
-        child: Column(children: [
-          upperRow(context, widget.comment, widget.thread),
-          body(context, widget.comment, widget.thread)
-        ]),
-      ),
-    ]);
+              bottom: BorderSide(
+                color: Theme.of(context).dividerColor.withAlpha(150),
+              ),
+            ),
+          ),
+          child: Column(
+            children: [
+              upperRow(context, widget.comment, widget.thread),
+              body(context, widget.comment, widget.thread)
+            ],
+          ),
+        ),
+      ],
+    );
   }
 
   Widget upperRow(BuildContext context, Comment currentcomment, Thread thread) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(10, 0, 5, 0),
-            child: Text("#${currentcomment.cid}",
-                style: TextStyle(color: Theme.of(context).primaryColor)),
-          ),
-          OwnerTag(
+        Row(
+          children: [
+            Text(
+              "#${widget.index + 1}",
+              style: TextStyle(color: Theme.of(context).primaryColor),
+            ),
+            const SizedBox(width: 10),
+            OwnerTag(
               owner: currentcomment.sender,
-              lastUpdateTime: currentcomment.createTime)
-        ]),
-        Row(children: [
-          if (thread.pinedCid == currentcomment.cid)
-            Text(context.getString("best_relpy")),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.more_vert),
-          )
-        ])
+              lastUpdateTime: currentcomment.createTime,
+            )
+          ],
+        ),
+        Row(
+          children: [
+            if (thread.pinedCid == currentcomment.cid)
+              Text(context.getString("best_relpy")),
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.more_vert),
+            )
+          ],
+        )
       ],
     );
   }
@@ -187,12 +203,11 @@ class _CommentContinerState extends State<CommentContiner> {
   }
 
   void pressbutton(BuildContext context, int cid, int newme) {
-    updatebutton(1);
-    /* postCommentReation(cid, newme)
+    reactComment(cid, newme)
         .then((value) => updatebutton(value))
         .catchError((_) => showNeedLoginDialog(context),
             test: (e) => e is AuthorizationError)
-        .onError((_, __) => showUnkownErrorDialog(context));   */
+        .onError((_, __) => showUnkownErrorDialog(context));
   }
 
   Widget commentRow(BuildContext context, Comment currentcomment) {

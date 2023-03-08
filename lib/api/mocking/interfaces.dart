@@ -96,7 +96,7 @@ void initializationInterfaces() {
     }
 
     final thread = fakeThreads.firstWhere((t) => t['tid'] == threadID);
-    final comments = filterComments(tid: threadID, offset: offset);
+    final comments = filterComments(threadID, offset);
 
     //生成下一頁指標
     String cursor = "";
@@ -106,13 +106,10 @@ void initializationInterfaces() {
     }
 
     Map<String, dynamic> body = {
-      'threadDetail': thread,
-      'commentsList': comments,
+      'thread': thread,
+      'comments': comments,
       'continuous': cursor,
     };
-
-    print('---------------');
-    print(body);
 
     return SimpleResponse(body);
   });

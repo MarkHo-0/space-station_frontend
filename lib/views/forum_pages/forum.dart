@@ -63,7 +63,7 @@ class _ForumPageState extends State<ForumPage>
   void onThreadTaped(int threadID) {
     Navigator.of(context).push(
       CupertinoPageRoute(
-        builder: ((_) => const ThreadPage(1)),
+        builder: ((_) => ThreadPage(threadID)),
       ),
     );
   }
