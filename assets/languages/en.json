@@ -132,5 +132,8 @@
   "violation_message": "This comment is hiddenn for violation",
   "best_relpy" :  "Best reply",
   "no_comments_found": "Space is Empty",
-  "no_more_comments": "Down to the Earth"
+  "no_more_comments": "Down to the Earth",
+  "pin_comment": "Set as Best Reply",
+  "report": "Report"
+
 }

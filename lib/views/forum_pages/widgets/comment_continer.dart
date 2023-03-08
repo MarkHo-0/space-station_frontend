@@ -1,7 +1,9 @@
 import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:space_station/models/comment.dart';
 import 'package:space_station/views/_share/owner_tag.dart';
+import '../../../providers/auth_provider.dart';
 import 'dynamic_textbox/dynamic_textbox.dart';
 import '../../../api/error.dart';
 import '../../../api/interfaces/forum_api.dart';
@@ -55,29 +57,21 @@ class _CommentContinerState extends State<CommentContiner> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          children: [
-            Text(
-              "#${widget.index + 1}",
-              style: TextStyle(color: Theme.of(context).primaryColor),
-            ),
-            const SizedBox(width: 10),
-            OwnerTag(
+        Row(children: [
+          Text(
+            "#${widget.index + 1}",
+            style: TextStyle(color: Theme.of(context).primaryColor),
+          ),
+          const SizedBox(width: 10),
+          OwnerTag(
               owner: currentcomment.sender,
-              lastUpdateTime: currentcomment.createTime,
-            )
-          ],
-        ),
-        Row(
-          children: [
-            if (thread.pinedCid == currentcomment.cid)
-              Text(context.getString("best_relpy")),
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.more_vert),
-            )
-          ],
-        )
+              lastUpdateTime: currentcomment.createTime)
+        ]),
+        Row(children: [
+          if (thread.pinedCid == currentcomment.cid)
+            Text(context.getString("best_relpy")),
+          popupbutton(context)
+        ])
       ],
     );
   }
@@ -222,5 +216,38 @@ class _CommentContinerState extends State<CommentContiner> {
         ],
       ),
     );
+  }
+
+  Widget popupbutton(BuildContext context) {
+    final auth = Provider.of<AuthProvider>(context);
+    return PopupMenuButton<int>(
+      itemBuilder: (context) => [
+        if (getUid(context, auth) == widget.thread.sender.uid)
+          popUpPinItem(context),
+        PopupMenuItem(value: 2, child: Text(context.getString("report")))
+      ],
+      offset: const Offset(0, 40),
+      elevation: 2,
+      icon: Icon(Icons.more_vert, color: Theme.of(context).primaryColor),
+      onSelected: (value) {
+        setState(() {});
+      },
+    );
+  }
+
+  PopupMenuItem<int> popUpPinItem(BuildContext context) {
+    return PopupMenuItem(
+        value: 1,
+        child: Row(
+          children: [
+            const Icon(Icons.star_border_sharp),
+            Text(context.getString("pin_comment")),
+          ],
+        ));
+  }
+
+  int? getUid(BuildContext context, AuthProvider auth) {
+    if (auth.isLogined) return auth.user!.uid;
+    return null;
   }
 }
