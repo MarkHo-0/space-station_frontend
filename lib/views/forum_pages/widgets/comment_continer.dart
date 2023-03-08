@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:space_station/models/comment.dart';
 import 'package:space_station/views/_share/owner_tag.dart';
 import '../../../providers/auth_provider.dart';
+import '../../_styles/padding.dart';
 import 'dynamic_textbox/dynamic_textbox.dart';
 import '../../../api/error.dart';
 import '../../../api/interfaces/forum_api.dart';
@@ -11,10 +12,11 @@ import '../../../models/thread.dart';
 import '../../_share/need_login_popup.dart';
 import '../../_share/unknown_error_popup.dart';
 
-class CommentContiner extends StatefulWidget {
+class CommentContiner extends StatelessWidget {
   final Comment comment;
   final Thread thread;
   final int index;
+
   const CommentContiner({
     super.key,
     required this.comment,
@@ -23,219 +25,146 @@ class CommentContiner extends StatefulWidget {
   });
 
   @override
-  State<CommentContiner> createState() => _CommentContinerState();
-}
-
-class _CommentContinerState extends State<CommentContiner> {
-  bool isShowComment = false;
-
-  @override
   Widget build(BuildContext context) {
-    return Wrap(
-      children: <Widget>[
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: Theme.of(context).dividerColor.withAlpha(150),
-              ),
-            ),
-          ),
-          child: Column(
-            children: [
-              upperRow(context, widget.comment, widget.thread),
-              body(context, widget.comment, widget.thread)
-            ],
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: Theme.of(context).dividerColor.withAlpha(150),
           ),
         ),
-      ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 15,
+          vertical: 10,
+        ),
+        child: Column(
+          children: [
+            buildHeader(context),
+            buildBody(context),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget upperRow(BuildContext context, Comment currentcomment, Thread thread) {
+  Widget buildHeader(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(children: [
-          Text(
-            "#${widget.index + 1}",
-            style: TextStyle(color: Theme.of(context).primaryColor),
-          ),
-          const SizedBox(width: 10),
-          OwnerTag(
-              owner: currentcomment.sender,
-              lastUpdateTime: currentcomment.createTime)
-        ]),
-        Row(children: [
-          if (thread.pinedCid == currentcomment.cid)
-            Text(context.getString("best_relpy"),
-                style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.bold)),
-          popupbutton(context)
-        ])
-      ],
-    );
-  }
-
-  Widget body(BuildContext context, Comment currentcomment, Thread thread) {
-    if (currentcomment.status == 2) {
-      return Padding(
-        padding: const EdgeInsets.fromLTRB(0, 5, 0, 20),
-        child: Text(
-          context.getString("violation_message"),
-          style: TextStyle(color: Theme.of(context).hintColor),
-        ),
-      );
-    }
-    if (currentcomment.status == 1 && isShowComment == false) {
-      return _warningbody(context, currentcomment, thread);
-    }
-    return _body(context, currentcomment, thread);
-  }
-
-  Widget _body(BuildContext context, Comment currentcomment, Thread thread) {
-    return Column(children: [
-      if (currentcomment.replyto != null)
-        Text(">>${currentcomment.replyto?.sender.nickname}",
-            style: TextStyle(color: Theme.of(context).hintColor)),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-        child: DynamicTextBox(currentcomment.content),
-      ),
-      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        buttonRow(context, currentcomment),
-        commentRow(context, currentcomment)
-      ])
-    ]);
-  }
-
-  Widget _warningbody(
-      BuildContext context, Comment currentcomment, Thread thread) {
-    Widget warningbody = Column(children: [
-      Text(
-        context.getString("warning_message"),
-        textAlign: TextAlign.center,
-        style: TextStyle(color: Theme.of(context).hintColor),
-      ),
-      TextButton(
-          style: TextButton.styleFrom(
-              textStyle: const TextStyle(
-            decoration: TextDecoration.underline,
-          )),
-          onPressed: () {
-            setState(() => isShowComment = true);
-          },
-          child: Text(context.getString("warning_viewcomment"))),
-      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        buttonRow(context, currentcomment),
-        commentRow(context, currentcomment)
-      ])
-    ]);
-    return warningbody;
-  }
-
-  Widget buttonRow(BuildContext context, Comment currentcomment) {
-    final Icon likeIcon = currentcomment.stats.me == 1
-        ? const Icon(Icons.thumb_up_alt)
-        : const Icon(Icons.thumb_up_off_alt);
-    final Icon dislikeIcon = currentcomment.stats.me == 2
-        ? const Icon(Icons.thumb_down_alt)
-        : const Icon(Icons.thumb_down_off_alt);
-
-    return Row(
-      children: [
-        Row(children: [
-          TextButton.icon(
-              onPressed: () => pressbutton(context, currentcomment.cid, 1),
-              icon: likeIcon,
-              label: Text(currentcomment.stats.like.toString()))
-        ]),
         Row(
           children: [
-            TextButton.icon(
-                onPressed: () => pressbutton(context, currentcomment.cid, 2),
-                icon: dislikeIcon,
-                label: Text(currentcomment.stats.dislike.toString()))
+            Text(
+              "#${index + 1}",
+              style: TextStyle(color: Theme.of(context).primaryColor),
+            ),
+            const SizedBox(width: 5),
+            OwnerTag(owner: comment.sender, lastUpdateTime: comment.createTime)
+          ],
+        ),
+        Row(
+          children: [
+            Visibility(
+              visible: thread.pinedCid == comment.cid,
+              child: Text(
+                context.getString("comment_pinned"),
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            popupbutton(context),
           ],
         )
       ],
     );
   }
 
-  void updatebutton(int finalreation) {
-    if (finalreation == widget.comment.stats.me) return;
-    setState(() {
-      if (finalreation == 0) {
-        if (widget.comment.stats.me == 1) {
-          widget.comment.stats.like -= 1;
-        } else {
-          widget.comment.stats.dislike -= 1;
-        }
-      }
-
-      if (finalreation == 1) {
-        if (widget.comment.stats.me == 0) {
-          widget.comment.stats.like += 1;
-        } else {
-          widget.comment.stats.dislike -= 1;
-          widget.comment.stats.like += 1;
-        }
-      }
-
-      if (finalreation == 2) {
-        if (widget.comment.stats.me == 0) {
-          widget.comment.stats.dislike += 1;
-        } else {
-          widget.comment.stats.like -= 1;
-          widget.comment.stats.dislike += 1;
-        }
-      }
-
-      widget.comment.stats.me = finalreation;
-    });
+  Widget buildBody(BuildContext context) {
+    if (comment.status == 2) return bannedBody(context);
+    if (comment.status == 1) return problematicBody(context);
+    return defaultBody(context);
   }
 
-  void pressbutton(BuildContext context, int cid, int newme) {
-    reactComment(cid, newme)
-        .then((value) => updatebutton(value))
-        .catchError((_) => showNeedLoginDialog(context),
-            test: (e) => e is AuthorizationError)
-        .onError((_, __) => showUnkownErrorDialog(context));
-  }
-
-  Widget commentRow(BuildContext context, Comment currentcomment) {
-    return Row(
+  Widget defaultBody(BuildContext context) {
+    return Column(
       children: [
-        TextButton.icon(
-            onPressed: () {},
-            icon: const Icon(Icons.comment),
-            label: Text(currentcomment.stats.reply.toString()))
+        Visibility(
+          visible: comment.replyto != null,
+          child: Text(
+            ">>${comment.replyto?.sender.nickname}",
+            style: TextStyle(color: Theme.of(context).hintColor),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 5),
+          child: DynamicTextBox(comment.content),
+        ),
+        CommentFooter(comment.cid, comment.stats),
       ],
+    );
+  }
+
+  Widget problematicBody(BuildContext buildContext) {
+    bool isHiding = false;
+    return StatefulBuilder(
+      builder: (BuildContext context, setState) {
+        if (isHiding) return defaultBody(context);
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Column(
+            children: [
+              Text(
+                context.getString("content_warning_hint"),
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Theme.of(context).hintColor),
+              ),
+              TextButton(
+                style: TextButton.styleFrom(
+                  textStyle: const TextStyle(
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+                onPressed: () => setState(() => isHiding = true),
+                child: Text(context.getString("content_warning_show")),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget bannedBody(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 15),
+      child: Text(
+        context.getString("content_violation_hint"),
+        style: TextStyle(color: Theme.of(context).hintColor),
+      ),
     );
   }
 
   Widget popupbutton(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context);
-    return PopupMenuButton<int>(
+    return PopupMenuButton(
       itemBuilder: (context) => [
-        if (getUid(context, auth) == widget.thread.sender.uid)
-          popUpPinItem(context),
+        if (getUid(context, auth) == thread.sender.uid) popUpPinItem(context),
         PopupMenuItem(
           value: 2,
-          padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
-          child: Text(
-            context.getString("report"),
-          ),
+          onTap: () {},
+          child: Text(context.getString("report")),
         )
       ],
-      offset: const Offset(0, 40),
+      offset: const Offset(0, 20),
       elevation: 2,
-      icon: Icon(Icons.more_vert, color: Theme.of(context).primaryColor),
-      onSelected: (value) {
-        setState(() {});
-      },
+      child: Icon(
+        Icons.more_vert,
+        color: Theme.of(context).hintColor,
+        size: 20,
+      ),
     );
   }
 
@@ -254,5 +183,107 @@ class _CommentContinerState extends State<CommentContiner> {
   int? getUid(BuildContext context, AuthProvider auth) {
     if (auth.isLogined) return auth.user!.uid;
     return null;
+  }
+}
+
+class CommentFooter extends StatefulWidget {
+  final int commentID;
+  final CommentStats stats;
+  const CommentFooter(this.commentID, this.stats, {super.key});
+
+  @override
+  State<CommentFooter> createState() => _CommentFooterState();
+}
+
+class _CommentFooterState extends State<CommentFooter> {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        reactionButtons(context),
+        commentButton(context),
+      ],
+    );
+  }
+
+  Widget reactionButtons(BuildContext context) {
+    final rt = widget.stats.me;
+    return Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: Row(
+        children: [
+          TextButton.icon(
+            onPressed: () => onReact(context, 1),
+            icon: Icon(rt == 1 ? Icons.thumb_up_alt : Icons.thumb_up_off_alt),
+            label: Text(widget.stats.like.toString()),
+            style: noPaddingTextButtonStyle,
+          ),
+          const SizedBox(width: 15),
+          TextButton.icon(
+            onPressed: () => onReact(context, 2),
+            icon:
+                Icon(rt == 2 ? Icons.thumb_down_alt : Icons.thumb_down_off_alt),
+            label: Text(widget.stats.dislike.toString()),
+            style: noPaddingTextButtonStyle,
+          ),
+        ],
+      ),
+    );
+  }
+
+  void updatebutton(int finalReation) {
+    if (finalReation == widget.stats.me) return;
+
+    if (finalReation == 0) {
+      if (widget.stats.me == 1) {
+        widget.stats.like -= 1;
+      } else {
+        widget.stats.dislike -= 1;
+      }
+    }
+
+    if (finalReation == 1) {
+      if (widget.stats.me == 0) {
+        widget.stats.like += 1;
+      } else {
+        widget.stats.dislike -= 1;
+        widget.stats.like += 1;
+      }
+    }
+
+    if (finalReation == 2) {
+      if (widget.stats.me == 0) {
+        widget.stats.dislike += 1;
+      } else {
+        widget.stats.like -= 1;
+        widget.stats.dislike += 1;
+      }
+    }
+
+    widget.stats.me = finalReation;
+    setState(() {});
+  }
+
+  void onReact(BuildContext context, int reactionType) {
+    reactComment(widget.commentID, reactionType)
+        .then((value) => updatebutton(value))
+        .catchError((_) => showNeedLoginDialog(context),
+            test: (e) => e is AuthorizationError)
+        .onError((_, __) => showUnkownErrorDialog(context));
+  }
+
+  Widget commentButton(BuildContext context) {
+    final shouldShow = widget.stats.reply > 0;
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: TextButton.icon(
+        onPressed: () {},
+        icon: const Icon(Icons.comment),
+        label:
+            shouldShow ? Text(widget.stats.reply.toString()) : const SizedBox(),
+        style: noPaddingTextButtonStyle,
+      ),
+    );
   }
 }

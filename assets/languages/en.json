@@ -53,6 +53,13 @@
   "syntax_code_example": "```java\nclass HelloWorld {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, World!\");\n    }\n}\n```",
   "syntax_math_name": "Math Formula (KaTeX)",
   "syntax_math_example": "$$\nx = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a} \n$$",
+  "content_warning_hint": "Content Warining\nThis comment may contain sensitive content.",
+  "content_warning_show": "View",
+  "content_violation_hint": "This content has been removed for violating the Community Policy.",
+  "comment_pinned": "Pinned",
+  "no_items_found": "Space is Empty",
+  "no_more_items": "Down to the Earth",
+  "pin_comment": "Pin this comment",
   "__ToolboxPages__": "----------------------------------",
   "class_swapping": "Class Swapping",
   "class_swapping_description": "Help you find the optimum time to take classes.",
@@ -118,6 +125,7 @@
   "cancel": "Cancel",
   "retry": "Retry",
   "discard": "Discard",
+  "report": "Report",
   "__Errors__": "----------------------------------",
   "net_err_title": "Network Exception",
   "net_err_subtitle": "Unable to connect to the Server",
@@ -126,14 +134,5 @@
   "unknown_err_solution": "An unknown error occurred, please try again later",
   "feature_need_login": "This feature requires login to use.",
   "unsave_warning_title": "Discard changes",
-  "unsave_warning_body": "You have made changes that haven't saved yet. Are you sure to discard changes?",
-  "warning_message":"Content warining:\nThis comment may contain sensitive content",
-  "warning_viewcomment": "View commment",
-  "violation_message": "This comment is hiddenn for violation",
-  "best_relpy" :  "Best reply",
-  "no_comments_found": "Space is Empty",
-  "no_more_comments": "Down to the Earth",
-  "pin_comment": "Set as Best Reply",
-  "report": "Report"
-
+  "unsave_warning_body": "You have made changes that haven't saved yet. Are you sure to discard changes?"
 }

@@ -51,10 +51,12 @@ class _ThreadPageState extends State<ThreadPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(thread == null ? 'Loading' : thread!.title),
-        ),
-        body: buildbody(context));
+      appBar: AppBar(
+        centerTitle: false,
+        title: Text(thread == null ? 'Loading' : thread!.title),
+      ),
+      body: buildbody(context),
+    );
   }
 
   Widget buildbody(BuildContext context) {
@@ -62,7 +64,7 @@ class _ThreadPageState extends State<ThreadPage> {
       if (isLoading) return const LoadingPage();
       if (isNetError) return const NetworkErrorPage();
       return Text(
-        context.getString('no_comments_found'),
+        context.getString('no_items_found'),
         textAlign: TextAlign.center,
       );
     } else {
@@ -89,7 +91,7 @@ class _ThreadPageState extends State<ThreadPage> {
     final bottomNoMoreWidget = Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: Text(
-        context.getString('no_more_comments'),
+        context.getString('no_more_items'),
         textAlign: TextAlign.center,
       ),
     );

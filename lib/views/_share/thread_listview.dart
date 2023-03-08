@@ -77,7 +77,7 @@ class ThreadListViewState extends State<ThreadListView>
       if (isLoading) return const LoadingPage();
       if (isNetError) return const NetworkErrorPage();
       return Text(
-        context.getString('no_threads_found'),
+        context.getString('no_items_found'),
         textAlign: TextAlign.center,
       );
     }
@@ -107,7 +107,7 @@ class ThreadListViewState extends State<ThreadListView>
     final bottomNoMoreWidget = Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: Text(
-        context.getString('no_more_threads'),
+        context.getString('no_more_items'),
         textAlign: TextAlign.center,
       ),
     );
