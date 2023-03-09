@@ -156,8 +156,13 @@ class CommentContiner extends StatelessWidget {
       itemBuilder: (context) => [
         if (getUid(context, auth) == thread.sender.uid) popUpPinItem(context),
         PopupMenuItem(
-          onTap: () => onReportPage(context, comment.cid),
-          child: Text(context.getString("report")),
+          onTap: () => onReportPage(context, comment),
+          child: Row(
+            children: [
+              const Icon(Icons.report),
+              Text(context.getString("report")),
+            ],
+          ),
         )
       ],
       offset: const Offset(0, 20),
@@ -179,7 +184,7 @@ class CommentContiner extends StatelessWidget {
         ],
       ),
       onTap: () {
-        WidgetsBinding.instance!.addPostFrameCallback((_) {});
+        WidgetsBinding.instance.addPostFrameCallback((_) {});
       },
     );
   }
@@ -189,13 +194,13 @@ class CommentContiner extends StatelessWidget {
     return null;
   }
 
-  void onReportPage(BuildContext context, int cid) {
+  void onReportPage(BuildContext context, Comment comment) {
     final auth = Provider.of<AuthProvider>(context, listen: false);
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      if (auth.isLogined == false) return showNeedLoginDialog(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      //if (auth.isLogined == false) return showNeedLoginDialog(context);
       Navigator.of(context).push(
         CupertinoPageRoute(
-          builder: ((_) => ReportPage(cid)),
+          builder: ((_) => ReportPage(comment)),
         ),
       );
     });
