@@ -62,7 +62,7 @@
   "pin_comment": "Pin this comment",
   "report_title": "Report",
   "reply_title": "Reply",
-  "report_reason_0":"Other reason:",
+  "report_reason_0":"Other reason",
   "report_reason_1":"Disrespectful or offensive",
   "report_reason_2":"Targeted harassment",
   "report_reason_3":"Direct hate against protected category",
@@ -71,7 +71,6 @@
   "report_reason_6":"Suspicious or spreading spam",
   "report_reason_7":"Sensitive information",
   "report_action":"Report",
-  "report_message_hint":"Please Enter the Reason.",
   "__ToolboxPages__": "----------------------------------",
   "class_swapping": "Class Swapping",
   "class_swapping_description": "Help you find the optimum time to take classes.",
@@ -146,5 +145,7 @@
   "unknown_err_solution": "An unknown error occurred, please try again later",
   "feature_need_login": "This feature requires login to use.",
   "unsave_warning_title": "Discard changes",
-  "unsave_warning_body": "You have made changes that haven't saved yet. Are you sure to discard changes?"
+  "unsave_warning_body": "You have made changes that haven't saved yet. Are you sure to discard changes?",
+  "repeat_err_title":"Error",
+  "repeat_err_body":"You have made this action before!"
 }

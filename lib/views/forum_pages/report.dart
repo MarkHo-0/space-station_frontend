@@ -1,8 +1,13 @@
 import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:space_station/api/interfaces/forum_api.dart';
 import 'package:space_station/models/comment.dart';
+import 'package:space_station/views/forum_pages/widgets/dynamic_textbox/dynamic_textbox.dart';
 
+import '../../api/error.dart';
+import '../_share/repeat_action_error.dart';
+import '../_share/unknown_error_popup.dart';
 import '../_styles/textfield.dart';
 
 class ReportPage extends StatefulWidget {
@@ -27,8 +32,8 @@ class _ReportPageState extends State<ReportPage> {
   Widget bodylayout(BuildContext context) {
     final children = <Widget>[];
     children.add(header(context));
+    children.add(commentInfo(context));
     children.add(buttonGroup(context));
-    children.add(_textfield(context));
     return Column(children: children);
   }
 
@@ -53,7 +58,7 @@ class _ReportPageState extends State<ReportPage> {
         Padding(
           padding: const EdgeInsets.only(right: 10, top: 10),
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () => onPress(context, widget.comment.cid),
             child: Row(
               children: [
                 Text(context.getString("report_action")),
@@ -66,6 +71,29 @@ class _ReportPageState extends State<ReportPage> {
         )
       ],
     );
+  }
+
+  void onPress(BuildContext context, int cid) {
+    if (_selected != 0) {
+      reportComment(widget.comment.cid, _selected!)
+          .then((value) => exit(context, value))
+          .catchError((_) => repeatActionErrorDialog(context),
+              test: (e) => e is FrquentError)
+          .onError((_, __) => showUnkownErrorDialog(context));
+    }
+  }
+
+  void exit(BuildContext context, bool value) {
+    ///////
+    ///////
+  }
+
+  Widget commentInfo(BuildContext context) {
+    return Padding(
+        padding: const EdgeInsets.all(20),
+        child: Container(
+            color: Theme.of(context).splashColor,
+            child: DynamicTextBox(widget.comment.content)));
   }
 
   Widget buttonGroup(BuildContext context) {
@@ -92,27 +120,10 @@ class _ReportPageState extends State<ReportPage> {
                 size: 30,
               ),
               onTap: () => setState(() {
-                    FocusScope.of(context).unfocus();
                     _selected == index ? _selected = null : _selected = index;
                   })),
           Text(text)
         ],
-      ),
-    );
-  }
-
-  Widget _textfield(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: TextField(
-        onTap: () => setState(() {
-          _selected = 0;
-        }),
-        decoration:
-            InputDecoration(hintText: context.getString("report_message_hint")),
-        style: TextStyle(
-            color: _selected != 0 ? Theme.of(context).hintColor : null),
-        maxLines: 5,
       ),
     );
   }
