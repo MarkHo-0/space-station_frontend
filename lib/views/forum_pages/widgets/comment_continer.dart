@@ -1,10 +1,13 @@
 import 'package:ez_localization/ez_localization.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:space_station/models/comment.dart';
 import 'package:space_station/views/_share/owner_tag.dart';
+import 'package:space_station/views/forum_pages/report.dart';
 import '../../../providers/auth_provider.dart';
 import '../../_styles/padding.dart';
+import '../reply.dart';
 import 'dynamic_textbox/dynamic_textbox.dart';
 import '../../../api/error.dart';
 import '../../../api/interfaces/forum_api.dart';
@@ -102,7 +105,7 @@ class CommentContiner extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 5),
           child: DynamicTextBox(comment.content),
         ),
-        CommentFooter(comment.cid, comment.stats),
+        CommentFooter(comment.cid, thread.tid, comment.stats),
       ],
     );
   }
@@ -153,8 +156,7 @@ class CommentContiner extends StatelessWidget {
       itemBuilder: (context) => [
         if (getUid(context, auth) == thread.sender.uid) popUpPinItem(context),
         PopupMenuItem(
-          value: 2,
-          onTap: () {},
+          onTap: () => onReportPage(context, comment.cid),
           child: Text(context.getString("report")),
         )
       ],
@@ -170,13 +172,15 @@ class CommentContiner extends StatelessWidget {
 
   PopupMenuItem<int> popUpPinItem(BuildContext context) {
     return PopupMenuItem(
-      value: 1,
       child: Row(
         children: [
           const Icon(Icons.star_border_sharp),
           Text(context.getString("pin_comment")),
         ],
       ),
+      onTap: () {
+        WidgetsBinding.instance!.addPostFrameCallback((_) {});
+      },
     );
   }
 
@@ -184,12 +188,25 @@ class CommentContiner extends StatelessWidget {
     if (auth.isLogined) return auth.user!.uid;
     return null;
   }
+
+  void onReportPage(BuildContext context, int cid) {
+    final auth = Provider.of<AuthProvider>(context, listen: false);
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      if (auth.isLogined == false) return showNeedLoginDialog(context);
+      Navigator.of(context).push(
+        CupertinoPageRoute(
+          builder: ((_) => ReportPage(cid)),
+        ),
+      );
+    });
+  }
 }
 
 class CommentFooter extends StatefulWidget {
   final int commentID;
+  final int threadID;
   final CommentStats stats;
-  const CommentFooter(this.commentID, this.stats, {super.key});
+  const CommentFooter(this.commentID, this.threadID, this.stats, {super.key});
 
   @override
   State<CommentFooter> createState() => _CommentFooterState();
@@ -278,11 +295,22 @@ class _CommentFooterState extends State<CommentFooter> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: TextButton.icon(
-        onPressed: () {},
+        onPressed: () =>
+            onReplyPage(context, widget.threadID, widget.commentID),
         icon: const Icon(Icons.comment),
         label:
             shouldShow ? Text(widget.stats.reply.toString()) : const SizedBox(),
         style: noPaddingTextButtonStyle,
+      ),
+    );
+  }
+
+  void onReplyPage(BuildContext context, int tid, int cid) {
+    final auth = Provider.of<AuthProvider>(context, listen: false);
+    if (auth.isLogined == false) return showNeedLoginDialog(context);
+    Navigator.of(context).push(
+      CupertinoPageRoute(
+        builder: ((_) => ReplyPage(tid, cid)),
       ),
     );
   }
