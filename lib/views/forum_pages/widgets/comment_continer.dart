@@ -6,6 +6,7 @@ import 'package:space_station/models/comment.dart';
 import 'package:space_station/views/_share/owner_tag.dart';
 import 'package:space_station/views/forum_pages/report.dart';
 import '../../../providers/auth_provider.dart';
+import '../../_share/banned_message.dart';
 import '../../_styles/padding.dart';
 import '../reply.dart';
 import 'dynamic_textbox/dynamic_textbox.dart';
@@ -197,7 +198,8 @@ class CommentContiner extends StatelessWidget {
   void onReportPage(BuildContext context, Comment comment) {
     final auth = Provider.of<AuthProvider>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      //if (auth.isLogined == false) return showNeedLoginDialog(context);
+      if (auth.isLogined == false) return showNeedLoginDialog(context);
+      if (comment.status == 2) return showBannedMessageDialog(context);
       Navigator.of(context).push(
         CupertinoPageRoute(
           builder: ((_) => ReportPage(comment)),

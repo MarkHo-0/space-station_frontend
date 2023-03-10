@@ -70,7 +70,7 @@
   "report_reason_5":"Encourage self-harm or suiside",
   "report_reason_6":"Suspicious or spreading spam",
   "report_reason_7":"Sensitive information",
-  "report_action":"Report",
+  "report_content":"#content",
   "__ToolboxPages__": "----------------------------------",
   "class_swapping": "Class Swapping",
   "class_swapping_description": "Help you find the optimum time to take classes.",
@@ -147,5 +147,9 @@
   "unsave_warning_title": "Discard changes",
   "unsave_warning_body": "You have made changes that haven't saved yet. Are you sure to discard changes?",
   "repeat_err_title":"Error",
-  "repeat_err_body":"You have made this action before!"
+  "repeat_err_body":"You have made this action before!",
+  "banned_message_title": "This message is banned",
+  "banned_message_body":"You can not make this action",
+  "success_message":"Success!"
+
 }

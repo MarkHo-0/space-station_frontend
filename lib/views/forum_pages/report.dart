@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:space_station/api/interfaces/forum_api.dart';
 import 'package:space_station/models/comment.dart';
+import 'package:space_station/views/_share/succuess_backlastpage.dart';
 import 'package:space_station/views/forum_pages/widgets/dynamic_textbox/dynamic_textbox.dart';
 
 import '../../api/error.dart';
@@ -38,43 +39,50 @@ class _ReportPageState extends State<ReportPage> {
   }
 
   Widget header(BuildContext context) {
-    return Row(
-      children: [
-        Flexible(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
-            child: TextField(
-              enabled: false,
-              decoration: InputDecoration(
-                  border: kRoundedBorder,
-                  filled: true,
-                  fillColor: Theme.of(context).splashColor,
-                  hintText:
-                      "${context.getString("report_action")}: #${widget.comment.cid} ${widget.comment.sender.nickname}"),
-              maxLines: 1,
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Flexible(
+            child: SizedBox(
+              height: 45,
+              child: TextField(
+                enabled: false,
+                decoration: InputDecoration(
+                    border: kRoundedBorder,
+                    filled: true,
+                    isDense: true,
+                    fillColor: Theme.of(context).splashColor,
+                    hintText:
+                        "#${widget.comment.cid} ${widget.comment.sender.nickname}"),
+                maxLines: 1,
+              ),
             ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(right: 10, top: 10),
-          child: ElevatedButton(
-            onPressed: () => onPress(context, widget.comment.cid),
-            child: Row(
-              children: [
-                Text(context.getString("report_action")),
-                const Icon(
-                  Icons.report,
-                ),
-              ],
+          Container(
+            padding: const EdgeInsets.only(left: 10),
+            height: 45,
+            child: ElevatedButton(
+              onPressed: () => onPress(context, widget.comment.cid),
+              child: Row(
+                children: [
+                  Text(context.getString("report")),
+                  const Icon(
+                    Icons.report,
+                  ),
+                ],
+              ),
             ),
-          ),
-        )
-      ],
+          )
+        ],
+      ),
     );
   }
 
   void onPress(BuildContext context, int cid) {
-    if (_selected != 0) {
+    if (_selected != null) {
       reportComment(widget.comment.cid, _selected!)
           .then((value) => exit(context, value))
           .catchError((_) => repeatActionErrorDialog(context),
@@ -84,16 +92,26 @@ class _ReportPageState extends State<ReportPage> {
   }
 
   void exit(BuildContext context, bool value) {
-    ///////
-    ///////
+    succussandbacklastpageDialog(context);
   }
 
   Widget commentInfo(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.all(20),
-        child: Container(
-            color: Theme.of(context).splashColor,
-            child: DynamicTextBox(widget.comment.content)));
+      padding: const EdgeInsets.only(left: 10, right: 10),
+      child: Container(
+          height: 150,
+          color: Theme.of(context).splashColor,
+          child: SingleChildScrollView(
+              child: Column(
+            children: [
+              Text(
+                context.getString("report_content"),
+                style: TextStyle(color: Theme.of(context).hintColor),
+              ),
+              DynamicTextBox(widget.comment.content),
+            ],
+          ))),
+    );
   }
 
   Widget buttonGroup(BuildContext context) {
