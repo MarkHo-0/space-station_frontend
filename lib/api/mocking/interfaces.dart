@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import '../../utils/parse_time.dart';
-
 import 'client.dart';
 import 'fake_data.dart';
 
@@ -114,6 +113,18 @@ void initializationInterfaces() {
     return SimpleResponse(body);
   });
 
+  TestClient.onPost('/thread/:tid/comment', (req) {
+    if (req.isLogined == false) {
+      return const SimpleResponse({}, statusCode: 401);
+    }
+    final threadID = int.parse(req.parameters['tid']!);
+    final content = req.bodies['content'] as String;
+    final replyTo = req.bodies['reply_to'] as int?;
+
+    final commentID = createNewComment(threadID, content, replyTo);
+    return SimpleResponse({'new_cid': commentID});
+  });
+
   TestClient.onPost('/comment/:cid/react', (req) {
     if (req.isLogined == false) {
       return const SimpleResponse({}, statusCode: 401);
@@ -123,6 +134,33 @@ void initializationInterfaces() {
     final finalReaction = updateReaction(commentID, newReaction);
 
     return SimpleResponse({'final_reaction': finalReaction});
+  });
+
+  TestClient.onPost('/comment/:cid/report', (req) {
+    if (req.isLogined == false) {
+      return const SimpleResponse({}, statusCode: 401);
+    }
+    final commentID = int.parse(req.parameters['cid']!);
+    final reasonID = req.bodies['reason_id'] as int;
+    final result = createReportRecord(commentID, reasonID);
+
+    if (result == false) {
+      return const SimpleResponse({}, statusCode: 460);
+    }
+
+    return const SimpleResponse({});
+  });
+
+  TestClient.onPost('/comment/:cid/pin', (req) {
+    if (req.isLogined == false) {
+      return const SimpleResponse({}, statusCode: 401);
+    }
+    final commentID = int.parse(req.parameters['cid']!);
+    final newPin = updatePinState(commentID);
+    if (newPin != null && newPin < -1) {
+      return const SimpleResponse({}, statusCode: 403);
+    }
+    return SimpleResponse({'new_pin': newPin});
   });
 
   TestClient.onGet('/user/state/:sid', (req) {

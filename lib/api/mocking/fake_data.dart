@@ -45,6 +45,21 @@ bool isFakeUser(int sid) => fakeUserSid == sid;
 bool isVfCodeValid(int sid, int code) =>
     code.toString() == sid.toString().substring(4, 8);
 
+int? updatePinState(int commentID) {
+  final comment = fakeComments.firstWhere((c) => c['cid'] == commentID);
+  final thread = fakeThreads.firstWhere((t) => t['tid'] == comment['tid']);
+  if (thread['sender']['uid'] != fakeUser!.uid) return -1;
+  final currPinned = thread['pined_cid'] as int?;
+
+  if (currPinned == commentID) {
+    thread['pined_cid'] = null;
+    return null;
+  }
+
+  thread['pined_cid'] = commentID;
+  return commentID;
+}
+
 int createFakeUser(int sid, String pwd, String nickname) {
   final fakeUserID = Random().nextInt(100) + _nicknames.length;
   fakeUser = User(uid: fakeUserID, nickname: nickname);
@@ -56,6 +71,12 @@ int createFakeUser(int sid, String pwd, String nickname) {
 bool performLogin(int sid, String pwd) {
   if (sid != fakeUserSid || pwd != fakeUserPwd) return false;
   fakeUserToken = sha512.convert(utf8.encode('${sid}_123')).toString();
+  return true;
+}
+
+bool createReportRecord(int cid, int reason) {
+  if (fakeReports.keys.contains(cid)) return false;
+  fakeReports[cid] = reason;
   return true;
 }
 
@@ -74,6 +95,7 @@ int updateReaction(int commentID, int newReaction) {
 
 List<dynamic> fakeThreads = [];
 List<dynamic> fakeComments = [];
+Map<int, int> fakeReports = {};
 User? fakeUser;
 int? fakeUserSid;
 String? fakeUserPwd;
@@ -168,8 +190,8 @@ int createNewThread(String title, String content, int pid, int fid) {
     'tid': fakeThreads.length,
     'cid': fakeComments.length,
     'content': content,
-    'createTime': getCurrUnixTime(),
-    'replyto': null,
+    'create_time': getCurrUnixTime(),
+    'reply_to': null,
     'stats': defaultStats,
     'sender': sender,
     'status': 0,
@@ -177,6 +199,21 @@ int createNewThread(String title, String content, int pid, int fid) {
   fakeThreads.add(thread);
   fakeComments.add(firstComment);
   return fakeThreads.length - 1;
+}
+
+int createNewComment(int threadID, String content, int? replyTo) {
+  final comment = {
+    'tid': threadID,
+    'cid': fakeComments.length,
+    'content': content,
+    'create_time': getCurrUnixTime(),
+    'reply_to': replyTo,
+    'stats': {'like': 0, 'dislike': 0, 'reply': 0, 'me': 0},
+    'sender': {'uid': fakeUser!.uid, 'nickname': fakeUser!.nickname},
+    'status': 0,
+  };
+  fakeComments.add(comment);
+  return comment['cid'] as int;
 }
 
 //復合類型假數據生成

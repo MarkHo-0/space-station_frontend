@@ -1,13 +1,11 @@
 import 'package:ez_localization/ez_localization.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:space_station/api/interfaces/forum_api.dart';
-import 'package:space_station/models/comment.dart';
-import 'package:space_station/views/_share/succuess_backlastpage.dart';
-import 'package:space_station/views/forum_pages/widgets/dynamic_textbox/previewable_textfield.dart';
-import 'package:space_station/views/forum_pages/widgets/page_dropdown.dart';
-import 'package:space_station/views/forum_pages/widgets/syntax_manual.dart';
 
+import '../../api/interfaces/forum_api.dart';
+import '../../models/comment.dart';
+import '../_share/succuess_backlastpage.dart';
+import 'widgets/dynamic_textbox/previewable_textfield.dart';
+import 'widgets/syntax_manual.dart';
 import '../../api/error.dart';
 import '../_share/unknown_error_popup.dart';
 import '../_share/unsave_warning_popup.dart';
@@ -97,7 +95,7 @@ class _ReplyPageState extends State<ReplyPage> {
 
   void onPress(BuildContext context) {
     if (contentInput.text.isEmpty == false) {
-      postComment(widget.tid, widget.comment.cid, contentInput.text)
+      postComment(widget.tid, contentInput.text, widget.comment.cid)
           .then((value) => exit(context, value))
           .catchError((_) => showUnsaveDialog(context),
               test: (e) => e is PermissionError)
