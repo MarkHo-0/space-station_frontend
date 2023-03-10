@@ -25,7 +25,7 @@ class _ReportPageState extends State<ReportPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(context.getString("report_title")),
+          title: Text(context.getString("report")),
         ),
         body: bodylayout(context));
   }

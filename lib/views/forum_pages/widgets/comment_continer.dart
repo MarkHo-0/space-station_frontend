@@ -98,7 +98,7 @@ class CommentContiner extends StatelessWidget {
         Visibility(
           visible: comment.replyto != null,
           child: Text(
-            ">>${comment.replyto?.sender.nickname}",
+            ">> #${comment.cid} ${comment.replyto?.sender.nickname}",
             style: TextStyle(color: Theme.of(context).hintColor),
           ),
         ),
@@ -106,7 +106,7 @@ class CommentContiner extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 5),
           child: DynamicTextBox(comment.content),
         ),
-        CommentFooter(comment.cid, thread.tid, comment.stats),
+        CommentFooter(comment, thread.tid, comment.stats),
       ],
     );
   }
@@ -210,10 +210,10 @@ class CommentContiner extends StatelessWidget {
 }
 
 class CommentFooter extends StatefulWidget {
-  final int commentID;
+  final Comment comment;
   final int threadID;
   final CommentStats stats;
-  const CommentFooter(this.commentID, this.threadID, this.stats, {super.key});
+  const CommentFooter(this.comment, this.threadID, this.stats, {super.key});
 
   @override
   State<CommentFooter> createState() => _CommentFooterState();
@@ -290,7 +290,7 @@ class _CommentFooterState extends State<CommentFooter> {
   }
 
   void onReact(BuildContext context, int reactionType) {
-    reactComment(widget.commentID, reactionType)
+    reactComment(widget.comment.cid, reactionType)
         .then((value) => updatebutton(value))
         .catchError((_) => showNeedLoginDialog(context),
             test: (e) => e is AuthorizationError)
@@ -303,7 +303,7 @@ class _CommentFooterState extends State<CommentFooter> {
       textDirection: TextDirection.rtl,
       child: TextButton.icon(
         onPressed: () =>
-            onReplyPage(context, widget.threadID, widget.commentID),
+            onReplyPage(context, widget.threadID, widget.comment.cid),
         icon: const Icon(Icons.comment),
         label:
             shouldShow ? Text(widget.stats.reply.toString()) : const SizedBox(),
@@ -317,7 +317,7 @@ class _CommentFooterState extends State<CommentFooter> {
     if (auth.isLogined == false) return showNeedLoginDialog(context);
     Navigator.of(context).push(
       CupertinoPageRoute(
-        builder: ((_) => ReplyPage(tid, cid)),
+        builder: ((_) => ReplyPage(widget.comment, cid)),
       ),
     );
   }
