@@ -1,5 +1,8 @@
 import 'package:ez_localization/ez_localization.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:space_station/views/forum_pages/thread.dart';
+import 'package:space_station/views/forum_pages/widgets/post_dialog.dart';
 
 import '../../api/interfaces/forum_api.dart';
 import '../../models/comment.dart';
@@ -93,18 +96,34 @@ class _ReplyPageState extends State<ReplyPage> {
     );
   }
 
-  void onPress(BuildContext context) {
-    if (contentInput.text.isEmpty == false) {
-      postComment(widget.tid, contentInput.text, widget.comment.cid)
-          .then((value) => exit(context, value))
-          .catchError((_) => showUnsaveDialog(context),
-              test: (e) => e is PermissionError)
-          .onError((_, __) => showUnkownErrorDialog(context));
-    }
+  void onPressPost(BuildContext context) {
+    if (contentInput.text.isEmpty) return;
+    showDialog<int?>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => PostActionDialog(
+        () => postComment(
+          widget.tid,
+          contentInput.text,
+          widget.comment.cid,
+        ),
+      ),
+    ).then((cid) {
+      if (cid == null) return;
+      exit(context);
+    });
   }
 
-  void exit(BuildContext context, int? value) {
-    succussandbacklastpageDialog(context);
+  void exit(BuildContext context) {
+    contentInput.clear();
+    Navigator.of(context).pop(context);
+    Future.delayed(const Duration(microseconds: 500), () {
+      Navigator.of(context).push(
+        CupertinoPageRoute(
+          builder: ((_) => ThreadPage(widget.tid)),
+        ),
+      );
+    });
   }
 
   Future<bool> beforeExit() async {

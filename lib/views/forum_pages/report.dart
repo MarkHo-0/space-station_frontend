@@ -84,14 +84,14 @@ class _ReportPageState extends State<ReportPage> {
   void onPress(BuildContext context, int cid) {
     if (_selected != null) {
       reportComment(widget.comment.cid, _selected!)
-          .then((value) => exit(context, value))
+          .then((value) => exit(context))
           .catchError((_) => repeatActionErrorDialog(context),
               test: (e) => e is FrquentError)
           .onError((_, __) => showUnkownErrorDialog(context));
     }
   }
 
-  void exit(BuildContext context, bool value) {
+  void exit(BuildContext context) {
     succussandbacklastpageDialog(context);
   }
 
