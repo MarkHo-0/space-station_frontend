@@ -55,7 +55,7 @@ class Thread {
   final int lastUpdateTime;
   final String title;
   final int contentCid;
-  final int? pinedCid;
+  int? pinedCid;
   final Stats stats;
   final User sender;
 

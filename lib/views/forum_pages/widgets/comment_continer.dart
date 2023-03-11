@@ -98,7 +98,7 @@ class CommentContiner extends StatelessWidget {
         Visibility(
           visible: comment.replyto != null,
           child: Text(
-            ">> #${comment.cid} ${comment.replyto?.sender.nickname}",
+            ">> #$index ${comment.replyto?.sender.nickname}",
             style: TextStyle(color: Theme.of(context).hintColor),
           ),
         ),
@@ -106,7 +106,7 @@ class CommentContiner extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 5),
           child: DynamicTextBox(comment.content),
         ),
-        CommentFooter(comment, thread.tid, comment.stats),
+        CommentFooter(comment, thread.tid, comment.stats, index),
       ],
     );
   }
@@ -206,7 +206,7 @@ class CommentContiner extends StatelessWidget {
       if (comment.status == 2) return showBannedMessageDialog(context);
       Navigator.of(context).push(
         CupertinoPageRoute(
-          builder: ((_) => ReportPage(comment)),
+          builder: ((_) => ReportPage(comment, index)),
         ),
       );
     });
@@ -216,8 +216,10 @@ class CommentContiner extends StatelessWidget {
 class CommentFooter extends StatefulWidget {
   final Comment comment;
   final int threadID;
+  final int index;
   final CommentStats stats;
-  const CommentFooter(this.comment, this.threadID, this.stats, {super.key});
+  const CommentFooter(this.comment, this.threadID, this.stats, this.index,
+      {super.key});
 
   @override
   State<CommentFooter> createState() => _CommentFooterState();
@@ -321,7 +323,7 @@ class _CommentFooterState extends State<CommentFooter> {
     if (auth.isLogined == false) return showNeedLoginDialog(context);
     Navigator.of(context).push(
       CupertinoPageRoute(
-        builder: ((_) => ReplyPage(widget.comment, cid)),
+        builder: ((_) => ReplyPage(widget.comment, cid, widget.index)),
       ),
     );
   }

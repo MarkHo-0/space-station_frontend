@@ -13,7 +13,8 @@ import '../_styles/textfield.dart';
 
 class ReportPage extends StatefulWidget {
   final Comment comment;
-  const ReportPage(this.comment, {super.key});
+  final int index;
+  const ReportPage(this.comment, this.index, {super.key});
 
   @override
   State<ReportPage> createState() => _ReportPageState();
@@ -56,7 +57,7 @@ class _ReportPageState extends State<ReportPage> {
                     isDense: true,
                     fillColor: Theme.of(context).splashColor,
                     hintText:
-                        "#${widget.comment.cid} ${widget.comment.sender.nickname}"),
+                        "#${widget.index + 1} ${widget.comment.sender.nickname}"),
                 maxLines: 1,
               ),
             ),

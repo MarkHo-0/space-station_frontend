@@ -16,8 +16,9 @@ import '../_styles/textfield.dart';
 
 class ReplyPage extends StatefulWidget {
   final Comment comment;
+  final int index;
   final int tid;
-  const ReplyPage(this.comment, this.tid, {super.key});
+  const ReplyPage(this.comment, this.tid, this.index, {super.key});
 
   @override
   State<ReplyPage> createState() => _ReplyPageState();
@@ -71,7 +72,7 @@ class _ReplyPageState extends State<ReplyPage> {
                     isDense: true,
                     fillColor: Theme.of(context).splashColor,
                     hintText:
-                        "Re: #${widget.comment.cid} ${widget.comment.sender.nickname}"),
+                        "Re: #${widget.index + 1} ${widget.comment.sender.nickname}"),
                 maxLines: 1,
               ),
             ),

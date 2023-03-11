@@ -24,10 +24,11 @@ class _ThreadPageState extends State<ThreadPage> {
   bool isLoading = false;
   bool isNetError = false;
   String nextCursor = "";
+  List<Widget> items = [];
+  List<int> order = [];
   List<Comment> comments = [];
   Thread? thread;
   int? startViewingTime;
-
   @override
   void initState() {
     super.initState();
@@ -72,17 +73,23 @@ class _ThreadPageState extends State<ThreadPage> {
         textAlign: TextAlign.center,
       );
     } else {
-      if (thread!.pinedCid != null &&
-          thread!.pinedCid! > 1 &&
-          thread!.pinedCid! < comments.length) {
-        Comment switcher = comments[thread!.pinedCid!];
-        comments.removeAt(thread!.pinedCid!);
-        comments.insert(1, switcher);
+      items = [];
+      for (int i = 0; i < comments.length; i++) {
+        order.add(i);
+        items.add(buildItem(context, i));
       }
-      return ListView.builder(
-        itemCount: comments.length + 1,
-        itemBuilder: ((context, index) => buildItem(context, index)),
+      if (thread!.pinedCid != null) {
+        for (int i = 0; i < comments.length; i++) {
+          if (thread!.pinedCid == comments[i].cid && i != 0) {
+            items.insert(1, items.removeAt(i));
+          }
+        }
+      }
+      items.add(buildItem(context, comments.length));
+
+      return ListView(
         controller: _scrollController,
+        children: items,
       );
     }
   }
