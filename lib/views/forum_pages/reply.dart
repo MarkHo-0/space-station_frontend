@@ -80,7 +80,7 @@ class _ReplyPageState extends State<ReplyPage> {
             padding: const EdgeInsets.only(left: 10),
             height: 45,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () => onPressPost(context),
               child: Row(
                 children: [
                   Text(context.getString("reply")),
