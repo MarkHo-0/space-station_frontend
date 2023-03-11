@@ -68,6 +68,13 @@ class _ThreadPageState extends State<ThreadPage> {
         textAlign: TextAlign.center,
       );
     } else {
+      if (thread!.pinedCid != null &&
+          thread!.pinedCid! > 1 &&
+          thread!.pinedCid! < comments.length) {
+        Comment switcher = comments[thread!.pinedCid!];
+        comments.removeAt(thread!.pinedCid!);
+        comments.insert(1, switcher);
+      }
       return ListView.builder(
         itemCount: comments.length + 1,
         itemBuilder: ((context, index) => buildItem(context, index)),
@@ -100,6 +107,7 @@ class _ThreadPageState extends State<ThreadPage> {
     if (currentIndex == comments.length) {
       return isLoading ? bottomLoadingWidget : bottomNoMoreWidget;
     }
+
     return CommentContiner(
       comment: comments[currentIndex],
       thread: thread!,

@@ -185,7 +185,11 @@ class CommentContiner extends StatelessWidget {
         ],
       ),
       onTap: () {
-        WidgetsBinding.instance.addPostFrameCallback((_) {});
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          pinComment(comment.cid).then((value) => null).catchError((err) {
+            showUnkownErrorDialog(context);
+          });
+        });
       },
     );
   }
