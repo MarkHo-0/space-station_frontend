@@ -71,7 +71,7 @@ Future<void> reportComment(int commentID, int reasonID) async {
       .then((_) {});
 }
 
-Future<void> viewCount(int tid, int viewTime) async {
+Future<void> recordViewTime(int tid, int viewTime) async {
   final viewcount = {"tid": tid, "view_time": viewTime};
   return HttpClient().post('/thread/view', bodyItems: viewcount).then((_) {});
 }

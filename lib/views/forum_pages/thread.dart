@@ -1,9 +1,9 @@
-import 'dart:async';
-
 import 'package:ez_localization/ez_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 import 'package:space_station/models/thread.dart';
+import 'package:space_station/utils/parse_time.dart';
 import 'package:space_station/views/forum_pages/widgets/comment_continer.dart';
 import '../../api/interfaces/forum_api.dart';
 import '../../models/comment.dart';
@@ -20,18 +20,17 @@ class ThreadPage extends StatefulWidget {
 }
 
 class _ThreadPageState extends State<ThreadPage> {
-  Duration duration = Duration();
-  Timer? timer;
   final ScrollController _scrollController = ScrollController();
   bool isLoading = false;
   bool isNetError = false;
   String nextCursor = "";
   List<Comment> comments = [];
   Thread? thread;
+  int? startViewingTime;
+
   @override
   void initState() {
     super.initState();
-    startTimer();
     _loadMore();
     _scrollController.addListener(() {
       final pos = _scrollController.position;
@@ -89,28 +88,27 @@ class _ThreadPageState extends State<ThreadPage> {
   }
 
   Widget buildItem(BuildContext context, int currentIndex) {
-    final bottomLoadingWidget = ColorFiltered(
-      colorFilter:
-          ColorFilter.mode(Theme.of(context).primaryColor, BlendMode.srcIn),
-      child: const AspectRatio(
-        aspectRatio: 6 / 1,
-        child: RiveAnimation.asset(
-          'assets/animations/stars_twinkle.riv',
-        ),
-      ),
-    );
-
-    final bottomNoMoreWidget = Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20),
-      child: Text(
-        context.getString('no_more_items'),
-        textAlign: TextAlign.center,
-      ),
-    );
-
     //列表最後的組件顯示
     if (currentIndex == comments.length) {
-      return isLoading ? bottomLoadingWidget : bottomNoMoreWidget;
+      if (isLoading) {
+        return ColorFiltered(
+          colorFilter:
+              ColorFilter.mode(Theme.of(context).primaryColor, BlendMode.srcIn),
+          child: const AspectRatio(
+            aspectRatio: 6 / 1,
+            child: RiveAnimation.asset(
+              'assets/animations/stars_twinkle.riv',
+            ),
+          ),
+        );
+      }
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: Text(
+          context.getString('no_more_items'),
+          textAlign: TextAlign.center,
+        ),
+      );
     }
 
     return CommentContiner(
@@ -122,13 +120,13 @@ class _ThreadPageState extends State<ThreadPage> {
 
   @override
   void dispose() {
+    if (startViewingTime != null) {
+      final viewDuration = getCurrUnixTime() - startViewingTime!;
+      if (kDebugMode) print('viewTime: $viewDuration');
+      recordViewTime(widget.threadID, viewDuration).ignore();
+    }
     _scrollController.dispose();
     super.dispose();
-    stopTimer();
-    print(duration.inSeconds);
-    viewCount(widget.threadID, duration.inSeconds)
-        .then((value) => null)
-        .onError((error, stackTrace) => null);
   }
 
   void updateCommentList(ThreadDetailModel value) {
@@ -136,19 +134,7 @@ class _ThreadPageState extends State<ThreadPage> {
     nextCursor = value.continuous;
     if (value.threadDetail != null) {
       thread = value.threadDetail;
+      startViewingTime = getCurrUnixTime();
     }
-  }
-
-  void startTimer() {
-    timer = Timer.periodic(const Duration(seconds: 1), (_) => addTime());
-  }
-
-  void addTime() {
-    final seconds = duration.inSeconds + 1;
-    duration = Duration(seconds: seconds);
-  }
-
-  void stopTimer({bool resets = true}) {
-    timer?.cancel();
   }
 }
