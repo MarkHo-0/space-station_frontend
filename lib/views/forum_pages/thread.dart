@@ -25,7 +25,6 @@ class _ThreadPageState extends State<ThreadPage> {
   bool isNetError = false;
   String nextCursor = "";
   List<Widget> items = [];
-  List<int> order = [];
   List<Comment> comments = [];
   Thread? thread;
   int? startViewingTime;
@@ -75,7 +74,6 @@ class _ThreadPageState extends State<ThreadPage> {
     } else {
       items = [];
       for (int i = 0; i < comments.length; i++) {
-        order.add(i);
         items.add(buildItem(context, i));
       }
       if (thread!.pinedCid != null) {
@@ -130,7 +128,7 @@ class _ThreadPageState extends State<ThreadPage> {
     if (startViewingTime != null) {
       final viewDuration = getCurrUnixTime() - startViewingTime!;
       if (kDebugMode) print('viewTime: $viewDuration');
-      recordViewTime(widget.threadID, viewDuration).ignore();
+      //recordViewTime(widget.threadID, viewDuration).ignore();
     }
     _scrollController.dispose();
     super.dispose();
