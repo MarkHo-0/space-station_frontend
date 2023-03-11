@@ -70,3 +70,8 @@ Future<void> reportComment(int commentID, int reasonID) async {
       .post('/comment/$commentID/report', bodyItems: reason)
       .then((_) {});
 }
+
+Future<void> viewCount(int tid, int viewTime) async {
+  final viewcount = {"tid": tid, "view_time": viewTime};
+  return HttpClient().post('/thread/view', bodyItems: viewcount).then((_) {});
+}

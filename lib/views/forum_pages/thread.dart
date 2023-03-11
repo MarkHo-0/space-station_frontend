@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
@@ -18,6 +20,8 @@ class ThreadPage extends StatefulWidget {
 }
 
 class _ThreadPageState extends State<ThreadPage> {
+  Duration duration = Duration();
+  Timer? timer;
   final ScrollController _scrollController = ScrollController();
   bool isLoading = false;
   bool isNetError = false;
@@ -27,6 +31,7 @@ class _ThreadPageState extends State<ThreadPage> {
   @override
   void initState() {
     super.initState();
+    startTimer();
     _loadMore();
     _scrollController.addListener(() {
       final pos = _scrollController.position;
@@ -119,6 +124,11 @@ class _ThreadPageState extends State<ThreadPage> {
   void dispose() {
     _scrollController.dispose();
     super.dispose();
+    stopTimer();
+    print(duration.inSeconds);
+    viewCount(widget.threadID, duration.inSeconds)
+        .then((value) => null)
+        .onError((error, stackTrace) => null);
   }
 
   void updateCommentList(ThreadDetailModel value) {
@@ -127,5 +137,18 @@ class _ThreadPageState extends State<ThreadPage> {
     if (value.threadDetail != null) {
       thread = value.threadDetail;
     }
+  }
+
+  void startTimer() {
+    timer = Timer.periodic(const Duration(seconds: 1), (_) => addTime());
+  }
+
+  void addTime() {
+    final seconds = duration.inSeconds + 1;
+    duration = Duration(seconds: seconds);
+  }
+
+  void stopTimer({bool resets = true}) {
+    timer?.cancel();
   }
 }
