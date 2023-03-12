@@ -85,7 +85,12 @@ int updateReaction(int commentID, int newReaction) {
   final oldReaction = comment['stats']['me'] as int;
 
   if (oldReaction > 0 && oldReaction == newReaction) {
+    if (newReaction == 1) comment['stats']['like']--;
+    if (newReaction == 2) comment['stats']['dislike']--;
     newReaction = 0;
+  } else {
+    if (newReaction == 1) comment['stats']['like']++;
+    if (newReaction == 2) comment['stats']['dislike']++;
   }
 
   return comment['stats']['me'] = newReaction;

@@ -136,6 +136,11 @@ void initializationInterfaces() {
     return SimpleResponse({'final_reaction': finalReaction});
   });
 
+  TestClient.onPost('/thread/view', (req) {
+    //不處理觀看時間的統計
+    return const SimpleResponse({});
+  });
+
   TestClient.onPost('/comment/:cid/report', (req) {
     if (req.isLogined == false) {
       return const SimpleResponse({}, statusCode: 401);
