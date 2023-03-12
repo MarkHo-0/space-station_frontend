@@ -98,7 +98,7 @@ class CommentContiner extends StatelessWidget {
         Visibility(
           visible: comment.replyto != null,
           child: Text(
-            ">> #$index ${comment.replyto?.sender.nickname}",
+            ">> #${index + 1} ${comment.replyto?.sender.nickname}",
             style: TextStyle(color: Theme.of(context).hintColor),
           ),
         ),
