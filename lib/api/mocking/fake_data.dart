@@ -207,12 +207,17 @@ int createNewThread(String title, String content, int pid, int fid) {
 }
 
 int createNewComment(int threadID, String content, int? replyTo) {
+  dynamic parentComment;
+  if (replyTo != null) {
+    parentComment = fakeComments.firstWhere((c) => c['cid'] == replyTo);
+  }
+
   final comment = {
     'tid': threadID,
     'cid': fakeComments.length,
     'content': content,
     'create_time': getCurrUnixTime(),
-    'reply_to': replyTo,
+    'reply_to': parentComment,
     'stats': {'like': 0, 'dislike': 0, 'reply': 0, 'me': 0},
     'sender': {'uid': fakeUser!.uid, 'nickname': fakeUser!.nickname},
     'status': 0,

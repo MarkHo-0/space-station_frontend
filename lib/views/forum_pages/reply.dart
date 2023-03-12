@@ -1,24 +1,17 @@
 import 'package:ez_localization/ez_localization.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:space_station/views/forum_pages/thread.dart';
-import 'package:space_station/views/forum_pages/widgets/post_dialog.dart';
-
 import '../../api/interfaces/forum_api.dart';
 import '../../models/comment.dart';
-import '../_share/succuess_backlastpage.dart';
 import 'widgets/dynamic_textbox/previewable_textfield.dart';
 import 'widgets/syntax_manual.dart';
-import '../../api/error.dart';
-import '../_share/unknown_error_popup.dart';
+import 'widgets/post_dialog.dart';
 import '../_share/unsave_warning_popup.dart';
-import '../_styles/textfield.dart';
 
 class ReplyPage extends StatefulWidget {
   final Comment comment;
-  final int index;
-  final int tid;
-  const ReplyPage(this.comment, this.tid, this.index, {super.key});
+  final int commentIndex;
+  final int threadID;
+  const ReplyPage(this.comment, this.threadID, this.commentIndex, {super.key});
 
   @override
   State<ReplyPage> createState() => _ReplyPageState();
@@ -45,7 +38,8 @@ class _ReplyPageState extends State<ReplyPage> {
           padding: const EdgeInsets.all(15),
           child: Column(
             children: [
-              header(context),
+              buildHeader(context),
+              const SizedBox(height: 10),
               PreviewableTextField(contentInput),
             ],
           ),
@@ -54,44 +48,41 @@ class _ReplyPageState extends State<ReplyPage> {
     );
   }
 
-  Widget header(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+  Widget buildHeader(BuildContext context) {
+    return SizedBox(
+      height: 36,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Flexible(
-            child: SizedBox(
-              height: 45,
-              child: TextField(
-                enabled: false,
-                decoration: InputDecoration(
-                    border: kRoundedBorder,
-                    filled: true,
-                    isDense: true,
-                    fillColor: Theme.of(context).splashColor,
-                    hintText:
-                        "Re: #${widget.index + 1} ${widget.comment.sender.nickname}"),
-                maxLines: 1,
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).splashColor,
+                borderRadius: BorderRadius.circular(3),
+              ),
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Text(
+                  "Re: #${widget.commentIndex + 1} ${widget.comment.sender.nickname}",
+                  style: TextStyle(
+                    color: Theme.of(context).hintColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
             ),
           ),
-          Container(
-            padding: const EdgeInsets.only(left: 10),
-            height: 45,
-            child: ElevatedButton(
+          const SizedBox(width: 10),
+          Directionality(
+            textDirection: TextDirection.rtl,
+            child: ElevatedButton.icon(
+              icon: const Icon(Icons.reply),
               onPressed: () => onPressPost(context),
-              child: Row(
-                children: [
-                  Text(context.getString("reply")),
-                  const Icon(
-                    Icons.reply,
-                  ),
-                ],
-              ),
+              label: Text(context.getString("reply")),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -104,26 +95,15 @@ class _ReplyPageState extends State<ReplyPage> {
       barrierDismissible: false,
       builder: (_) => PostActionDialog(
         () => postComment(
-          widget.tid,
+          widget.threadID,
           contentInput.text,
           widget.comment.cid,
         ),
       ),
     ).then((cid) {
       if (cid == null) return;
-      exit(context);
-    });
-  }
-
-  void exit(BuildContext context) {
-    contentInput.clear();
-    Navigator.of(context).pop(context);
-    Future.delayed(const Duration(microseconds: 500), () {
-      Navigator.of(context).push(
-        CupertinoPageRoute(
-          builder: ((_) => ThreadPage(widget.tid)),
-        ),
-      );
+      contentInput.clear();
+      Navigator.of(context).pop();
     });
   }
 

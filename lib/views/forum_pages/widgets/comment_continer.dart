@@ -95,13 +95,15 @@ class CommentContiner extends StatelessWidget {
   Widget defaultBody(BuildContext context) {
     return Column(
       children: [
-        Visibility(
-          visible: comment.replyto != null,
-          child: Text(
-            ">> #${index + 1} ${comment.replyto?.sender.nickname}",
-            style: TextStyle(color: Theme.of(context).hintColor),
+        if (comment.replyto != null)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+              color: Theme.of(context).hoverColor,
+              child: DynamicTextBox(comment.replyto!.content),
+            ),
           ),
-        ),
         Padding(
           padding: const EdgeInsets.only(bottom: 5),
           child: DynamicTextBox(comment.content),
@@ -304,26 +306,25 @@ class _CommentFooterState extends State<CommentFooter> {
   }
 
   Widget commentButton(BuildContext context) {
-    final shouldShow = widget.stats.reply > 0;
     return Directionality(
       textDirection: TextDirection.rtl,
       child: TextButton.icon(
-        onPressed: () =>
-            onReplyPage(context, widget.threadID, widget.comment.cid),
         icon: const Icon(Icons.comment),
-        label:
-            shouldShow ? Text(widget.stats.reply.toString()) : const SizedBox(),
         style: noPaddingTextButtonStyle,
-      ),
-    );
-  }
-
-  void onReplyPage(BuildContext context, int tid, int cid) {
-    final auth = Provider.of<AuthProvider>(context, listen: false);
-    if (auth.isLogined == false) return showNeedLoginDialog(context);
-    Navigator.of(context).push(
-      CupertinoPageRoute(
-        builder: ((_) => ReplyPage(widget.comment, cid, widget.index)),
+        label: Visibility(
+          visible: widget.stats.reply > 0,
+          child: Text(widget.stats.reply.toString()),
+        ),
+        onPressed: () {
+          final auth = Provider.of<AuthProvider>(context, listen: false);
+          if (auth.isLogined == false) return showNeedLoginDialog(context);
+          Navigator.of(context).push(
+            CupertinoPageRoute(
+              builder: ((_) =>
+                  ReplyPage(widget.comment, widget.threadID, widget.index)),
+            ),
+          );
+        },
       ),
     );
   }
