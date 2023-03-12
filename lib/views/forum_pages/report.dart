@@ -103,15 +103,7 @@ class _ReportPageState extends State<ReportPage> {
           height: 150,
           color: Theme.of(context).splashColor,
           child: SingleChildScrollView(
-              child: Column(
-            children: [
-              Text(
-                context.getString("report_content"),
-                style: TextStyle(color: Theme.of(context).hintColor),
-              ),
-              DynamicTextBox(widget.comment.content),
-            ],
-          ))),
+              child: DynamicTextBox(widget.comment.content))),
     );
   }
 
