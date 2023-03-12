@@ -80,6 +80,7 @@ class _ThreadPageState extends State<ThreadPage> {
         for (int i = 0; i < comments.length; i++) {
           if (thread!.pinedCid == comments[i].cid && i != 0) {
             items.insert(1, items.removeAt(i));
+            break;
           }
         }
       }
@@ -128,7 +129,7 @@ class _ThreadPageState extends State<ThreadPage> {
     if (startViewingTime != null) {
       final viewDuration = getCurrUnixTime() - startViewingTime!;
       if (kDebugMode) print('viewTime: $viewDuration');
-      //recordViewTime(widget.threadID, viewDuration).ignore();
+      recordViewTime(widget.threadID, viewDuration).ignore();
     }
     _scrollController.dispose();
     super.dispose();
