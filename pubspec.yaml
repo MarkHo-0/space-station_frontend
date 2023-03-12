@@ -41,6 +41,7 @@ dependencies:
   ez_localization: ^1.1.0
   flutter_highlight: ^0.7.0
   flutter_math_fork: ^0.6.3+1
+  m_toast: ^0.1.8
 
 dev_dependencies:
   flutter_test:
@@ -84,7 +85,7 @@ flutter:
     - assets/languages/zh-TW.json
 
 icons_launcher:
-  image_path: "assets/launcher/icon.jpg"
+  image_path: "assets/launcher/icon.jpeg"
   platforms:
     android:
       enable: true
