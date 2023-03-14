@@ -108,11 +108,11 @@ void initializationInterfaces() {
     return SimpleResponse(body);
   });
 
-  TestClient.onPost('/thread/:tid/comment', (req) {
+  TestClient.onPost('/comment', (req) {
     if (req.isLogined == false) {
       return const SimpleResponse({}, statusCode: 401);
     }
-    final threadID = int.parse(req.parameters['tid']!);
+    final threadID = req.bodies['tid'] as int;
     final content = req.bodies['content'] as String;
     final replyTo = req.bodies['reply_to'] as int?;
 

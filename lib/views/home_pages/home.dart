@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage>
         return Column(
           children: [
             WelcomeBox(),
-            NewsRow(data.newsArray),
+            if (data.newsArray.isNotEmpty) NewsRow(data.newsArray),
             HotestThreadList(data.threadsArray),
           ],
         );

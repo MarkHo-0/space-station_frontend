@@ -40,17 +40,18 @@ class Comment {
       required this.sender,
       required this.status});
   factory Comment.fromjson(Map<String, dynamic> json) {
-    bool hasParentComment = json["reply_to"] != null;
+    bool hasParentComment = json["reply_to"] is Map<String, dynamic>;
     return Comment(
-        cid: json["cid"],
-        content: json["content"],
-        createTime: json["create_time"],
-        replyto: hasParentComment
-            ? Comment.fromjson(json["reply_to"])
-            : null, //json["reply_to"] is a map
-        stats: CommentStats.fromjson(json["stats"]),
-        sender: User.fromjson(json["sender"]),
-        status: json["status"]);
+      cid: json["cid"],
+      content: json["content"],
+      createTime: json["create_time"],
+      replyto: hasParentComment
+          ? Comment.fromjson(json["reply_to"])
+          : null, //json["reply_to"] is a map
+      stats: CommentStats.fromjson(json["stats"]),
+      sender: User.fromjson(json["sender"]),
+      status: json["status"],
+    );
   }
 }
 

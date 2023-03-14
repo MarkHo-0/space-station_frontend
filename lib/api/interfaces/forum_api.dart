@@ -1,9 +1,6 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:space_station/api/http.dart';
 import '../../models/thread.dart';
 import '../../models/comment.dart';
-import '../api.dart';
 
 Future<HomePageModel> getHomeData() async {
   return HttpClient().get('/home').then((res) => HomePageModel.fromJson(res));
@@ -45,9 +42,9 @@ Future<int> postThread(int pid, int fid, String title, String content) async {
 }
 
 Future<int> postComment(int tid, String content, int? replyTo) async {
-  final comment = {"reply_to": replyTo, "content": content};
+  final comment = {"tid": tid, "reply_to": replyTo, "content": content};
   return HttpClient()
-      .post('/thread/$tid/comment', bodyItems: comment)
+      .post('/comment', bodyItems: comment)
       .then((res) => res['new_cid'] as int);
 }
 
@@ -68,10 +65,12 @@ Future<void> reportComment(int commentID, int reasonID) async {
   final reason = {"reason_id": reasonID};
   return HttpClient()
       .post('/comment/$commentID/report', bodyItems: reason)
-      .then((_) {});
+      .then((_) => null);
 }
 
 Future<void> recordViewTime(int tid, int viewTime) async {
   final viewcount = {"tid": tid, "view_time": viewTime};
-  return HttpClient().post('/thread/view', bodyItems: viewcount).then((_) {});
+  return HttpClient()
+      .post('/thread/view', bodyItems: viewcount)
+      .then((res) => null);
 }
