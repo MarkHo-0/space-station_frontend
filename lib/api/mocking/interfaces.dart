@@ -17,12 +17,7 @@ void initializationInterfaces() {
       'news': getNews(),
     };
     if (req.isLogined) {
-      body.addAll({
-        'user': {
-          'uid': fakeUser!.uid,
-          'nickname': fakeUser!.nickname,
-        }
-      });
+      body.addAll({'user': fakeUser!.toJson()});
     }
     return SimpleResponse(body);
   });
@@ -210,10 +205,7 @@ void initializationInterfaces() {
     final logined = {
       'token': fakeUserToken,
       'valid_time': 180,
-      'user': {
-        'uid': fakeUser!.uid,
-        'nickname': fakeUser!.nickname,
-      },
+      'user': fakeUser!.toJson(),
     };
 
     return SimpleResponse(logined);

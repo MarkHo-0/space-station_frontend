@@ -4,20 +4,17 @@ import 'package:space_station/api/http.dart';
 import '../api/interfaces/user_api.dart' show loginUser, logoutUser;
 import '../models/user.dart';
 
-const _kDataKey = 'logined_user';
+const _kDataKey = 'logined_data';
 
 class AuthProvider extends ChangeNotifier {
   late SharedPreferences pref;
-  User? user;
+  UserInfo? user;
 
   AuthProvider(this.pref) {
-    final loginedUser = pref.getStringList(_kDataKey);
-    if (loginedUser != null) {
-      user = User(
-        uid: int.parse(loginedUser[0]),
-        nickname: loginedUser[1],
-      );
-      HttpClient().setAuthKey(loginedUser[2]);
+    final loginedData = pref.getStringList(_kDataKey);
+    if (loginedData != null) {
+      user = UserInfo.fromString(loginedData[0]);
+      HttpClient().setAuthKey(loginedData[1]);
     }
   }
 
@@ -25,36 +22,31 @@ class AuthProvider extends ChangeNotifier {
     return user != null;
   }
 
-  Future<bool> login(int sid, String password) async {
+  Future<void> login(int sid, String password) async {
     return loginUser(sid, password).then((data) {
       //寫入緩存
       HttpClient().setAuthKey(data.token);
       user = data.user;
       //寫入本地
       pref.setStringList(_kDataKey, [
-        data.user.uid.toString(),
-        data.user.nickname,
+        user.toString(),
         data.token,
         data.validTime.toString(),
       ]);
-      notifyListeners();
-      return true;
+      return notifyListeners();
     });
   }
 
   Future<void> logout() async {
     if (!isLogined) return Future.value();
-    await logoutUser();
-    clearLoginData();
-    notifyListeners();
-    return Future.value();
+    return logoutUser()
+        .then((_) => clearLoginData())
+        .then((_) => notifyListeners());
   }
 
-  void clearLoginData() {
-    //清楚緩存資料
+  Future<bool> clearLoginData() {
     user = null;
     HttpClient().setAuthKey('');
-    //清楚本地資料
-    pref.remove(_kDataKey);
+    return pref.remove(_kDataKey);
   }
 }

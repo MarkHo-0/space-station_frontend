@@ -40,7 +40,7 @@ List<dynamic> filterComments(int threadID, int offset, {count = 15}) {
       .toList();
 }
 
-bool isFakeUser(int sid) => fakeUserSid == sid;
+bool isFakeUser(int sid) => fakeUser?.sid == sid;
 
 bool isVfCodeValid(int sid, int code) =>
     code.toString() == sid.toString().substring(4, 8);
@@ -62,14 +62,13 @@ int? updatePinState(int commentID) {
 
 int createFakeUser(int sid, String pwd, String nickname) {
   final fakeUserID = Random().nextInt(100) + _nicknames.length;
-  fakeUser = User(uid: fakeUserID, nickname: nickname);
-  fakeUserSid = sid;
+  fakeUser = UserInfo(fakeUserID, nickname, getCurrUnixTime(), sid, 0, 0, 0);
   fakeUserPwd = pwd;
   return fakeUserID;
 }
 
 bool performLogin(int sid, String pwd) {
-  if (sid != fakeUserSid || pwd != fakeUserPwd) return false;
+  if (sid != fakeUser?.sid || pwd != fakeUserPwd) return false;
   fakeUserToken = sha512.convert(utf8.encode('${sid}_123')).toString();
   return true;
 }
@@ -101,8 +100,7 @@ int updateReaction(int commentID, int newReaction) {
 List<dynamic> fakeThreads = [];
 List<dynamic> fakeComments = [];
 Map<int, int> fakeReports = {};
-User? fakeUser;
-int? fakeUserSid;
+UserInfo? fakeUser;
 String? fakeUserPwd;
 String? fakeUserToken;
 

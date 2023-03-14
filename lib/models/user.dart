@@ -1,7 +1,7 @@
+import 'dart:convert';
 import 'thread.dart';
 
 class User {
-  //basic_info too
   final int uid;
   final String nickname;
 
@@ -16,36 +16,69 @@ class User {
       nickname: json["nickname"],
     );
   }
+
+  factory User.fromInfo(UserInfo info) {
+    return User(uid: info.uid, nickname: info.nickname);
+  }
 }
 
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
 class UserInfo {
-  final User basicInfo;
-  final String gender;
+  final int uid;
+  final String nickname;
   final int createTime;
-  final int sid;
+  final int? sid;
   final int threadCount;
   final int commentCount;
-  final int fid;
-  UserInfo(this.basicInfo, this.gender, this.createTime, this.sid,
-      this.threadCount, this.commentCount, this.fid);
+  final int? fid;
+
+  UserInfo(
+    this.uid,
+    this.nickname,
+    this.createTime,
+    this.sid,
+    this.threadCount,
+    this.commentCount,
+    this.fid,
+  );
 
   factory UserInfo.fromJson(Map<String, dynamic> json) {
     return UserInfo(
-        User.fromjson(json["basic_info"]),
-        json["gender"],
-        json["create_time"],
-        json["sid"],
-        json["thread_count"],
-        json["comment_count"],
-        json["fid"]);
+      json["uid"],
+      json["nickname"],
+      json["create_time"],
+      json["sid"],
+      json["thread_count"],
+      json["comment_count"],
+      json["fid"],
+    );
+  }
+
+  factory UserInfo.fromString(String string) {
+    final Map<String, dynamic> json = jsonDecode(string);
+    return UserInfo.fromJson(json);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'uid': uid,
+      'nickname': nickname,
+      'create_time': createTime,
+      'sid': sid,
+      'thread_count': threadCount,
+      'comment_count': commentCount,
+      'fid': fid
+    };
+  }
+
+  @override
+  String toString() {
+    return jsonEncode(toJson());
   }
 }
 
 class UserThreads {
-  List<Thread> threadsArray;
-  UserThreads(this.threadsArray);
+  List<Thread> threads;
+  UserThreads(this.threads);
 
   factory UserThreads.fromjson(Map<String, dynamic> json) {
     dynamic a = json["threads"]; //return list of map type
@@ -62,19 +95,16 @@ class UserThreads {
 class LoginData {
   String token;
   int validTime;
-  User user;
+  UserInfo user;
   LoginData(this.token, this.validTime, this.user);
+
   factory LoginData.fromjson(Map<String, dynamic> json) {
     return LoginData(
-        json["token"], json["valid_time"], User.fromjson(json["user"]));
-  }
-}
-
-class NewFaculty {
-  int fid;
-  String facultyName;
-  NewFaculty(this.fid, this.facultyName);
-  factory NewFaculty.fromjson(Map<String, dynamic> json) {
-    return NewFaculty(json["fid"], json["faculty_name"]); //return 文字
+      json["token"],
+      json["valid_time"],
+      UserInfo.fromJson(
+        json["user"],
+      ),
+    );
   }
 }

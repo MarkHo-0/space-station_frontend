@@ -70,28 +70,7 @@ Future<LoginData> loginUser(int sid, String pwd) async {
 }
 
 Future<void> logoutUser() async {
-  return HttpClient().post('/user/logout').then((_) => true);
-}
-
-Future<NewFaculty> changeFaculty(String coursename) async {
-  http.Response response = await API("").myPatch("/user/faculty", {}, {
-    "course_name": coursename
-  }); //由 Controller 選擇course input as parameter body , no query
-  switch (response.statusCode) {
-    case 200:
-      return NewFaculty.fromjson(jsonDecode(response
-          .body)); //if 200, return PathchedInfo object(field:fid:int,faculty_name:String)
-    case 422:
-      throw Exception("Wrong input Format");
-    case 403:
-      throw Exception("Don't have the permissions!");
-    case 401:
-      throw Exception("No Authorization!");
-    case 406:
-      throw Exception("Operation is too frequent!");
-    default:
-      throw Exception("error");
-  }
+  return HttpClient().post('/user/logout').then((_) => null);
 }
 
 //if statecode==200 patch data 並return PatchedInfo object field:(fid:int,faculty_name:String)
