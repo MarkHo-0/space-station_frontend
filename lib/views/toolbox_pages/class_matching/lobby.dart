@@ -13,6 +13,12 @@ class CMlobbyPage extends StatefulWidget {
 }
 
 class CMlobbyPageState extends State<CMlobbyPage> {
+  CourseInfo? selectedCourse;
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,22 +38,57 @@ class CMlobbyPageState extends State<CMlobbyPage> {
   }
 
   Widget lobbybody(BuildContext context) {
-    String displayStringForOption(CourseInfo option) => option.coureseName;
-
+    String displayStringForOption(CourseInfo option) => option.courseCode;
     return Column(
       children: [
         Text(context.getString("request_swap_message")),
-        Autocomplete<CourseInfo>(
+        RawAutocomplete<CourseInfo>(
           displayStringForOption: displayStringForOption,
-          optionsBuilder: (TextEditingValue textEditingValue) {
-            if (textEditingValue.text.isEmpty) return [];
+          fieldViewBuilder:
+              (context, textEditingController, focusNode, onFieldSubmitted) {
+            return TextFormField(
+                controller: textEditingController,
+                focusNode: focusNode,
+                onChanged: (_) {
+                  setState(() => selectedCourse = null);
+                });
+          },
+          optionsViewBuilder: (context, onSelected, options) {
+            return Material(
+              elevation: 4.0,
+              child: ListView(
+                  children: options
+                      .map((option) => GestureDetector(
+                            onTap: () {
+                              onSelected(option);
+                              setState(() => selectedCourse = option);
+                            },
+                            child: ListTile(
+                              title: Text(option.courseCode),
+                            ),
+                          ))
+                      .toList()),
+            );
+          },
+          optionsBuilder: (textEditingValue) {
+            if (textEditingValue.text.isEmpty) {
+              selectedCourse = null;
+              return [];
+            }
             return getCourseInfo(textEditingValue.text)
                 .then((value) => value.coursesArray)
                 .onError((_, __) => []);
           },
-          onSelected: (CourseInfo course) {},
-        )
+        ),
+        if (selectedCourse != null) showCourseName(context)
       ],
+    );
+  }
+
+  Widget showCourseName(BuildContext context) {
+    return Text(
+      selectedCourse!.coureseName,
+      style: TextStyle(color: Theme.of(context).hintColor),
     );
   }
 }
