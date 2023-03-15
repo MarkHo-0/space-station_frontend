@@ -40,16 +40,22 @@ class _ThreadPageState extends State<ThreadPage> {
     });
   }
 
-  void _loadMore() async {
+  Future<void> _loadMore({freshLoad = false}) async {
     //如果正在正在加載則退出
     if (isLoading) return Future.value();
+
     //如果沒有下一頁也退出
-    if (comments.isNotEmpty && nextCursor.isEmpty) return;
+    if (comments.isNotEmpty && nextCursor.isEmpty && !freshLoad) return;
+
     setState(() => isLoading = true);
-    getThread(widget.threadID, nextCursor)
-        .then((value) => updateCommentList(value))
+    return getThread(widget.threadID, freshLoad ? '' : nextCursor)
+        .then((value) => updateCommentList(value, freshLoad))
         .onError((e, __) => showUnkownErrorDialog(context))
         .whenComplete(() => setState(() => isLoading = false));
+  }
+
+  Future<void> _refresh() {
+    return _loadMore(freshLoad: true);
   }
 
   @override
@@ -86,9 +92,13 @@ class _ThreadPageState extends State<ThreadPage> {
       }
       items.add(buildItem(context, comments.length));
 
-      return ListView(
-        controller: _scrollController,
-        children: items,
+      return RefreshIndicator(
+        onRefresh: _refresh,
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(parent: ScrollPhysics()),
+          controller: _scrollController,
+          children: items,
+        ),
       );
     }
   }
@@ -129,13 +139,14 @@ class _ThreadPageState extends State<ThreadPage> {
     if (startViewingTime != null) {
       final viewDuration = getCurrUnixTime() - startViewingTime!;
       if (kDebugMode) print('viewTime: $viewDuration');
-      recordViewTime(widget.threadID, viewDuration).ignore();
+      recordViewTime(widget.threadID, viewDuration).onError((_, __) => null);
     }
     _scrollController.dispose();
     super.dispose();
   }
 
-  void updateCommentList(ThreadDetailModel value) {
+  void updateCommentList(ThreadDetailModel value, bool shouldClearOld) {
+    if (shouldClearOld) comments.clear();
     comments.addAll(value.commentsList);
     nextCursor = value.continuous;
     if (value.threadDetail != null) {

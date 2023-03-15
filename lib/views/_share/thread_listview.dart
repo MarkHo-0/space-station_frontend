@@ -85,6 +85,7 @@ class ThreadListViewState extends State<ThreadListView>
     return RefreshIndicator(
       onRefresh: refresh,
       child: ListView.builder(
+        physics: const AlwaysScrollableScrollPhysics(parent: ScrollPhysics()),
         itemCount: threads.length + 1,
         itemBuilder: buildItem,
         controller: _scrollController,
