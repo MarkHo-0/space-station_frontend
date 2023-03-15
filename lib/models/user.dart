@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
+
 import 'thread.dart';
 
 class User {
@@ -27,8 +29,8 @@ class UserInfo {
   final String nickname;
   final int createTime;
   final int? sid;
-  final int threadCount;
-  final int commentCount;
+  late ValueNotifier<int> threadCount;
+  late ValueNotifier<int> commentCount;
   final int? fid;
 
   UserInfo(
@@ -36,10 +38,13 @@ class UserInfo {
     this.nickname,
     this.createTime,
     this.sid,
-    this.threadCount,
-    this.commentCount,
+    int threadCount,
+    int commentCount,
     this.fid,
-  );
+  ) {
+    this.threadCount = ValueNotifier(threadCount);
+    this.commentCount = ValueNotifier(commentCount);
+  }
 
   factory UserInfo.fromJson(Map<String, dynamic> json) {
     return UserInfo(
@@ -64,8 +69,8 @@ class UserInfo {
       'nickname': nickname,
       'create_time': createTime,
       'sid': sid,
-      'thread_count': threadCount,
-      'comment_count': commentCount,
+      'thread_count': threadCount.value,
+      'comment_count': commentCount.value,
       'fid': fid
     };
   }

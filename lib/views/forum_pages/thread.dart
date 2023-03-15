@@ -16,10 +16,10 @@ class ThreadPage extends StatefulWidget {
   const ThreadPage(this.threadID, {super.key});
 
   @override
-  State<ThreadPage> createState() => _ThreadPageState();
+  State<ThreadPage> createState() => ThreadPageState();
 }
 
-class _ThreadPageState extends State<ThreadPage> {
+class ThreadPageState extends State<ThreadPage> {
   final ScrollController _scrollController = ScrollController();
   bool isLoading = false;
   bool isNetError = false;
@@ -153,5 +153,10 @@ class _ThreadPageState extends State<ThreadPage> {
       thread = value.threadDetail;
       startViewingTime = getCurrUnixTime();
     }
+  }
+
+  void addComment(Comment comment) {
+    comments.add(comment);
+    setState(() {});
   }
 }

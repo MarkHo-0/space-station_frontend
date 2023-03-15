@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:space_station/models/comment.dart';
 import 'package:space_station/views/_share/owner_tag.dart';
 import 'package:space_station/views/forum_pages/report.dart';
+import 'package:space_station/views/forum_pages/thread.dart';
 import '../../../providers/auth_provider.dart';
 import '../../_share/banned_message.dart';
 import '../../_styles/padding.dart';
@@ -320,12 +321,22 @@ class _CommentFooterState extends State<CommentFooter> {
           if (auth.isLogined == false) return showNeedLoginDialog(context);
           Navigator.of(context).push(
             CupertinoPageRoute(
-              builder: ((_) =>
-                  ReplyPage(widget.comment, widget.threadID, widget.index)),
+              builder: ((_) => ReplyPage(widget.comment, widget.threadID,
+                  widget.index, onCommentSuccessed)),
             ),
           );
         },
       ),
     );
+  }
+
+  void onCommentSuccessed(Comment reply) {
+    final user = Provider.of<AuthProvider>(context, listen: false).user!;
+    user.commentCount.value++;
+    widget.stats.reply++;
+    final page = context.findAncestorStateOfType<ThreadPageState>();
+    if (page == null) return setState(() {});
+    if (page.nextCursor.isNotEmpty) return;
+    page.addComment(reply);
   }
 }
