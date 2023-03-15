@@ -84,8 +84,8 @@ class ThreadPageState extends State<ThreadPage> {
       }
       if (thread!.pinedCid != null) {
         for (int i = 0; i < comments.length; i++) {
-          if (thread!.pinedCid == comments[i].cid && i != 0) {
-            items.insert(1, items.removeAt(i));
+          if (thread!.pinedCid == comments[i].cid) {
+            items.insert(0, items.removeAt(i));
             break;
           }
         }
