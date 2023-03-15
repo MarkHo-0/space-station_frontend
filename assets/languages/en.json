@@ -149,6 +149,9 @@
   "repeat_err_body":"You have made this action before!",
   "banned_message_title": "This message is banned",
   "banned_message_body":"You can not make this action",
-  "success_message":"Success!"
-
+  "success_message":"Success!",
+  "____ToolBox_____": "----------------------------------",
+  "my_request":"My Request",
+  "request_swap_message":"What Course would you like to swap?",
+  "cuurent_class_message":"Current Class"
 }

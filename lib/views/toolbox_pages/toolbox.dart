@@ -1,5 +1,6 @@
 import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:space_station/views/toolbox_pages/class_matching/lobby.dart';
 import '../_share/future_page.dart';
 import '../../api/interfaces/other_api.dart';
 
@@ -36,6 +37,7 @@ class _ToolboxPageState extends State<ToolboxPage>
                 nameKey: "class_swapping",
                 backgroundImagePath: "assets/images/bookshelf.jpg",
                 enabled: stauts.classSwapping,
+                page: CMlobbyPage(),
               ),
               ToolboxItem(
                 nameKey: "study_parner",
