@@ -32,21 +32,21 @@ class UserInfoBox extends StatelessWidget {
   }
 
   Widget buildRightSidePanel(BuildContext context, AuthProvider auth) {
-    if (auth.isLogined) {
+    if (auth.isLogined && auth.user != null) {
       return Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           StatsCounter(
             name: context.getString("thread_stat"),
-            quantity: 0,
+            quantity: auth.user!.threadCount,
             onTap: () {},
           ),
           const SizedBox(width: 24),
           StatsCounter(
             name: context.getString("comment_stat"),
+            quantity: auth.user!.commentCount,
             onTap: () {},
-            quantity: 0,
           ),
         ],
       );
