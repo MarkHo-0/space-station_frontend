@@ -41,43 +41,43 @@ class _ReportPageState extends State<ReportPage> {
 
   Widget header(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Flexible(
-            child: SizedBox(
-              height: 45,
-              child: TextField(
-                enabled: false,
-                decoration: InputDecoration(
-                    border: kRoundedBorder,
-                    filled: true,
-                    isDense: true,
-                    fillColor: Theme.of(context).splashColor,
-                    hintText:
-                        "#${widget.index + 1} ${widget.comment.sender.nickname}"),
-                maxLines: 1,
-              ),
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.only(left: 10),
-            height: 45,
-            child: ElevatedButton(
-              onPressed: () => onPress(context, widget.comment.cid),
-              child: Row(
-                children: [
-                  Text(context.getString("report")),
-                  const Icon(
-                    Icons.report,
+      padding: const EdgeInsets.all(15),
+      child: SizedBox(
+        height: 36,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).splashColor,
+                  borderRadius: BorderRadius.circular(3),
+                ),
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Text(
+                    "Re: #${widget.index + 1} ${widget.comment.sender.nickname}",
+                    style: TextStyle(
+                      color: Theme.of(context).hintColor,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ],
+                ),
               ),
             ),
-          )
-        ],
+            const SizedBox(width: 10),
+            Directionality(
+              textDirection: TextDirection.rtl,
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.report),
+                onPressed: () => onPress(context, widget.comment.cid),
+                label: Text(context.getString("report")),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -98,12 +98,14 @@ class _ReportPageState extends State<ReportPage> {
 
   Widget commentInfo(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 10, right: 10),
+      padding: const EdgeInsets.fromLTRB(15, 0, 15, 15),
       child: Container(
-          height: 150,
-          color: Theme.of(context).splashColor,
-          child: SingleChildScrollView(
-              child: DynamicTextBox(widget.comment.content))),
+        height: 150,
+        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+        color: Theme.of(context).hoverColor,
+        child: SingleChildScrollView(
+            child: DynamicTextBox(widget.comment.content)),
+      ),
     );
   }
 
