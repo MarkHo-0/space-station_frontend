@@ -1,32 +1,38 @@
 import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:space_station/models/comment.dart';
-import 'package:space_station/views/_share/owner_tag.dart';
-import 'package:space_station/views/forum_pages/report.dart';
-import 'package:space_station/views/forum_pages/thread.dart';
+import '../../../models/comment.dart';
+import '../../_share/owner_tag.dart';
 import '../../../providers/auth_provider.dart';
 import '../../_share/banned_message.dart';
 import '../../_styles/padding.dart';
-import '../reply.dart';
 import 'dynamic_textbox/dynamic_textbox.dart';
-import '../../../api/error.dart';
 import '../../../api/interfaces/forum_api.dart';
-import '../../../models/thread.dart';
-import '../../_share/need_login_popup.dart';
 import '../../_share/unknown_error_popup.dart';
+import '../report.dart';
+import '../reply.dart';
+import 'pinned_badge.dart';
 
 class CommentContiner extends StatelessWidget {
+  final int floorIndex;
   final Comment comment;
-  final Thread thread;
-  final int index;
+  final ValueNotifier<int?> currentPinned;
+  final bool isOwnedParentThread;
+  final void Function(BuildContext context, int commentID) onPin;
+  final Future<void> Function(
+    BuildContext ctx,
+    String msg,
+    Comment? replyTo,
+  ) onReply;
 
   const CommentContiner({
     super.key,
     required this.comment,
-    required this.thread,
-    required this.index,
+    required this.currentPinned,
+    required this.floorIndex,
+    required this.isOwnedParentThread,
+    required this.onPin,
+    required this.onReply,
   });
 
   @override
@@ -47,7 +53,7 @@ class CommentContiner extends StatelessWidget {
         child: Column(
           children: [
             buildHeader(context),
-            buildBody(context),
+            buildContentContainer(context),
           ],
         ),
       ),
@@ -61,7 +67,7 @@ class CommentContiner extends StatelessWidget {
         Row(
           children: [
             Text(
-              "#${index + 1}",
+              "#${floorIndex + 1}",
               style: TextStyle(color: Theme.of(context).primaryColor),
             ),
             const SizedBox(width: 5),
@@ -70,24 +76,15 @@ class CommentContiner extends StatelessWidget {
         ),
         Row(
           children: [
-            Visibility(
-              visible: thread.pinedCid == comment.cid,
-              child: Text(
-                context.getString("comment_pinned"),
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            popupbutton(context),
+            PinnedBadge(comment.cid, currentPinned, isOwnedParentThread),
+            buildMoreButton(context),
           ],
         )
       ],
     );
   }
 
-  Widget buildBody(BuildContext context) {
+  Widget buildContentContainer(BuildContext context) {
     if (comment.status == 2) return bannedBody(context);
     if (comment.status == 1) return problematicBody(context);
     return defaultBody(context);
@@ -109,7 +106,7 @@ class CommentContiner extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 5),
           child: DynamicTextBox(comment.content),
         ),
-        CommentFooter(comment, thread.tid, comment.stats, index),
+        buildFooter(context),
       ],
     );
   }
@@ -154,23 +151,38 @@ class CommentContiner extends StatelessWidget {
     );
   }
 
-  Widget popupbutton(BuildContext context) {
-    final auth = Provider.of<AuthProvider>(context);
+  Widget buildMoreButton(BuildContext context) {
     return PopupMenuButton(
       itemBuilder: (context) => [
-        if (getUid(context, auth) == thread.sender.uid) popUpPinItem(context),
-        PopupMenuItem(
-          onTap: () => onReportPage(context, comment),
-          child: Row(
-            children: [
-              const Icon(Icons.report),
-              Text(context.getString("report")),
-            ],
+        if (isOwnedParentThread == true)
+          PopupMenuItem(
+            value: 0,
+            child: ListTile(
+              dense: true,
+              leading: const Icon(
+                Icons.star_border_sharp,
+                color: Colors.orangeAccent,
+              ),
+              title: Text(context.getString("pin_comment")),
+            ),
           ),
-        )
+        PopupMenuItem(
+          value: 1,
+          child: ListTile(
+            dense: true,
+            leading: const Icon(
+              Icons.report,
+              color: Colors.redAccent,
+            ),
+            title: Text(context.getString("report")),
+          ),
+        ),
       ],
+      onSelected: (value) {
+        if (value == 0) onPin(context, comment.cid);
+        if (value == 1) report(context);
+      },
       offset: const Offset(0, 20),
-      elevation: 2,
       child: Icon(
         Icons.more_vert,
         color: Theme.of(context).hintColor,
@@ -179,164 +191,131 @@ class CommentContiner extends StatelessWidget {
     );
   }
 
-  PopupMenuItem<int> popUpPinItem(BuildContext context) {
-    return PopupMenuItem(
-      child: Row(
-        children: [
-          const Icon(Icons.star_border_sharp),
-          Text(context.getString("pin_comment")),
-        ],
-      ),
-      onTap: () {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          pinComment(comment.cid).then((value) => null).catchError((err) {
-            showUnkownErrorDialog(context);
-          });
-        });
-      },
-    );
-  }
-
-  int? getUid(BuildContext context, AuthProvider auth) {
-    if (auth.isLogined) return auth.user!.uid;
-    return null;
-  }
-
-  void onReportPage(BuildContext context, Comment comment) {
-    final auth = Provider.of<AuthProvider>(context, listen: false);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (auth.isLogined == false) return showNeedLoginDialog(context);
-      if (comment.status == 2) return showBannedMessageDialog(context);
-      Navigator.of(context).push(
-        CupertinoPageRoute(
-          builder: ((_) => ReportPage(comment, index)),
-        ),
-      );
-    });
-  }
-}
-
-class CommentFooter extends StatefulWidget {
-  final Comment comment;
-  final int threadID;
-  final int index;
-  final CommentStats stats;
-  const CommentFooter(this.comment, this.threadID, this.stats, this.index,
-      {super.key});
-
-  @override
-  State<CommentFooter> createState() => _CommentFooterState();
-}
-
-class _CommentFooterState extends State<CommentFooter> {
-  @override
-  Widget build(BuildContext context) {
+  Widget buildFooter(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        reactionButtons(context),
-        commentButton(context),
+        buildReactionButtons(),
+        buildReplyButton(context),
       ],
     );
   }
 
-  Widget reactionButtons(BuildContext context) {
-    final rt = widget.stats.me;
+  Widget buildReactionButtons() {
     return Padding(
       padding: const EdgeInsets.only(top: 10),
-      child: Row(
-        children: [
-          TextButton.icon(
-            onPressed: () => onReact(context, 1),
-            icon: Icon(rt == 1 ? Icons.thumb_up_alt : Icons.thumb_up_off_alt),
-            label: Text(widget.stats.like.toString()),
-            style: noPaddingTextButtonStyle,
-          ),
-          const SizedBox(width: 15),
-          TextButton.icon(
-            onPressed: () => onReact(context, 2),
-            icon:
-                Icon(rt == 2 ? Icons.thumb_down_alt : Icons.thumb_down_off_alt),
-            label: Text(widget.stats.dislike.toString()),
-            style: noPaddingTextButtonStyle,
-          ),
-        ],
-      ),
-    );
-  }
-
-  void updatebutton(int finalReation) {
-    if (finalReation == widget.stats.me) return;
-
-    if (finalReation == 0) {
-      if (widget.stats.me == 1) {
-        widget.stats.like -= 1;
-      } else {
-        widget.stats.dislike -= 1;
-      }
-    }
-
-    if (finalReation == 1) {
-      if (widget.stats.me == 0) {
-        widget.stats.like += 1;
-      } else {
-        widget.stats.dislike -= 1;
-        widget.stats.like += 1;
-      }
-    }
-
-    if (finalReation == 2) {
-      if (widget.stats.me == 0) {
-        widget.stats.dislike += 1;
-      } else {
-        widget.stats.like -= 1;
-        widget.stats.dislike += 1;
-      }
-    }
-
-    widget.stats.me = finalReation;
-    setState(() {});
-  }
-
-  void onReact(BuildContext context, int reactionType) {
-    reactComment(widget.comment.cid, reactionType)
-        .then((value) => updatebutton(value))
-        .catchError((_) => showNeedLoginDialog(context),
-            test: (e) => e is AuthorizationError)
-        .onError((_, __) => showUnkownErrorDialog(context));
-  }
-
-  Widget commentButton(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: TextButton.icon(
-        icon: const Icon(Icons.comment),
-        style: noPaddingTextButtonStyle,
-        label: Visibility(
-          visible: widget.stats.reply > 0,
-          child: Text(widget.stats.reply.toString()),
-        ),
-        onPressed: () {
-          final auth = Provider.of<AuthProvider>(context, listen: false);
-          if (auth.isLogined == false) return showNeedLoginDialog(context);
-          Navigator.of(context).push(
-            CupertinoPageRoute(
-              builder: ((_) => ReplyPage(widget.comment, widget.threadID,
-                  widget.index, onCommentSuccessed)),
-            ),
+      child: StatefulBuilder(
+        builder: (BuildContext context, setState) {
+          final rt = comment.stats.me;
+          return Row(
+            children: [
+              TextButton.icon(
+                onPressed: () => react(context, 1, () => setState(() {})),
+                icon: Icon(
+                  rt == 1 ? Icons.thumb_up_alt : Icons.thumb_up_off_alt,
+                ),
+                label: Text(comment.stats.like.toString()),
+                style: noPaddingTextButtonStyle,
+              ),
+              const SizedBox(width: 15),
+              TextButton.icon(
+                onPressed: () => react(context, 2, () => setState(() {})),
+                icon: Icon(
+                  rt == 2 ? Icons.thumb_down_alt : Icons.thumb_down_off_alt,
+                ),
+                label: Text(comment.stats.dislike.toString()),
+                style: noPaddingTextButtonStyle,
+              ),
+            ],
           );
         },
       ),
     );
   }
 
-  void onCommentSuccessed(Comment reply) {
-    final user = Provider.of<AuthProvider>(context, listen: false).user!;
-    user.commentCount.value++;
-    widget.stats.reply++;
-    final page = context.findAncestorStateOfType<ThreadPageState>();
-    if (page == null) return setState(() {});
-    if (page.nextCursor.isNotEmpty) return;
-    page.addComment(reply);
+  Widget buildReplyButton(BuildContext context) {
+    return StatefulBuilder(
+      builder: (BuildContext context, setState) {
+        return Directionality(
+          textDirection: TextDirection.rtl,
+          child: TextButton.icon(
+            icon: const Icon(Icons.comment),
+            style: noPaddingTextButtonStyle,
+            label: Visibility(
+              visible: comment.stats.reply > 0,
+              child: Text(comment.stats.reply.toString()),
+            ),
+            onPressed: () => reply(context, () => setState(() {})),
+          ),
+        );
+      },
+    );
+  }
+
+  void react(BuildContext context, int reactionType, Function updateUI) {
+    if (getLoginedUser(context, warnOnEmpty: true) == null) return;
+    reactComment(comment.cid, reactionType)
+        .then((newReation) => handleNewReaction(newReation))
+        .then((value) => updateUI())
+        .onError((_, __) => showUnkownErrorDialog(context));
+  }
+
+  void reply(BuildContext context, Function updateUI) {
+    if (getLoginedUser(context, warnOnEmpty: true) == null) return;
+
+    Future<void> onPosted(String replyContent) {
+      return onReply(context, replyContent, comment).then((_) {
+        comment.stats.reply++;
+        updateUI();
+      });
+    }
+
+    Navigator.of(context).push(
+      CupertinoPageRoute(
+        builder: ((_) => ReplyPage(comment, floorIndex, onPosted)),
+      ),
+    );
+  }
+
+  void report(BuildContext context) {
+    if (getLoginedUser(context, warnOnEmpty: true) == null) return;
+    if (comment.status == 2) return showBannedMessageDialog(context);
+    Navigator.of(context).push(
+      CupertinoPageRoute(
+        builder: ((_) => ReportPage(comment, floorIndex)),
+      ),
+    );
+  }
+
+  void handleNewReaction(int newReation) {
+    if (newReation == comment.stats.me) return;
+
+    if (newReation == 0) {
+      if (comment.stats.me == 1) {
+        comment.stats.like -= 1;
+      } else {
+        comment.stats.dislike -= 1;
+      }
+    }
+
+    if (newReation == 1) {
+      if (comment.stats.me == 0) {
+        comment.stats.like += 1;
+      } else {
+        comment.stats.dislike -= 1;
+        comment.stats.like += 1;
+      }
+    }
+
+    if (newReation == 2) {
+      if (comment.stats.me == 0) {
+        comment.stats.dislike += 1;
+      } else {
+        comment.stats.like -= 1;
+        comment.stats.dislike += 1;
+      }
+    }
+
+    comment.stats.me = newReation;
   }
 }

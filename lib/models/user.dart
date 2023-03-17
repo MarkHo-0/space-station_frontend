@@ -79,6 +79,10 @@ class UserInfo {
   String toString() {
     return jsonEncode(toJson());
   }
+
+  User toSimpleUser() {
+    return User(uid: uid, nickname: nickname);
+  }
 }
 
 class UserThreads {

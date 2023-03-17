@@ -1,6 +1,7 @@
-import 'package:space_station/models/user.dart';
+import 'user.dart';
 
 import '../models/thread.dart';
+import '../utils/parse_time.dart';
 
 class CommentStats {
   int like;
@@ -53,6 +54,19 @@ class Comment {
       status: json["status"],
     );
   }
+
+  factory Comment.byUser(
+      int id, String content, UserInfo sender, Comment? replyTo) {
+    return Comment(
+      cid: id,
+      content: content,
+      createTime: getCurrUnixTime(),
+      replyto: replyTo,
+      stats: CommentStats(like: 0, dislike: 0, reply: 0, me: 0),
+      sender: User.fromInfo(sender),
+      status: 0,
+    );
+  }
 }
 
 class ThreadDetailModel {
@@ -65,7 +79,6 @@ class ThreadDetailModel {
   factory ThreadDetailModel.fromJson(Map<String, dynamic> json) {
     List<Comment> comments =
         (json["comments"] as Iterable).map((t) => Comment.fromjson(t)).toList();
-
     return ThreadDetailModel(
       comments,
       json["continuous"],

@@ -1,8 +1,10 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:space_station/api/http.dart';
 import '../api/interfaces/user_api.dart' show loginUser, logoutUser;
 import '../models/user.dart';
+import '../views/_share/need_login_popup.dart';
 
 const _kDataKey = 'logined_data';
 
@@ -49,4 +51,13 @@ class AuthProvider extends ChangeNotifier {
     HttpClient().setAuthKey('');
     return pref.remove(_kDataKey);
   }
+}
+
+UserInfo? getLoginedUser(BuildContext context, {warnOnEmpty = false}) {
+  final auth = Provider.of<AuthProvider>(context, listen: false);
+  if (auth.isLogined == false) {
+    if (warnOnEmpty) showNeedLoginDialog(context);
+    return null;
+  }
+  return auth.user;
 }
