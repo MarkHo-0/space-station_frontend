@@ -4,13 +4,12 @@ import '../../models/comment.dart';
 import 'widgets/dynamic_textbox/previewable_textfield.dart';
 import 'widgets/syntax_manual.dart';
 import '../_share/unsave_warning_popup.dart';
-import '../_share/unknown_error_popup.dart';
 
 class ReplyPage extends StatefulWidget {
   final Comment? replyTo;
   final int? cIndex;
-  final Future<void> Function(String) onPost;
-  const ReplyPage(this.replyTo, this.cIndex, this.onPost, {super.key});
+  final Future<bool> Function(String) postRunner;
+  const ReplyPage(this.postRunner, this.replyTo, this.cIndex, {super.key});
 
   @override
   State<ReplyPage> createState() => _ReplyPageState();
@@ -48,6 +47,10 @@ class _ReplyPageState extends State<ReplyPage> {
   }
 
   Widget buildHeader(BuildContext context) {
+    String rTitle = '';
+    if (widget.cIndex != null && widget.replyTo != null) {
+      rTitle = "Re: #${widget.cIndex! + 1} ${widget.replyTo!.sender.nickname}";
+    }
     return SizedBox(
       height: 36,
       child: Row(
@@ -63,7 +66,7 @@ class _ReplyPageState extends State<ReplyPage> {
               child: Padding(
                 padding: const EdgeInsets.only(left: 10),
                 child: Text(
-                  "Re: #${widget.cIndex! + 1} ${widget.replyTo!.sender.nickname}",
+                  rTitle,
                   style: TextStyle(
                     color: Theme.of(context).hintColor,
                     fontWeight: FontWeight.w500,
@@ -116,10 +119,10 @@ class _ReplyPageState extends State<ReplyPage> {
   }
 
   void performPost(BuildContext dialogCtx, BuildContext pageCtx) {
-    widget.onPost(contentInput.text).then<void>((_) {
+    widget.postRunner(contentInput.text).then((successed) {
       Navigator.of(dialogCtx).pop();
-      Navigator.of(pageCtx).pop();
-    }).catchError((_) => showUnkownErrorDialog(pageCtx));
+      if (successed) Navigator.of(pageCtx).pop();
+    });
   }
 
   Future<bool> beforeExit() async {

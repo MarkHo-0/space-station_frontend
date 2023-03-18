@@ -1,7 +1,7 @@
 import 'package:ez_localization/ez_localization.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'widgets/comment_continer.dart';
 import '../../models/thread.dart';
 import '../../utils/parse_time.dart';
 import '../_share/loading_banner.dart';
@@ -9,6 +9,8 @@ import '../../api/interfaces/forum_api.dart';
 import '../../models/comment.dart';
 import '../../providers/auth_provider.dart';
 import '../_share/unknown_error_popup.dart';
+import 'reply.dart';
+import 'widgets/comment_continer.dart';
 
 class ThreadPage extends StatefulWidget {
   final int threadID;
@@ -72,7 +74,19 @@ class ThreadPageState extends State<ThreadPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
-        title: Text(thread == null ? 'Loading' : thread!.title),
+        title: FittedBox(
+          fit: BoxFit.fill,
+          child: Text(thread == null ? 'Loading' : thread!.title),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 15),
+            child: IconButton(
+              onPressed: () => onPostComment(context, null, null),
+              icon: const Icon(Icons.reply),
+            ),
+          ),
+        ],
       ),
       body: buildbody(context),
     );
@@ -115,18 +129,36 @@ class ThreadPageState extends State<ThreadPage> {
     );
   }
 
-  Future<void> onPostComment(BuildContext ctx, String msg, Comment? replyTo) {
+  void onPostComment(BuildContext ctx, int? replyToFloor, Function? onDone) {
     final user = getLoginedUser(ctx, warnOnEmpty: true);
-    if (user == null) return Future.error('');
+    if (user == null) return;
 
-    return postComment(widget.threadID, msg, replyTo?.cid).then((newCommentID) {
-      user.commentCount.value++;
-      if (nextCursor.isEmpty) {
-        final newComment = Comment.byUser(newCommentID, msg, user, replyTo);
-        setState(() => comments.add(newComment));
-        Future.delayed(const Duration(milliseconds: 500), scrollToBottom);
-      }
-    });
+    Comment? replyToCMT;
+    if (replyToFloor != null) replyToCMT = comments[replyToFloor];
+
+    Future<bool> runner(String content) {
+      return postComment(widget.threadID, content, replyToCMT?.cid).then(
+        (newCommentID) {
+          user.commentCount.value++;
+          if (onDone != null) onDone();
+          if (nextCursor.isEmpty) {
+            final cmt = Comment.byUser(newCommentID, content, user, replyToCMT);
+            setState(() => comments.add(cmt));
+            Future.delayed(const Duration(milliseconds: 500), scrollToBottom);
+          }
+          return Future.value(true);
+        },
+      ).catchError((err) {
+        showUnkownErrorDialog(ctx);
+        return Future.value(false);
+      });
+    }
+
+    Navigator.of(ctx).push(
+      CupertinoPageRoute(
+        builder: ((_) => ReplyPage(runner, replyToCMT, replyToFloor)),
+      ),
+    );
   }
 
   void onPinComment(BuildContext context, int commentID) {

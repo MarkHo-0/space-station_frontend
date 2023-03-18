@@ -10,7 +10,6 @@ import 'dynamic_textbox/dynamic_textbox.dart';
 import '../../../api/interfaces/forum_api.dart';
 import '../../_share/unknown_error_popup.dart';
 import '../report.dart';
-import '../reply.dart';
 import 'pinned_badge.dart';
 
 class CommentContiner extends StatelessWidget {
@@ -18,12 +17,8 @@ class CommentContiner extends StatelessWidget {
   final Comment comment;
   final ValueNotifier<int?> currentPinned;
   final bool isOwnedParentThread;
-  final void Function(BuildContext context, int commentID) onPin;
-  final Future<void> Function(
-    BuildContext ctx,
-    String msg,
-    Comment? replyTo,
-  ) onReply;
+  final void Function(BuildContext, int) onPin;
+  final void Function(BuildContext, int?, Function?) onReply;
 
   const CommentContiner({
     super.key,
@@ -260,21 +255,11 @@ class CommentContiner extends StatelessWidget {
         .onError((_, __) => showUnkownErrorDialog(context));
   }
 
-  void reply(BuildContext context, Function updateUI) {
-    if (getLoginedUser(context, warnOnEmpty: true) == null) return;
-
-    Future<void> onPosted(String replyContent) {
-      return onReply(context, replyContent, comment).then((_) {
-        comment.stats.reply++;
-        updateUI();
-      });
-    }
-
-    Navigator.of(context).push(
-      CupertinoPageRoute(
-        builder: ((_) => ReplyPage(comment, floorIndex, onPosted)),
-      ),
-    );
+  void reply(BuildContext context, Function refreshCount) {
+    onReply(context, floorIndex, () {
+      comment.stats.reply++;
+      refreshCount();
+    });
   }
 
   void report(BuildContext context) {
