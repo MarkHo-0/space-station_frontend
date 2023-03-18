@@ -1,13 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Color darkPrimary = const Color(0xff6e7eb5);
 Color lightPrimary = const Color(0xff93a5e2);
 
+const _kDataKey = 'is_dark_theme';
+
 class ThemeProvider extends ChangeNotifier {
+  late SharedPreferences pref;
   bool isBlackTheme = false;
 
-  void setTheme(bool isBack) {
-    isBlackTheme = isBack;
+  ThemeProvider(this.pref) {
+    final savedData = pref.getBool(_kDataKey);
+    if (savedData != null) {
+      isBlackTheme = savedData;
+    }
+  }
+
+  void setTheme(bool newIsBlack) {
+    if (newIsBlack == isBlackTheme) return;
+    isBlackTheme = newIsBlack;
+    pref.setBool(_kDataKey, newIsBlack);
     notifyListeners();
   }
 

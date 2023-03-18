@@ -19,7 +19,7 @@ void main() async {
 
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider(create: ((_) => ThemeProvider()), lazy: false),
+      ChangeNotifierProvider(create: ((_) => ThemeProvider(pref)), lazy: false),
       ChangeNotifierProvider(create: ((_) => AuthProvider(pref)), lazy: false)
     ],
     child: const MyApp(),
@@ -44,6 +44,7 @@ class MyAppState extends State<MyApp> {
               'assets/languages/${locale.toLanguageTag()}.json'),
       builder: (context, ezLocalizationDelegate) {
         return MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'Space Station',
           theme: Provider.of<ThemeProvider>(context).theme,
           locale: ezLocalizationDelegate.locale,
