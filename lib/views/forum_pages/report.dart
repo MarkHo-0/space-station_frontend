@@ -1,15 +1,13 @@
 import 'package:ez_localization/ez_localization.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:space_station/api/interfaces/forum_api.dart';
 import 'package:space_station/models/comment.dart';
-import 'package:space_station/views/_share/succuess_backlastpage.dart';
-import 'package:space_station/views/forum_pages/widgets/dynamic_textbox/dynamic_textbox.dart';
+import '../_share/succuess_backlastpage.dart';
+import 'widgets/dynamic_textbox/dynamic_textbox.dart';
 
 import '../../api/error.dart';
 import '../_share/repeat_action_error.dart';
 import '../_share/unknown_error_popup.dart';
-import '../_styles/textfield.dart';
 
 class ReportPage extends StatefulWidget {
   final Comment comment;

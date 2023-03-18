@@ -95,8 +95,7 @@ void initializationInterfaces() {
     //生成下一頁指標
     String cursor = "";
     if (comments.length >= _kCommentsPerFetch) {
-      cursor = "[${comments.length}]";
-      cursor = _toBase64.encode(cursor);
+      cursor = _toBase64.encode("[${comments.length}]");
     }
 
     Map<String, dynamic> body = {
@@ -117,6 +116,11 @@ void initializationInterfaces() {
     final replyTo = req.bodies['reply_to'] as int?;
 
     final commentID = createNewComment(threadID, content, replyTo);
+
+    final pThread = fakeThreads.firstWhere((t) => t['tid'] == threadID);
+    pThread['stats']['comment']++;
+    pThread['heat'] += 0.1;
+
     return SimpleResponse({'new_cid': commentID});
   });
 

@@ -174,45 +174,35 @@ void generateRandomThreads(int quantity) {
 }
 
 int createNewThread(String title, String content, int pid, int fid) {
-  dynamic defaultStats = {'like': 0, 'dislike': 0, 'comment': 0};
-  dynamic sender = {'uid': fakeUser!.uid, 'nickname': fakeUser!.nickname};
   dynamic thread = {
-    'tid': fakeThreads.length,
+    'tid': fakeThreads.length + 1,
     'pid': pid,
     'fid': fid,
     'title': title,
-    'sender': sender,
+    'sender': {'uid': fakeUser!.uid, 'nickname': fakeUser!.nickname},
     'create_time': getCurrUnixTime(),
     'last_update_time': getCurrUnixTime(),
-    'stats': defaultStats,
+    'stats': {'like': 0, 'dislike': 0, 'comment': 0},
     'content_cid': 1,
     'pined_cid': null,
     'heat': 0,
   };
-  dynamic firstComment = {
-    'tid': fakeThreads.length,
-    'cid': fakeComments.length,
-    'content': content,
-    'create_time': getCurrUnixTime(),
-    'reply_to': null,
-    'stats': defaultStats,
-    'sender': sender,
-    'status': 0,
-  };
   fakeThreads.add(thread);
-  fakeComments.add(firstComment);
-  return fakeThreads.length - 1;
+  createNewComment(fakeThreads.length, content, null);
+
+  return fakeThreads.length;
 }
 
 int createNewComment(int threadID, String content, int? replyTo) {
   dynamic parentComment;
   if (replyTo != null) {
     parentComment = fakeComments.firstWhere((c) => c['cid'] == replyTo);
+    parentComment['stats']['reply']++;
   }
 
   final comment = {
     'tid': threadID,
-    'cid': fakeComments.length,
+    'cid': fakeComments.length + 1,
     'content': content,
     'create_time': getCurrUnixTime(),
     'reply_to': parentComment,
@@ -221,7 +211,7 @@ int createNewComment(int threadID, String content, int? replyTo) {
     'status': 0,
   };
   fakeComments.add(comment);
-  return comment['cid'] as int;
+  return fakeComments.length;
 }
 
 //復合類型假數據生成
