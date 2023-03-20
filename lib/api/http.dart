@@ -78,6 +78,10 @@ class HttpClient {
     return _send(HttpMethod.PATCH, path, null, bodyItems);
   }
 
+  Future<JsonObj> delete(String path) {
+    return _send(HttpMethod.DELETE, path, null, null);
+  }
+
   void setAuthKey(String key) {
     _authKey = key;
   }

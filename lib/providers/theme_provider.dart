@@ -70,13 +70,24 @@ class ThemeProvider extends ChangeNotifier {
           foregroundColor: Colors.white,
           backgroundColor: darkPrimary,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(3), // <-- Radius
+            borderRadius: BorderRadius.circular(3),
           ),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
-          style: TextButton.styleFrom(
-              foregroundColor: isBlackTheme ? lightPrimary : darkPrimary)),
+        style: TextButton.styleFrom(
+          foregroundColor: isBlackTheme ? lightPrimary : darkPrimary,
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: isBlackTheme ? lightPrimary : darkPrimary,
+          side: BorderSide(color: isBlackTheme ? lightPrimary : darkPrimary),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(3),
+          ),
+        ),
+      ),
       navigationBarTheme: NavigationBarThemeData(
         indicatorColor: isBlackTheme ? darkPrimary : lightPrimary,
         surfaceTintColor: Colors.transparent,

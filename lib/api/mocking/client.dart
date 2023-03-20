@@ -95,6 +95,9 @@ class TestClient extends MockClient {
 
   static void onPatch(String path, HandleReqeust onResponse) =>
       _onRecieved(HttpMethod.PATCH, path, onResponse);
+
+  static void onDelete(String path, HandleReqeust onResponse) =>
+      _onRecieved(HttpMethod.DELETE, path, onResponse);
 }
 
 class Route {

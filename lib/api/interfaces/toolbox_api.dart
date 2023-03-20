@@ -1,1 +1,37 @@
+import 'package:space_station/api/http.dart';
+import '../../models/study_partner_post.dart';
 
+Future<StudyPartnerQueryResult> queryPosts(String query, String cursor) {
+  Map<String, String> data = {};
+  if (query.isNotEmpty) data.addAll({'q': query});
+  if (query.isNotEmpty) data.addAll({'cursor': cursor});
+  return HttpClient()
+      .get("/studypartner/post", queryParameters: data)
+      .then((res) => StudyPartnerQueryResult.fromJson(res));
+}
+
+Future<List<StudyPartnerPost>> getPostRecords() {
+  return HttpClient().get("/studypartner/record").then(
+        (res) => (res['posts'] as List).map((p) {
+          return StudyPartnerPost.fromJson(p);
+        }).toList(),
+      );
+}
+
+Future<void> createPost(StudyPartnerPost post) {
+  final data = post.toJson();
+  return HttpClient()
+      .post("/studypartner/post", bodyItems: data)
+      .then((res) => null);
+}
+
+Future<void> editPost(StudyPartnerPost post) {
+  final data = post.toJson();
+  return HttpClient()
+      .patch("/studypartner/post/${post.id}", bodyItems: data)
+      .then((_) => null);
+}
+
+Future<void> removePost(StudyPartnerPost post) {
+  return HttpClient().delete("/studypartner/post/${post.id}").then((_) => null);
+}
