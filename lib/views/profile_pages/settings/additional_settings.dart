@@ -1,5 +1,6 @@
 import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:space_station/views/profile_pages/widgets/legal_doc_page.dart';
 import 'package:space_station/views/profile_pages/widgets/next_page_tile.dart';
 import 'package:space_station/views/profile_pages/widgets/setting_subtitle.dart';
 
@@ -20,13 +21,20 @@ class AdditionalSettingsPage extends StatelessWidget {
           const Divider(),
           SettingSubtitle(context.getString("subtitle_legal")),
           const Divider(),
-          NextPageTile(title: context.getString("terms_of_service")),
+          NextPageTile(
+            title: context.getString("terms_of_service"),
+            nextPage: const LegalDocPage('terms_of_service'),
+          ),
           const Divider(),
-          NextPageTile(title: context.getString("privacy_policy")),
+          NextPageTile(
+            title: context.getString("privacy_policy"),
+            nextPage: const LegalDocPage('privacy_policy'),
+          ),
           const Divider(),
-          NextPageTile(title: context.getString("cookies_usage")),
-          const Divider(),
-          NextPageTile(title: context.getString("legal_notices")),
+          NextPageTile(
+            title: context.getString("cookies_usage"),
+            nextPage: const LegalDocPage('cookies_usage'),
+          ),
           const Divider(),
         ],
       ),

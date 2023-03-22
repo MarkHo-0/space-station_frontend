@@ -14,6 +14,7 @@ class NormalText implements ContentElement {
     return SelectableText(
       lines.join('\n'),
       style: Theme.of(context).textTheme.bodyLarge,
+      textAlign: TextAlign.justify,
     );
   }
 
