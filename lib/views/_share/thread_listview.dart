@@ -9,12 +9,9 @@ import '../_share/loading_page.dart';
 import '../_share/thread_item.dart';
 
 class ThreadListView extends StatefulWidget {
-  const ThreadListView(
-      {super.key, required this.requestData, required this.onTaped});
+  const ThreadListView({super.key, required this.onRequest});
 
-  final Future<ThreadsModel> Function(String nextCursor) requestData;
-
-  final void Function(int threadID) onTaped;
+  final Future<ThreadsModel> Function(String nextCursor) onRequest;
 
   @override
   State<ThreadListView> createState() => ThreadListViewState();
@@ -49,7 +46,7 @@ class ThreadListViewState extends State<ThreadListView>
     setState(() => isLoading = true);
     try {
       final cursor = freshLoad ? '' : nextCursor;
-      final data = await widget.requestData(cursor);
+      final data = await widget.onRequest(cursor);
 
       if (freshLoad) threads.clear();
       threads.addAll(data.threadsArray);
@@ -118,10 +115,7 @@ class ThreadListViewState extends State<ThreadListView>
       return isLoading ? bottomLoadingWidget : bottomNoMoreWidget;
     }
 
-    return ThreadItem(
-      data: threads[index],
-      onTap: ((threadID) => widget.onTaped(threadID)),
-    );
+    return ThreadItem(data: threads[index]);
   }
 
   @override

@@ -1,8 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
-import 'package:space_station/views/forum_pages/thread.dart';
 
-import '../_share/need_login_popup.dart';
 import '../../models/thread.dart';
 import '../../providers/auth_provider.dart';
 import 'thread_post.dart';
@@ -34,11 +31,7 @@ class _ForumPageState extends State<ForumPage>
           onOrderChanged: (value) => refreshList(orderID: value),
           onGoToPostPage: () => onGoToPostPage(context),
         ),
-        MultiTabsThreadList(
-          key: _forumKey,
-          onThreadTaped: onThreadTaped,
-          requestData: requestThreads,
-        ),
+        MultiTabsThreadList(key: _forumKey, onRequest: requestThreads),
       ],
     );
   }
@@ -60,21 +53,11 @@ class _ForumPageState extends State<ForumPage>
     );
   }
 
-  void onThreadTaped(int threadID) {
-    Navigator.of(context).push(
-      CupertinoPageRoute(
-        builder: ((_) => ThreadPage(threadID)),
-      ),
-    );
-  }
+  void onGoToPostPage(BuildContext ctx) {
+    if (getLoginedUser(ctx, warnOnEmpty: true) == null) return;
 
-  void onGoToPostPage(BuildContext context) {
-    final auth = Provider.of<AuthProvider>(context, listen: false);
-    if (auth.isLogined == false) return showNeedLoginDialog(context);
     Navigator.of(context).push(
-      CupertinoPageRoute(
-        builder: ((_) => const ThreadPostPage()),
-      ),
+      CupertinoPageRoute(builder: ((_) => const ThreadPostPage())),
     );
   }
 

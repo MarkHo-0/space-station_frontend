@@ -1,18 +1,25 @@
 import 'package:ez_localization/ez_localization.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:space_station/models/thread.dart';
 import 'package:space_station/views/_share/owner_tag.dart';
 
+import '../forum_pages/thread.dart';
+
 class ThreadItem extends StatelessWidget {
   final Thread data;
-  final void Function(int threadID) onTap;
-  const ThreadItem({Key? key, required this.data, required this.onTap})
-      : super(key: key);
+  const ThreadItem({Key? key, required this.data}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => onTap(data.tid),
+      onTap: () {
+        Navigator.of(context).push(
+          CupertinoPageRoute(
+            builder: ((_) => ThreadPage(data.tid)),
+          ),
+        );
+      },
       child: Ink(
         child: Container(
           decoration: BoxDecoration(

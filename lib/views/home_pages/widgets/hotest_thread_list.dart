@@ -16,11 +16,8 @@ class HotestThreadList extends StatelessWidget {
       body: Column(
         children: List<ThreadItem>.generate(
           threads.length,
-          (index) => ThreadItem(
-            data: threads[index],
-            onTap: (threadID) => print(threadID),
-          ),
           growable: false,
+          (index) => ThreadItem(data: threads[index]),
         ),
       ),
     );

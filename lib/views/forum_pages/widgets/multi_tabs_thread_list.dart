@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
 
@@ -10,15 +9,14 @@ import '../../../models/tab_info.dart';
 import 'category_selector.dart';
 
 class MultiTabsThreadList extends StatefulWidget {
-  final void Function(int threadID) onThreadTaped;
   final Future<ThreadsModel> Function(
-      int pageID, int categoryID, String nextCursor) requestData;
+    int pageID,
+    int categoryID,
+    String nextCursor,
+  ) onRequest;
 
-  const MultiTabsThreadList({
-    Key? key,
-    required this.onThreadTaped,
-    required this.requestData,
-  }) : super(key: key);
+  const MultiTabsThreadList({Key? key, required this.onRequest})
+      : super(key: key);
 
   @override
   State<MultiTabsThreadList> createState() => MultiTabsThreadListState();
@@ -66,9 +64,8 @@ class MultiTabsThreadListState extends State<MultiTabsThreadList>
                 tabs.length,
                 (pageID) => ThreadListView(
                   key: _keysList.views[pageID],
-                  requestData: (nextCursor) => widget.requestData(
+                  onRequest: (nextCursor) => widget.onRequest(
                       pageID + 1, currentCategoryID, nextCursor),
-                  onTaped: widget.onThreadTaped,
                 ),
               ),
             ),
