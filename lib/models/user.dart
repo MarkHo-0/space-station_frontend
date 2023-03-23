@@ -85,22 +85,6 @@ class UserInfo {
   }
 }
 
-class UserThreads {
-  List<Thread> threads;
-  UserThreads(this.threads);
-
-  factory UserThreads.fromjson(Map<String, dynamic> json) {
-    dynamic a = json["threads"]; //return list of map type
-    List<Thread> b = [];
-    for (int i = 0; i < a.length; i++) {
-      a[i]["sender"] = null; //無"sender" set null
-      b.add(Thread.fromJson(a[
-          i])); //each index item is String and convert back to Map ,and assign object to new List
-    }
-    return UserThreads(b);
-  }
-}
-
 class LoginData {
   String token;
   int validTime;

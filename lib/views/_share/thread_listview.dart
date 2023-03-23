@@ -82,7 +82,7 @@ class ThreadListViewState extends State<ThreadListView>
     return RefreshIndicator(
       onRefresh: refresh,
       child: ListView.builder(
-        physics: const AlwaysScrollableScrollPhysics(parent: ScrollPhysics()),
+        physics: const AlwaysScrollableScrollPhysics(),
         itemCount: threads.length + 1,
         itemBuilder: buildItem,
         controller: _scrollController,
@@ -92,13 +92,13 @@ class ThreadListViewState extends State<ThreadListView>
 
   Widget buildItem(BuildContext context, int index) {
     final bottomLoadingWidget = ColorFiltered(
-      colorFilter:
-          ColorFilter.mode(Theme.of(context).primaryColor, BlendMode.srcIn),
+      colorFilter: ColorFilter.mode(
+        Theme.of(context).primaryColor,
+        BlendMode.srcIn,
+      ),
       child: const AspectRatio(
         aspectRatio: 6 / 1,
-        child: RiveAnimation.asset(
-          'assets/animations/stars_twinkle.riv',
-        ),
+        child: RiveAnimation.asset('assets/animations/stars_twinkle.riv'),
       ),
     );
 

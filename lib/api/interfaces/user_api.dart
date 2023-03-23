@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:space_station/api/api.dart';
 import 'package:crypto/crypto.dart';
 import 'package:space_station/api/http.dart';
+import 'package:space_station/models/thread.dart';
 import '../../models/user.dart';
 
 Future<UserInfo> getUserData(int uid) async {
@@ -19,23 +20,12 @@ Future<UserInfo> getUserData(int uid) async {
   }
 }
 
-//if statecode==200 ,return UserData object:(field: basic_info:{Basic_Info Class},
-//gender:String, create_time:int, sid:int, thread_count:int, comment_count:int)
-
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
-Future<UserThreads> getUserThreads(int uid) async {
-  http.Response response = await API("").myGet("/user/$uid/thread", {});
-  switch (response.statusCode) {
-    case 200:
-      return UserThreads.fromjson(jsonDecode(response.body));
-    case 401:
-      throw Exception("No Authorization!");
-    case 422:
-      throw Exception("Missing required parameters /Illegal");
-    default:
-      throw Exception("Error.Please try again.");
-  }
+Future<ThreadsModel> getUserThreads(int uid, String cursor) async {
+  Map<String, dynamic> query = {};
+  if (cursor.isNotEmpty) query.addAll({'cursor': cursor});
+  return HttpClient()
+      .get('/user/$uid/thread', queryParameters: query)
+      .then((res) => ThreadsModel.fromJson(res));
 }
 
 ///獲取用戶狀態，0: 不存在，1: 正常, 2: 被禁止登入

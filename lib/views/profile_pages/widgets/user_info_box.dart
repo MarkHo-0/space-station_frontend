@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../../providers/auth_provider.dart';
 import '../../login_pages/login_lobby.dart';
+import '../user_threads.dart';
 import 'stats_counter.dart';
 
 class UserInfoBox extends StatelessWidget {
@@ -40,7 +41,13 @@ class UserInfoBox extends StatelessWidget {
           StatsCounter(
             name: context.getString("thread_stat"),
             quantity: auth.user!.threadCount,
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).push(
+                CupertinoPageRoute(builder: ((_) {
+                  return UserThreadsPage(auth.user!.uid);
+                })),
+              );
+            },
           ),
           const SizedBox(width: 24),
           StatsCounter(
