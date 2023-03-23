@@ -188,5 +188,10 @@
   "description": "Description",
   "description_hint": "What do you want to accomplish with your partner(s)?\nWhat are your requirements for them?\nHow many people do you need?\nWhat is your profile of yourself?",
   "contact": "Contact",
-  "course": "Course"
+  "course": "Course",
+  "current_class":"Current Class",
+  "found_time_slots": "Found Time slots",
+  "given_out":"Giving out",
+  "swap":"Swap"
+
 }

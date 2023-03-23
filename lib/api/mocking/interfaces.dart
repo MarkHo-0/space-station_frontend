@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:http/http.dart';
+
 import '../../utils/parse_time.dart';
 import 'client.dart';
 import 'fake_data.dart';
@@ -224,5 +226,13 @@ void initializationInterfaces() {
 
   TestClient.onGet('/toolbox', (_) {
     return const SimpleResponse({'class_swapping': true, 'study_parner': true});
+  });
+
+  TestClient.onGet('/classswap/search', (_) {
+    return const SimpleResponse({
+      "requests": [
+        {"id": 0, "class_num": 0},
+      ]
+    });
   });
 }

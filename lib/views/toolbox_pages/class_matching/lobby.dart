@@ -1,7 +1,13 @@
 import 'package:ez_localization/ez_localization.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:space_station/api/interfaces/other_api.dart';
 import 'package:space_station/models/course.dart';
+import 'package:space_station/views/toolbox_pages/class_matching/search_swap.dart';
+import 'package:space_station/views/toolbox_pages/class_matching/widget/class_selector.dart';
+
+import '../../_share/course_input.dart';
+import '../../_share/titled_container.dart';
 
 class CMlobbyPage extends StatefulWidget {
   const CMlobbyPage({super.key});
@@ -11,10 +17,14 @@ class CMlobbyPage extends StatefulWidget {
 }
 
 class CMlobbyPageState extends State<CMlobbyPage> {
-  CourseInfo? selectedCourse;
+  final FocusNode _focusNode = FocusNode();
+  final CourseInputController courseController = CourseInputController(null);
+  final ClassSelectorController classController = ClassSelectorController(null);
   @override
   void initState() {
     super.initState();
+    courseController.addListener(() => setState(() {}));
+    classController.addListener(() => gotoSearchSwapPage());
   }
 
   @override
@@ -36,57 +46,33 @@ class CMlobbyPageState extends State<CMlobbyPage> {
   }
 
   Widget lobbybody(BuildContext context) {
-    String displayStringForOption(CourseInfo option) => option.courseCode;
-    return Column(
-      children: [
-        Text(context.getString("request_swap_message")),
-        RawAutocomplete<CourseInfo>(
-          displayStringForOption: displayStringForOption,
-          fieldViewBuilder:
-              (context, textEditingController, focusNode, onFieldSubmitted) {
-            return TextFormField(
-                controller: textEditingController,
-                focusNode: focusNode,
-                onChanged: (_) {
-                  setState(() => selectedCourse = null);
-                });
-          },
-          optionsViewBuilder: (context, onSelected, options) {
-            return Material(
-              elevation: 4.0,
-              child: ListView(
-                  children: options
-                      .map((option) => GestureDetector(
-                            onTap: () {
-                              onSelected(option);
-                              setState(() => selectedCourse = option);
-                            },
-                            child: ListTile(
-                              title: Text(option.courseCode),
-                            ),
-                          ))
-                      .toList()),
-            );
-          },
-          optionsBuilder: (textEditingValue) {
-            if (textEditingValue.text.isEmpty) {
-              selectedCourse = null;
-              return [];
-            }
-            return getCourseInfo(textEditingValue.text)
-                .then((value) => value.coursesArray)
-                .onError((_, __) => []);
-          },
-        ),
-        if (selectedCourse != null) showCourseName(context)
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: Column(children: [
+        TitledField(
+            title: context.getString("request_swap_message"),
+            body: CourseInput(courseController, focusNode: _focusNode)),
+        if (courseController.value != null)
+          TitledField(
+              title: context.getString("current_class"),
+              body: classbody(context))
+      ]),
     );
   }
 
-  Widget showCourseName(BuildContext context) {
-    return Text(
-      selectedCourse!.coureseName,
-      style: TextStyle(color: Theme.of(context).hintColor),
-    );
+  Widget classbody(BuildContext context) {
+    List<int> classArray = [];
+    for (int i = courseController.value!.minClassNum;
+        i < courseController.value!.maxClassNum + 1;
+        i++) {
+      classArray.add(i);
+    }
+    return ClassSelector(classController, classArray: classArray);
+  }
+
+  void gotoSearchSwapPage() {
+    Navigator.of(context).push(CupertinoPageRoute(builder: (_) {
+      return SearchSwapPage(classController.value!, courseController.value!);
+    }));
   }
 }

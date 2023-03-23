@@ -1,4 +1,6 @@
+import 'package:http/http.dart';
 import 'package:space_station/api/http.dart';
+import 'package:space_station/models/courseswap.dart';
 import '../../models/study_partner_post.dart';
 
 Future<StudyPartnerQueryResult> queryPosts(String query, String cursor) {
@@ -34,4 +36,19 @@ Future<void> editPost(StudyPartnerPost post) {
 
 Future<void> removePost(StudyPartnerPost post) {
   return HttpClient().delete("/studypartner/post/${post.id}").then((_) => null);
+}
+
+Future<SearchRequests> searchRequest(
+    String courseCode, int currentClassNum) async {
+  final query = {
+    "course_code": courseCode,
+    "current_class_num": currentClassNum
+  };
+  return HttpClient()
+      .get("/classswap/search", queryParameters: query)
+      .then((res) {
+    return SearchRequests.fromjson(res);
+  });
+  // return Future.value(SearchRequests(
+  //    [SearchRequest(id: 0, classNum: 2), SearchRequest(id: 2, classNum: 3)]));
 }
