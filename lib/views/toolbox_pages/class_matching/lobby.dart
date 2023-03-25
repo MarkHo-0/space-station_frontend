@@ -4,7 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:space_station/views/toolbox_pages/class_matching/search_swap.dart';
 import 'package:space_station/views/toolbox_pages/class_matching/widget/class_selector.dart';
 
+import '../../../api/error.dart';
+import '../../../api/interfaces/toolbox_api.dart';
+import '../../../models/courseswap.dart';
 import '../../_share/course_input.dart';
+import '../../_share/repeat_action_error.dart';
 import '../../_share/titled_container.dart';
 
 class CMlobbyPage extends StatefulWidget {
@@ -15,12 +19,15 @@ class CMlobbyPage extends StatefulWidget {
 }
 
 class CMlobbyPageState extends State<CMlobbyPage> {
+  List<SearchRequest> requestlist = [];
   final FocusNode _focusNode = FocusNode();
-  final CourseInputController courseController = CourseInputController(null);
-  final ClassSelectorController classController = ClassSelectorController(null);
+  CourseInputController courseController = CourseInputController(null);
+  ClassSelectorController classController = ClassSelectorController(null);
   @override
   void initState() {
     super.initState();
+    courseController = CourseInputController(null);
+    classController = ClassSelectorController(null);
     courseController.addListener(() => setState(() {}));
     classController.addListener(() => gotoSearchSwapPage());
   }
@@ -69,8 +76,25 @@ class CMlobbyPageState extends State<CMlobbyPage> {
   }
 
   void gotoSearchSwapPage() {
+    requestlist = [];
+    searchRequest(courseController.value!.courseCode, classController.value!)
+        .then((value) => setValue(value))
+        .catchError((_) => repeat(context), test: (e) => e is FrquentError)
+        .onError((e, _) {});
+  }
+
+  void repeat(BuildContext context) {
+    repeatActionErrorDialog(context);
+  }
+
+  void setValue(SearchRequests value) {
+    setState(() {
+      requestlist = value.requestArray;
+    });
+
     Navigator.of(context).push(CupertinoPageRoute(builder: (_) {
-      return SearchSwapPage(classController.value!, courseController.value!);
+      return SearchSwapPage(
+          classController.value!, courseController.value!, requestlist);
     }));
   }
 }

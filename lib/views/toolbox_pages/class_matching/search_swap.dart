@@ -4,28 +4,33 @@ import 'package:flutter/material.dart';
 import 'package:space_station/api/interfaces/toolbox_api.dart';
 import 'package:space_station/models/course.dart';
 import 'package:space_station/views/toolbox_pages/class_matching/create_request.dart';
+import 'package:space_station/views/toolbox_pages/class_matching/widget/class_selector.dart';
 
+import '../../../api/error.dart';
 import '../../../models/courseswap.dart';
+import '../../_share/course_input.dart';
+import '../../_share/repeat_action_error.dart';
 
 class SearchSwapPage extends StatefulWidget {
   final int selectedclass;
   final CourseInfo selectedcourse;
-  const SearchSwapPage(this.selectedclass, this.selectedcourse, {super.key});
+  final List<SearchRequest> requests;
+  const SearchSwapPage(this.selectedclass, this.selectedcourse, this.requests,
+      {super.key});
 
   @override
   State<SearchSwapPage> createState() => SearchSwapPageState();
 }
 
 class SearchSwapPageState extends State<SearchSwapPage> {
-  List<SearchRequest> requests = [];
   @override
   void initState() {
     super.initState();
-    getrequests();
   }
 
   @override
   Widget build(BuildContext context) {
+    setState(() {});
     return Scaffold(
       appBar: AppBar(title: Text(context.getString("found_time_slots"))),
       body: body(context),
@@ -53,7 +58,7 @@ class SearchSwapPageState extends State<SearchSwapPage> {
   }
 
   Widget listbody(BuildContext context) {
-    if (requests.isEmpty) {
+    if (widget.requests.isEmpty) {
       return Container(
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: Text(context.getString("no_time_slots"),
@@ -62,7 +67,7 @@ class SearchSwapPageState extends State<SearchSwapPage> {
     }
     return SingleChildScrollView(
       child: Column(
-        children: List.generate(requests.length, (index) {
+        children: List.generate(widget.requests.length, (index) {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Container(
@@ -79,7 +84,7 @@ class SearchSwapPageState extends State<SearchSwapPage> {
                     children: [
                       Text(context.getString("given_out")),
                       Text(
-                        "CL${requests[index].classNum.toString().padLeft(2, '0')}",
+                        "CL${widget.requests[index].classNum.toString().padLeft(2, '0')}",
                         style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 22),
                       )
@@ -102,18 +107,6 @@ class SearchSwapPageState extends State<SearchSwapPage> {
     );
   }
 
-  void getrequests() {
-    searchRequest(widget.selectedcourse.courseCode, widget.selectedclass)
-        .then((value) => setValue(value))
-        .onError((e, _) {});
-  }
-
-  void setValue(SearchRequests value) {
-    setState(() {
-      requests = value.requestArray;
-    });
-  }
-
   Widget createHintBody(BuildContext context) {
     return Container(
       alignment: Alignment.center,
@@ -133,7 +126,9 @@ class SearchSwapPageState extends State<SearchSwapPage> {
               Navigator.of(context).push(CupertinoPageRoute(
                 builder: ((_) {
                   return SwapCreatePage(
-                      widget.selectedclass, widget.selectedcourse);
+                    widget.selectedclass,
+                    widget.selectedcourse,
+                  );
                 }),
               ));
             },

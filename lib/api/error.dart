@@ -1,9 +1,9 @@
 typedef JsonObj = Map<String, dynamic>;
 
-Exception handleException(int statusCode, JsonObj errData) {
+Exception handleException(int statusCode) {
   switch (statusCode) {
     case 400:
-      return GeneralError(errData);
+      return GeneralError();
     case 401:
       return AuthorizationError();
     case 403:
@@ -20,12 +20,7 @@ Exception handleException(int statusCode, JsonObj errData) {
 }
 
 class GeneralError implements Exception {
-  late int reasonID;
-  late dynamic extraData;
-  GeneralError(JsonObj errData) {
-    reasonID = errData['reason_id'] ?? 0;
-    extraData = errData['extra_data'];
-  }
+  GeneralError() : super();
 }
 
 class AuthorizationError implements Exception {

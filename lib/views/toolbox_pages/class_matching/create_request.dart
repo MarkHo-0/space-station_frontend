@@ -1,4 +1,5 @@
 import 'package:ez_localization/ez_localization.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -11,7 +12,9 @@ import 'package:space_station/views/toolbox_pages/class_matching/widget/class_se
 import '../../../api/error.dart';
 import '../../../models/course.dart';
 import '../../_share/contact_input/contact_field.dart';
+import '../../_share/course_input.dart';
 import '../../_share/repeat_action_error.dart';
+import 'lobby.dart';
 
 class SwapCreatePage extends StatefulWidget {
   final int selectedclass;
@@ -98,6 +101,14 @@ class _SwapCreatePageState extends State<SwapCreatePage> {
 
   void onSuccess(BuildContext context) {
     contactCtl.trySaveToLocal();
-    Navigator.of(context).pop();
+    int count = 0;
+    Navigator.popUntil(context, (route) {
+      return count++ == 3;
+    });
+    Navigator.of(context).push(CupertinoPageRoute(
+      builder: (_) {
+        return const CMlobbyPage();
+      },
+    ));
   }
 }

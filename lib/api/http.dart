@@ -51,15 +51,15 @@ class HttpClient {
       return Future.error(e);
     }
 
+    //全局錯誤處理
+    if (res.statusCode != 200) {
+      return Future.error(handleException(res.statusCode));
+    }
+
     //嘗試將 body 轉為Json Object
     JsonObj decodedBody = {};
     if (res.body.isNotEmpty) {
       decodedBody = jsonDecode(res.body);
-    }
-
-    //全局錯誤處理
-    if (res.statusCode != 200) {
-      return Future.error(handleException(res.statusCode, decodedBody));
     }
 
     //返回結果
@@ -94,7 +94,7 @@ class ClientConfig {
 
   ClientConfig(
       {bool shouldUseFakeData = false,
-      this.host = 'www.spacestation.nets.hk',
+      this.host = '18.162.62.227',
       this.port = 3000}) {
     baseClient = shouldUseFakeData ? TestClient() : Client();
   }
