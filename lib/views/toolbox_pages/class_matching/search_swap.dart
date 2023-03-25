@@ -1,8 +1,5 @@
 import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:http/http.dart';
 import 'package:space_station/api/interfaces/toolbox_api.dart';
 import 'package:space_station/models/course.dart';
 
@@ -18,7 +15,7 @@ class SearchSwapPage extends StatefulWidget {
 }
 
 class SearchSwapPageState extends State<SearchSwapPage> {
-  final _scrollController = ScrollController();
+  final scrollController = ScrollController();
   List<SearchRequest> requests = [];
   @override
   void initState() {

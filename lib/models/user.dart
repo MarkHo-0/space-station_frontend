@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
-import 'thread.dart';
-
 class User {
   final int uid;
   final String nickname;

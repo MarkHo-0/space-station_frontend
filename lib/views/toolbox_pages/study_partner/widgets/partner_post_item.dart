@@ -25,7 +25,7 @@ class PartnerPostItem extends StatelessWidget {
       child: Stack(
         children: [
           Visibility(
-            visible: data.aimedGrade.gradeIndex! > 0,
+            visible: data.aimedGrade.gradeIndex > 0,
             child: buildAimedGradeBadge(context),
           ),
           Padding(

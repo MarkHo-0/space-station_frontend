@@ -1,4 +1,3 @@
-import 'package:http/http.dart';
 import 'package:space_station/api/http.dart';
 import 'package:space_station/models/courseswap.dart';
 import '../../models/study_partner_post.dart';

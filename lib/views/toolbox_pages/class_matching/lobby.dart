@@ -1,8 +1,6 @@
 import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:space_station/api/interfaces/other_api.dart';
-import 'package:space_station/models/course.dart';
 import 'package:space_station/views/toolbox_pages/class_matching/search_swap.dart';
 import 'package:space_station/views/toolbox_pages/class_matching/widget/class_selector.dart';
 

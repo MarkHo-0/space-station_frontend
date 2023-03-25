@@ -1,6 +1,5 @@
 import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:space_station/models/grade.dart';
 
 class ClassSelector extends StatelessWidget {
   final ClassSelectorController controller;

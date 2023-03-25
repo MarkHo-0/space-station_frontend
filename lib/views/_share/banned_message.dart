@@ -1,5 +1,4 @@
 import 'package:ez_localization/ez_localization.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 void showBannedMessageDialog(BuildContext context) {
