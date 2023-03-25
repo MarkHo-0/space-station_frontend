@@ -2,6 +2,7 @@ import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:space_station/views/toolbox_pages/class_matching/lobby.dart';
 import 'package:space_station/views/toolbox_pages/study_partner/lobby.dart';
+import '../../providers/auth_provider.dart';
 import '../_share/future_page.dart';
 import '../../api/interfaces/other_api.dart';
 
@@ -78,6 +79,7 @@ class ToolboxItem extends StatelessWidget {
       child: InkWell(
         onTap: () {
           if (page == null) return;
+          if (getLoginedUser(context, warnOnEmpty: true) == null) return;
           Navigator.of(context).push(MaterialPageRoute(
             builder: ((_) => page!),
           ));

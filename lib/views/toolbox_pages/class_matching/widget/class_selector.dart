@@ -14,7 +14,7 @@ class ClassSelector extends StatelessWidget {
       onChanged: (index) => controller.value = classArray[index!],
       menuMaxHeight: 300,
       decoration: InputDecoration(
-        hintText: context.getString('aim_grade_hint'),
+        hintText: context.getString("want_class_hint"),
       ),
       validator: (value) {
         if (value == null) {
@@ -29,7 +29,7 @@ class ClassSelector extends StatelessWidget {
     return List.generate(classArray.length, (index) {
       return DropdownMenuItem(
         value: index,
-        child: Text("CL${classArray[index]}"),
+        child: Text("CL${classArray[index].toString().padLeft(2, '0')}"),
       );
     });
   }

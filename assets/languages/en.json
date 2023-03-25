@@ -192,6 +192,10 @@
   "current_class":"Current Class",
   "found_time_slots": "Found Time slots",
   "given_out":"Giving out",
-  "swap":"Swap"
-
+  "swap":"Swap",
+  "create_swap_hint":"Can't find the right class?",
+  "create_swap":"Create Request",
+  "no_time_slots": "No Time Slots is Found",
+  "want_class":"Wanted Class",
+  "want_class_hint":"Which class do you want to swap?"
 }

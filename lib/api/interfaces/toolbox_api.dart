@@ -48,6 +48,11 @@ Future<SearchRequests> searchRequest(
       .then((res) {
     return SearchRequests.fromjson(res);
   });
-  // return Future.value(SearchRequests(
-  //    [SearchRequest(id: 0, classNum: 2), SearchRequest(id: 2, classNum: 3)]));
+}
+
+Future<void> createSwapRequest(SwapRequest request) {
+  final data = request.toJson();
+  return HttpClient()
+      .post("/classswap/request", bodyItems: data)
+      .then((res) => null);
 }
