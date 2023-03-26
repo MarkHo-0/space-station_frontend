@@ -1,6 +1,7 @@
 import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:space_station/views/toolbox_pages/class_matching/request_record.dart';
 import 'package:space_station/views/toolbox_pages/class_matching/search_swap.dart';
 import 'package:space_station/views/toolbox_pages/class_matching/widget/class_selector.dart';
 
@@ -21,25 +22,23 @@ class CMlobbyPage extends StatefulWidget {
 class CMlobbyPageState extends State<CMlobbyPage> {
   List<SearchRequest> requestlist = [];
   final FocusNode _focusNode = FocusNode();
-  CourseInputController courseController = CourseInputController(null);
-  ClassSelectorController classController = ClassSelectorController(null);
-  @override
-  void initState() {
-    super.initState();
-    courseController = CourseInputController(null);
-    classController = ClassSelectorController(null);
-    courseController.addListener(() => setState(() {}));
-    classController.addListener(() => gotoSearchSwapPage());
-  }
+  late CourseInputController courseController = CourseInputController(null);
+  late ClassSelectorController classController = ClassSelectorController(null);
 
   @override
   Widget build(BuildContext context) {
+    courseController.addListener(() => setState(() {}));
+    classController.addListener(() => setState(() {}));
     return Scaffold(
       appBar: AppBar(actions: [
         Padding(
           padding: const EdgeInsets.only(right: 10),
           child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(CupertinoPageRoute(builder: (_) {
+                  return const RequestRecordPage();
+                }));
+              },
               child: Text(
                 context.getString("my_request"),
                 style: const TextStyle(fontSize: 20),
@@ -52,17 +51,20 @@ class CMlobbyPageState extends State<CMlobbyPage> {
 
   Widget lobbybody(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: Column(children: [
+      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 50),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         TitledField(
             title: context.getString("request_swap_message"),
             body: CourseInput(courseController, focusNode: _focusNode)),
-        if (courseController.value != null)
-          TitledField(
-              title: context.getString("current_class"),
-              body: classbody(context))
+        if (courseController.value != null) classWhole(context),
+        if (classController.value != null) button(context)
       ]),
     );
+  }
+
+  Widget classWhole(BuildContext context) {
+    return TitledField(
+        title: context.getString("current_class"), body: classbody(context));
   }
 
   Widget classbody(BuildContext context) {
@@ -75,6 +77,21 @@ class CMlobbyPageState extends State<CMlobbyPage> {
     return ClassSelector(classController, classArray: classArray);
   }
 
+  Widget button(BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+      padding: const EdgeInsets.only(top: 5),
+      child: ElevatedButton(
+          onPressed: () => gotoSearchSwapPage(),
+          style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.fromLTRB(25, 10, 25, 10)),
+          child: Text(
+            context.getString("find"),
+            style: const TextStyle(fontSize: 18),
+          )),
+    );
+  }
+
   void gotoSearchSwapPage() {
     requestlist = [];
     searchRequest(courseController.value!.courseCode, classController.value!)
@@ -84,6 +101,13 @@ class CMlobbyPageState extends State<CMlobbyPage> {
   }
 
   void repeat(BuildContext context) {
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        transitionDuration: Duration.zero,
+        pageBuilder: (_, __, ___) => const CMlobbyPage(),
+      ),
+    );
     repeatActionErrorDialog(context);
   }
 

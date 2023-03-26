@@ -49,7 +49,7 @@ class SwapRequestRecord {
   int expectedClassNum;
   ContactInfo contactInfo;
   int requesterUid;
-  int reponserUid;
+  int? reponserUid;
 
   SwapRequestRecord(
       {required this.currentClassNum,
@@ -63,8 +63,8 @@ class SwapRequestRecord {
     return SwapRequestRecord(
         id: json["id"],
         course: CourseInfo.fromjson(json["course"]),
-        currentClassNum: json["curr_class_num"],
-        expectedClassNum: json["exp_class_num"],
+        currentClassNum: json["current_class_num"],
+        expectedClassNum: json["expected_class_num"],
         contactInfo: ContactInfo.fromJson(json["contact"]),
         reponserUid: json["responser_uid"],
         requesterUid: json["requester_uid"]);

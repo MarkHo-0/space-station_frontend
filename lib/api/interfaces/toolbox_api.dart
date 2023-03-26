@@ -45,9 +45,7 @@ Future<SearchRequests> searchRequest(
   };
   return HttpClient()
       .get("/classswap/search", queryParameters: query)
-      .then((res) {
-    return SearchRequests.fromjson(res);
-  });
+      .then((res) => SearchRequests.fromjson(res));
 }
 
 Future<void> createSwapRequest(SwapRequest request) {
@@ -55,4 +53,24 @@ Future<void> createSwapRequest(SwapRequest request) {
   return HttpClient()
       .post("/classswap/request", bodyItems: data)
       .then((res) => null);
+}
+
+Future<SwapRequestRecords> getSwapRecord() {
+  return HttpClient()
+      .get("/classswap/record")
+      .then((res) => SwapRequestRecords.fromjson(res));
+}
+
+Future<void> removeRequest(int id) {
+  return HttpClient().delete("/classswap/request/$id").then((_) => null);
+}
+
+Future<void> repostRequest(int id) {
+  return HttpClient().post("/classswap/request/$id/repost").then((_) => null);
+}
+
+Future<SwapRequestRecord> swapRequest() {
+  return HttpClient()
+      .post("/classswap/swap")
+      .then((res) => SwapRequestRecord.fromjson(res));
 }

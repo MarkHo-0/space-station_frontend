@@ -171,7 +171,7 @@
   "banned_message_body": "You can not make this action",
   "success_message": "Success!",
   "____ToolBox_____": "----------------------------------",
-  "my_request": "My Request",
+  "my_request": "My Requests",
   "request_swap_message": "What Course would you like to swap?",
   "cuurent_class_message": "Current Class",
   "partner_searchbar_hint": "Search Partners by Course Name/Code or Description",
@@ -197,5 +197,15 @@
   "create_swap":"Create Request",
   "no_time_slots": "No Time Slots is Found",
   "want_class":"Wanted Class",
-  "want_class_hint":"Which class do you want to swap?"
+  "want_class_hint":"Which class do you want to swap?",
+  "accepted_request_msg1":"You request accepted by ",
+  "accepted_request_msg2":"Please wait for him/her to contact you",
+  "repost":"Repost",
+  "waiting_msg":"Waiting for interested user...",
+  "accpeted":"Accepted",
+  "request":"request",
+  "no_swap_request":"You don't have any Requests",
+  "find":"Find",
+  "repost_msg":"Are you sure to Repost this request?",
+  "send_request":"Are you sure to Create the request?"
 }

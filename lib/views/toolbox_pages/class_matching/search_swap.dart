@@ -24,11 +24,6 @@ class SearchSwapPage extends StatefulWidget {
 
 class SearchSwapPageState extends State<SearchSwapPage> {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     setState(() {});
     return Scaffold(
@@ -47,7 +42,9 @@ class SearchSwapPageState extends State<SearchSwapPage> {
           children: [
             Text(
               widget.selectedcourse.coureseName,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).primaryColor),
             ),
             listbody(context),
             createHintBody(context)

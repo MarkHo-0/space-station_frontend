@@ -11,6 +11,7 @@ import 'package:space_station/views/toolbox_pages/class_matching/widget/class_se
 
 import '../../../api/error.dart';
 import '../../../models/course.dart';
+import '../../_share/before_repost_popup.dart';
 import '../../_share/contact_input/contact_field.dart';
 import '../../_share/course_input.dart';
 import '../../_share/repeat_action_error.dart';
@@ -50,7 +51,10 @@ class _SwapCreatePageState extends State<SwapCreatePage> {
         TitledField(title: "current_class", body: selectedclassbody(context)),
         TitledField(
             title: context.getString("want_class"),
-            body: ClassSelector(wantclassController, classArray: classArray)),
+            body: SizedBox(
+                width: 300,
+                child: ClassSelector(wantclassController,
+                    classArray: classArray))),
         TitledField(
             title: context.getString('contact'),
             body: ContactField(contactCtl)),
@@ -93,9 +97,11 @@ class _SwapCreatePageState extends State<SwapCreatePage> {
           wantclassController.value!,
           contactCtl.value!,
           widget.selectedcourse.courseCode);
-      createSwapRequest(request).then((_) => onSuccess(context)).catchError(
-          (_) => repeatActionErrorDialog(context),
-          test: (e) => e is FrquentError);
+      showConfirmationDialog(context, "send_request", () {
+        createSwapRequest(request).then((_) => onSuccess(context)).catchError(
+            (_) => repeatActionErrorDialog(context),
+            test: (e) => e is FrquentError);
+      });
     }
   }
 
@@ -105,10 +111,12 @@ class _SwapCreatePageState extends State<SwapCreatePage> {
     Navigator.popUntil(context, (route) {
       return count++ == 3;
     });
-    Navigator.of(context).push(CupertinoPageRoute(
-      builder: (_) {
-        return const CMlobbyPage();
-      },
-    ));
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        transitionDuration: Duration.zero,
+        pageBuilder: (_, __, ___) => const CMlobbyPage(),
+      ),
+    );
   }
 }
