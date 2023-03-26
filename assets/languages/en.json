@@ -198,14 +198,13 @@
   "no_time_slots": "No Time Slots is Found",
   "want_class":"Wanted Class",
   "want_class_hint":"Which class do you want to swap?",
-  "accepted_request_msg1":"You request accepted by ",
+  "accepted_request_msg1":"Your request is accepted",
   "accepted_request_msg2":"Please wait for him/her to contact you",
   "repost":"Repost",
   "waiting_msg":"Waiting for interested user...",
-  "accpeted":"Accepted",
-  "request":"request",
+  "accpeted_request":"You have accepted the request, Please contact:",
   "no_swap_request":"You don't have any Requests",
-  "find":"Find",
   "repost_msg":"Are you sure to Repost this request?",
-  "send_request":"Are you sure to Create the request?"
+  "send_request":"Are you sure to Create the request?",
+  "swaped_action_msg":"Please contact him/her to process the swapping"
 }

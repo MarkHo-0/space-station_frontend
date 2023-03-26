@@ -8,12 +8,15 @@ import 'package:space_station/views/toolbox_pages/class_matching/widget/class_se
 
 import '../../../api/error.dart';
 import '../../../models/courseswap.dart';
+import '../../_share/before_repost_popup.dart';
 import '../../_share/course_input.dart';
 import '../../_share/repeat_action_error.dart';
+import '../../_share/swap_popup.dart';
+import 'contactpage.dart';
 
 class SearchSwapPage extends StatefulWidget {
-  final int selectedclass;
-  final CourseInfo selectedcourse;
+  final ClassSelectorController selectedclass;
+  final CourseInputController selectedcourse;
   final List<SearchRequest> requests;
   const SearchSwapPage(this.selectedclass, this.selectedcourse, this.requests,
       {super.key});
@@ -41,7 +44,7 @@ class SearchSwapPageState extends State<SearchSwapPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              widget.selectedcourse.coureseName,
+              widget.selectedcourse.value!.coureseName,
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).primaryColor),
@@ -88,7 +91,11 @@ class SearchSwapPageState extends State<SearchSwapPage> {
                     ],
                   ),
                   ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () => onSwap(
+                          widget.selectedclass.value!,
+                          widget.selectedcourse.value!.coureseName,
+                          widget.requests[index].classNum,
+                          widget.requests[index].id),
                       style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.fromLTRB(35, 10, 35, 10)),
                       child: Text(
@@ -102,6 +109,20 @@ class SearchSwapPageState extends State<SearchSwapPage> {
         }),
       ),
     );
+  }
+
+  void onSwap(int cur, String coursename, int wanted, int id) {
+    swapConfirmationDialog(context, coursename, cur, wanted, () {
+      swapRequest(id)
+          .then((value) => () {
+                Navigator.of(context).push(CupertinoPageRoute(builder: ((_) {
+                  return ContactPage(value);
+                })));
+              })
+          .onError((e, __) => () {
+                print(e);
+              });
+    });
   }
 
   Widget createHintBody(BuildContext context) {
@@ -123,8 +144,8 @@ class SearchSwapPageState extends State<SearchSwapPage> {
               Navigator.of(context).push(CupertinoPageRoute(
                 builder: ((_) {
                   return SwapCreatePage(
-                    widget.selectedclass,
-                    widget.selectedcourse,
+                    widget.selectedclass.value!,
+                    widget.selectedcourse.value!,
                   );
                 }),
               ));

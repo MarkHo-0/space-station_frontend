@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -26,9 +28,14 @@ class CMlobbyPageState extends State<CMlobbyPage> {
   late ClassSelectorController classController = ClassSelectorController(null);
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     courseController.addListener(() => setState(() {}));
-    classController.addListener(() => setState(() {}));
+    classController.addListener(() => setState(() => gotoSearchSwapPage()));
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(actions: [
         Padding(
@@ -56,15 +63,12 @@ class CMlobbyPageState extends State<CMlobbyPage> {
         TitledField(
             title: context.getString("request_swap_message"),
             body: CourseInput(courseController, focusNode: _focusNode)),
-        if (courseController.value != null) classWhole(context),
-        if (classController.value != null) button(context)
+        if (courseController.value != null)
+          TitledField(
+              title: context.getString("current_class"),
+              body: classbody(context)),
       ]),
     );
-  }
-
-  Widget classWhole(BuildContext context) {
-    return TitledField(
-        title: context.getString("current_class"), body: classbody(context));
   }
 
   Widget classbody(BuildContext context) {
@@ -75,21 +79,6 @@ class CMlobbyPageState extends State<CMlobbyPage> {
       classArray.add(i);
     }
     return ClassSelector(classController, classArray: classArray);
-  }
-
-  Widget button(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      padding: const EdgeInsets.only(top: 5),
-      child: ElevatedButton(
-          onPressed: () => gotoSearchSwapPage(),
-          style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.fromLTRB(25, 10, 25, 10)),
-          child: Text(
-            context.getString("find"),
-            style: const TextStyle(fontSize: 18),
-          )),
-    );
   }
 
   void gotoSearchSwapPage() {
@@ -117,8 +106,7 @@ class CMlobbyPageState extends State<CMlobbyPage> {
     });
 
     Navigator.of(context).push(CupertinoPageRoute(builder: (_) {
-      return SearchSwapPage(
-          classController.value!, courseController.value!, requestlist);
+      return SearchSwapPage(classController, courseController, requestlist);
     }));
   }
 }

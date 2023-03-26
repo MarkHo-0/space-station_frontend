@@ -69,8 +69,9 @@ Future<void> repostRequest(int id) {
   return HttpClient().post("/classswap/request/$id/repost").then((_) => null);
 }
 
-Future<SwapRequestRecord> swapRequest() {
+Future<SwapRequestRecord> swapRequest(int id) {
+  final data = {"request_id": id};
   return HttpClient()
-      .post("/classswap/swap")
+      .post("/classswap/swap", bodyItems: data)
       .then((res) => SwapRequestRecord.fromjson(res));
 }

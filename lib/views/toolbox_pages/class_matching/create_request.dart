@@ -28,20 +28,26 @@ class SwapCreatePage extends StatefulWidget {
 
 class _SwapCreatePageState extends State<SwapCreatePage> {
   ContactInputController contactCtl = ContactInputController(null);
-  final ClassSelectorController wantclassController =
-      ClassSelectorController(null);
+  ClassSelectorController wantclassController = ClassSelectorController(null);
+  List<int> classArray = [];
+
+  @override
+  void initState() {
+    super.initState();
+    classArray = [];
+    for (int i = widget.selectedcourse.minClassNum;
+        i < widget.selectedcourse.maxClassNum + 1;
+        i++) {
+      if (i != widget.selectedclass) classArray.add(i);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(appBar: AppBar(), body: body(context));
   }
 
   Widget body(BuildContext context) {
-    List<int> classArray = [];
-    for (int i = widget.selectedcourse.minClassNum;
-        i < widget.selectedcourse.maxClassNum + 1;
-        i++) {
-      if (i != widget.selectedclass) classArray.add(i);
-    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -91,7 +97,11 @@ class _SwapCreatePageState extends State<SwapCreatePage> {
   }
 
   void onButtonPressed(BuildContext context) {
-    if (wantclassController.value != null && contactCtl.value != null) {
+    print(widget.selectedclass.toString() +
+        widget.selectedcourse.courseCode +
+        contactCtl.value!.detail.toString() +
+        wantclassController.value.toString());
+    if (wantclassController.value != null && contactCtl.value!.detail != "") {
       final request = SwapRequest(
           widget.selectedclass,
           wantclassController.value!,
@@ -109,14 +119,7 @@ class _SwapCreatePageState extends State<SwapCreatePage> {
     contactCtl.trySaveToLocal();
     int count = 0;
     Navigator.popUntil(context, (route) {
-      return count++ == 3;
+      return count++ == 2;
     });
-    Navigator.push(
-      context,
-      PageRouteBuilder(
-        transitionDuration: Duration.zero,
-        pageBuilder: (_, __, ___) => const CMlobbyPage(),
-      ),
-    );
   }
 }

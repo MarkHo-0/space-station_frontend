@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -7,6 +9,7 @@ import 'package:space_station/api/interfaces/toolbox_api.dart';
 import 'package:space_station/api/interfaces/user_api.dart';
 import 'package:space_station/models/courseswap.dart';
 import 'package:space_station/views/_share/before_remove_popup.dart';
+import 'package:space_station/views/_share/contact_input/contact_field.dart';
 
 import '../../../models/user.dart';
 import '../../../providers/auth_provider.dart';
@@ -131,9 +134,8 @@ class _RequestRecordPageState extends State<RequestRecordPage> {
         children: [
           Column(
             children: [
-              Text(
-                  "${context.getString("accepted_request_msg1")}${getrespondentName(swaprequestlist[index].reponserUid!)}"),
-              Text(context.getString("accepted_request_msg1"))
+              Text(context.getString("accepted_request_msg1")),
+              Text(context.getString("accepted_request_msg2"))
             ],
           ),
           Padding(
@@ -155,10 +157,9 @@ class _RequestRecordPageState extends State<RequestRecordPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-            "${context.getString("accpeted")} ${getrespondentName(swaprequestlist[index].reponserUid!)} ${context.getString("request")}:"),
-        Text(
-            "${swaprequestlist[index].contactInfo.method}:${swaprequestlist[index].contactInfo.detail}")
+        Text(context.getString("accpeted_request")),
+        ContactField(ContactInputController(swaprequestlist[index].contactInfo),
+            editable: false),
       ],
     );
   }
@@ -179,14 +180,5 @@ class _RequestRecordPageState extends State<RequestRecordPage> {
     final auth = Provider.of<AuthProvider>(context);
     if (auth.isLogined) return auth.user!.uid;
     return 0;
-  }
-
-  String getrespondentName(int uid) {
-    getUserData(uid).then((value) {
-      return value.nickname;
-    }).onError((_, __) {
-      return "";
-    });
-    return "";
   }
 }
