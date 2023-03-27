@@ -18,35 +18,40 @@ class DisplaySettingsPage extends StatelessWidget {
         children: [
           const SizedBox(height: 10),
           const Divider(),
-          ListTile(
-            title: Text(context.getString('black_theme')),
-            trailing: Consumer<ThemeProvider>(
-              builder: (_, tProvider, __) => Switch(
-                value: tProvider.isBlackTheme,
-                onChanged: (b) => tProvider.setTheme(b),
-              ),
-            ),
-          ),
+          buildThemeOption(context),
           const Divider(),
-          ListTile(
-            title: Text(context.getString('language')),
-            trailing: DropdownButton<Locale>(
-              value: EzLocalization.of(context)!.locale,
-              items: kSupportedLocales
-                  .map(
-                    (l) => DropdownMenuItem(
-                      value: l.locale,
-                      child: Text(l.name),
-                    ),
-                  )
-                  .toList(),
-              onChanged: (l) {
-                EzLocalizationBuilder.of(context)!.changeLocale(l);
-              },
-            ),
-          ),
+          buildLanguageOption(context),
           const Divider(),
         ],
+      ),
+    );
+  }
+
+  Widget buildThemeOption(BuildContext context) {
+    return ListTile(
+      title: Text(context.getString('black_theme')),
+      trailing: Consumer<ThemeProvider>(
+        builder: (_, tProvider, __) => Switch(
+          value: tProvider.isBlackTheme,
+          onChanged: (b) => tProvider.setTheme(b),
+        ),
+      ),
+    );
+  }
+
+  Widget buildLanguageOption(BuildContext context) {
+    return ListTile(
+      title: Text(context.getString('language')),
+      trailing: DropdownButton<Locale>(
+        value: EzLocalization.of(context)!.locale,
+        items: kSupportedLanguages.map((l) {
+          return DropdownMenuItem(value: l.locale, child: Text(l.name));
+        }).toList(),
+        onChanged: (locale) {
+          if (locale == null) return;
+          saveLocale(locale);
+          EzLocalizationBuilder.of(context)!.changeLocale(locale);
+        },
       ),
     );
   }

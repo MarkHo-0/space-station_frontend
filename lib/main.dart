@@ -10,9 +10,7 @@ import 'package:space_station/views/application.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  HttpClient.init(ClientConfig(
-    shouldUseFakeData: false,
-  ));
+  HttpClient.init(ClientConfig());
 
   //讀取本地設定
   final pref = await SharedPreferences.getInstance();
@@ -22,12 +20,13 @@ void main() async {
       ChangeNotifierProvider(create: ((_) => ThemeProvider(pref)), lazy: false),
       ChangeNotifierProvider(create: ((_) => AuthProvider(pref)), lazy: false)
     ],
-    child: const MyApp(),
+    child: MyApp(locale: getSavedLocale(pref)),
   ));
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  final Locale locale;
+  const MyApp({super.key, required this.locale});
 
   @override
   State<MyApp> createState() => MyAppState();
@@ -38,18 +37,18 @@ class MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return EzLocalizationBuilder(
       delegate: EzLocalizationDelegate(
-          supportedLocales:
-              kSupportedLocales.map((l) => l.locale).toList(growable: false),
-          getPathFunction: (locale) =>
-              'assets/languages/${locale.toLanguageTag()}.json'),
-      builder: (context, ezLocalizationDelegate) {
+        supportedLocales: kSupportedLocales,
+        getPathFunction: getLocalePath,
+        locale: widget.locale,
+      ),
+      builder: (context, delegate) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Space Station',
           theme: Provider.of<ThemeProvider>(context).theme,
-          locale: ezLocalizationDelegate.locale,
-          supportedLocales: ezLocalizationDelegate.supportedLocales,
-          localizationsDelegates: ezLocalizationDelegate.localizationDelegates,
+          locale: delegate.locale,
+          supportedLocales: delegate.supportedLocales,
+          localizationsDelegates: delegate.localizationDelegates,
           home: const ApplicationContainer(),
         );
       },
