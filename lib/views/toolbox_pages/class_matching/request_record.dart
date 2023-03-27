@@ -119,10 +119,14 @@ class _RequestRecordPageState extends State<RequestRecordPage> {
                         onRemoveRequest(context, swaprequestlist[index].id);
                       }),
                   style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.fromLTRB(25, 10, 25, 10)),
-                  child: Text(
-                    context.getString("remove"),
-                    style: const TextStyle(fontSize: 18),
+                      padding: const EdgeInsets.symmetric(vertical: 10)),
+                  child: Container(
+                    alignment: Alignment.center,
+                    width: 110,
+                    child: Text(
+                      context.getString("remove"),
+                      style: const TextStyle(fontSize: 18),
+                    ),
                   )),
             )
           ],
@@ -146,10 +150,14 @@ class _RequestRecordPageState extends State<RequestRecordPage> {
                       onRepostRequest(context, swaprequestlist[index].id);
                     }),
                 style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.fromLTRB(25, 10, 25, 10)),
-                child: Text(
-                  context.getString("repost"),
-                  style: const TextStyle(fontSize: 18),
+                    padding: const EdgeInsets.symmetric(vertical: 10)),
+                child: Container(
+                  alignment: Alignment.center,
+                  width: 110,
+                  child: Text(
+                    context.getString("repost"),
+                    style: const TextStyle(fontSize: 18),
+                  ),
                 )),
           )
         ],

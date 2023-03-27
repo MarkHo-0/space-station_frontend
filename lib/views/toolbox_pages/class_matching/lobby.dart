@@ -22,14 +22,14 @@ class CMlobbyPage extends StatefulWidget {
 class CMlobbyPageState extends State<CMlobbyPage> {
   List<SearchRequest> requestlist = [];
   final FocusNode _focusNode = FocusNode();
-  late CourseInputController courseController = CourseInputController(null);
-  late ClassSelectorController classController = ClassSelectorController(null);
-
+  late CourseInputController courseController;
+  late ClassSelectorController classController;
+  late ClassSelector? classinput;
+  late CourseInput? courseinput;
   @override
   void initState() {
     super.initState();
-    courseController.addListener(() => setState(() {}));
-    classController.addListener(() => setState(() => gotoSearchSwapPage()));
+    refresh();
   }
 
   @override
@@ -50,17 +50,21 @@ class CMlobbyPageState extends State<CMlobbyPage> {
               )),
         )
       ]),
-      body: lobbybody(context),
+      body: RefreshIndicator(
+          onRefresh: () => refresh(), child: lobbybody(context)),
     );
   }
 
   Widget lobbybody(BuildContext context) {
+    setState(() {
+      courseinput = CourseInput(courseController, focusNode: _focusNode);
+    });
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 50),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         TitledField(
             title: context.getString("request_swap_message"),
-            body: CourseInput(courseController, focusNode: _focusNode)),
+            body: courseinput!),
         if (courseController.value != null)
           TitledField(
               title: context.getString("current_class"),
@@ -76,7 +80,10 @@ class CMlobbyPageState extends State<CMlobbyPage> {
         i++) {
       classArray.add(i);
     }
-    return ClassSelector(classController, classArray: classArray);
+    setState(() {
+      classinput = ClassSelector(classController, classArray: classArray);
+    });
+    return classinput!;
   }
 
   void gotoSearchSwapPage() {
@@ -88,13 +95,7 @@ class CMlobbyPageState extends State<CMlobbyPage> {
   }
 
   void repeat(BuildContext context) {
-    Navigator.pushReplacement(
-      context,
-      PageRouteBuilder(
-        transitionDuration: Duration.zero,
-        pageBuilder: (_, __, ___) => const CMlobbyPage(),
-      ),
-    );
+    refresh();
     repeatActionErrorDialog(context);
   }
 
@@ -104,7 +105,28 @@ class CMlobbyPageState extends State<CMlobbyPage> {
     });
 
     Navigator.of(context).push(CupertinoPageRoute(builder: (_) {
-      return SearchSwapPage(classController, courseController, requestlist);
+      return SearchSwapPage(
+        classController,
+        courseController,
+        requestlist,
+        onExited: (isExited) {
+          if (isExited == true) {
+            WidgetsBinding.instance.addPostFrameCallback((_) => refresh());
+          }
+        },
+      );
     }));
+  }
+
+  Future<void> refresh() {
+    setState(() {
+      courseController = CourseInputController(null);
+      courseinput = null;
+      classController = ClassSelectorController(null);
+      classinput = null;
+      courseController.addListener(() => setState(() {}));
+      classController.addListener(() => setState(() => gotoSearchSwapPage()));
+    });
+    return Future.value();
   }
 }

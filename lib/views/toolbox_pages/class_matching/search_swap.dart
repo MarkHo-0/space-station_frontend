@@ -14,8 +14,9 @@ class SearchSwapPage extends StatefulWidget {
   final ClassSelectorController selectedclass;
   final CourseInputController selectedcourse;
   final List<SearchRequest> requests;
+  final void Function(bool) onExited;
   const SearchSwapPage(this.selectedclass, this.selectedcourse, this.requests,
-      {super.key});
+      {super.key, required this.onExited});
 
   @override
   State<SearchSwapPage> createState() => SearchSwapPageState();
@@ -149,5 +150,11 @@ class SearchSwapPageState extends State<SearchSwapPage> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    widget.onExited(true);
+    super.dispose();
   }
 }
