@@ -1,16 +1,12 @@
 import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:space_station/api/interfaces/toolbox_api.dart';
-import 'package:space_station/models/course.dart';
-import 'package:space_station/views/toolbox_pages/class_matching/create_request.dart';
-import 'package:space_station/views/toolbox_pages/class_matching/widget/class_selector.dart';
 
-import '../../../api/error.dart';
+import '../../../api/interfaces/toolbox_api.dart';
+import 'create_request.dart';
+import 'widget/class_selector.dart';
 import '../../../models/courseswap.dart';
-import '../../_share/before_repost_popup.dart';
 import '../../_share/course_input.dart';
-import '../../_share/repeat_action_error.dart';
 import '../../_share/swap_popup.dart';
 import 'contactpage.dart';
 
@@ -113,15 +109,13 @@ class SearchSwapPageState extends State<SearchSwapPage> {
 
   void onSwap(int cur, String coursename, int wanted, int id) {
     swapConfirmationDialog(context, coursename, cur, wanted, () {
-      swapRequest(id)
-          .then((value) => () {
-                Navigator.of(context).push(CupertinoPageRoute(builder: ((_) {
-                  return ContactPage(value);
-                })));
-              })
-          .onError((e, __) => () {
-                print(e);
-              });
+      swapRequest(id).then((value) {
+        return Navigator.of(context).push(CupertinoPageRoute(builder: ((_) {
+          return ContactPage(value);
+        })));
+      }).onError((e, __) {
+        print(e);
+      });
     });
   }
 

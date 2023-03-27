@@ -89,13 +89,12 @@ class HttpClient {
 
 class ClientConfig {
   late final String host;
-  late final int port;
   late final Client baseClient;
 
-  ClientConfig(
-      {bool shouldUseFakeData = false,
-      this.host = 'www.spacestation.nets.hk',
-      this.port = 3000}) {
+  ClientConfig({
+    bool shouldUseFakeData = false,
+    this.host = 'www.spacestation.nets.hk',
+  }) {
     baseClient = shouldUseFakeData ? TestClient() : Client();
   }
 
@@ -109,10 +108,10 @@ class ClientConfig {
       });
     }
     return Uri(
-        scheme: 'http',
-        host: host,
-        path: 'api$path',
-        queryParameters: query,
-        port: port);
+      scheme: 'https',
+      host: host,
+      path: 'api$path',
+      queryParameters: query,
+    );
   }
 }
