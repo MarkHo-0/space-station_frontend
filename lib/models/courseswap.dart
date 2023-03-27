@@ -49,25 +49,28 @@ class SwapRequestRecord {
   int expectedClassNum;
   ContactInfo contactInfo;
   int requesterUid;
-  int? reponserUid;
+  int? responserUid;
 
-  SwapRequestRecord(
-      {required this.currentClassNum,
-      required this.expectedClassNum,
-      required this.contactInfo,
-      required this.course,
-      required this.id,
-      required this.reponserUid,
-      required this.requesterUid});
+  SwapRequestRecord({
+    required this.currentClassNum,
+    required this.expectedClassNum,
+    required this.contactInfo,
+    required this.course,
+    required this.id,
+    required this.responserUid,
+    required this.requesterUid,
+  });
+
   factory SwapRequestRecord.fromjson(Map<String, dynamic> json) {
     return SwapRequestRecord(
-        id: json["id"],
-        course: CourseInfo.fromjson(json["course"]),
-        currentClassNum: json["current_class_num"],
-        expectedClassNum: json["expected_class_num"],
-        contactInfo: ContactInfo.fromJson(json["contact"]),
-        reponserUid: json["responser_uid"],
-        requesterUid: json["requester_uid"]);
+      id: json["id"],
+      course: CourseInfo.fromjson(json["course"]),
+      currentClassNum: json["current_class_num"],
+      expectedClassNum: json["expected_class_num"],
+      contactInfo: ContactInfo.fromJson(json["contact"]),
+      responserUid: json["responser_uid"],
+      requesterUid: json["requester_uid"],
+    );
   }
 }
 

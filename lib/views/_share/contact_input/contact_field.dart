@@ -48,7 +48,7 @@ class _ContactFieldState extends State<ContactField> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.controller.isValueEmpty) {
+    if (widget.controller.isEmpty) {
       return buildLoadingContainer(context);
     }
     if (widget.editable == false) {
@@ -207,7 +207,7 @@ class _ContactFieldState extends State<ContactField> {
   }
 
   void trySave() {
-    if (widget.editable == false || widget.controller.isValueEmpty) return;
+    if (widget.editable == false || widget.controller.isEmpty) return;
     if (shouldSave == true && pref != null) {
       final data = widget.controller.value!.toStringList();
       pref!.setStringList(_dataKey, data);
@@ -230,9 +230,9 @@ class ContactInputController extends ValueNotifier<ContactInfo?> {
 
   ContactInputController(super._value);
 
-  int get method => isValueEmpty ? 0 : value!.method;
-  String get datail => isValueEmpty ? '' : value!.detail;
-  bool get isValueEmpty => value == null;
+  int get method => isEmpty ? 0 : value!.method;
+  String get datail => isEmpty ? '' : value!.detail;
+  bool get isEmpty => value == null;
 
   set method(int newMethod) {
     value = ContactInfo(newMethod, '');

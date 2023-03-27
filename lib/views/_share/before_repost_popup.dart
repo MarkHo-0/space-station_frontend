@@ -2,7 +2,7 @@ import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
 
 void showConfirmationDialog(
-    BuildContext pageCtx, String localzationString, void Function() runner) {
+    BuildContext pageCtx, String translateKey, VoidCallback runner) {
   showDialog<void>(
     context: pageCtx,
     builder: (dialogCtx) => AlertDialog(
@@ -10,7 +10,7 @@ void showConfirmationDialog(
         borderRadius: BorderRadius.all(Radius.circular(3)),
       ),
       content: Text(
-        pageCtx.getString(localzationString),
+        pageCtx.getString(translateKey),
         style: Theme.of(pageCtx).textTheme.titleMedium!,
       ),
       actions: [

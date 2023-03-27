@@ -107,6 +107,10 @@ class _CourseInputState extends State<CourseInput> {
 
 class CourseInputController extends ValueNotifier<CourseInfo?> {
   CourseInputController(super.value);
-  String get name => value == null ? '' : value!.coureseName;
-  String get code => value == null ? '' : value!.courseCode;
+  String get name => isEmpty ? '' : value!.coureseName;
+  String get code => isEmpty ? '' : value!.courseCode;
+
+  bool get isEmpty => value == null;
+
+  bool get swappable => !isEmpty && value!.maxClassNum > value!.minClassNum;
 }

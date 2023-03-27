@@ -1,20 +1,29 @@
 import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:space_station/models/course.dart';
 
 class ClassSelector extends StatelessWidget {
   final ClassSelectorController controller;
-  final List<int> classArray;
+  final CourseInfo? course;
+  final int? excludedClass;
+  final String? hintText;
 
-  const ClassSelector(this.controller, {super.key, required this.classArray});
+  const ClassSelector({
+    super.key,
+    required this.controller,
+    this.course,
+    this.excludedClass,
+    this.hintText,
+  });
 
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<int>(
       items: buildItems(context),
-      onChanged: (index) => controller.value = classArray[index!],
+      onChanged: (classNumber) => controller.value = classNumber,
       menuMaxHeight: 300,
       decoration: InputDecoration(
-        hintText: context.getString("want_class_hint"),
+        hintText: hintText,
       ),
       validator: (value) {
         if (value == null) {
@@ -26,10 +35,14 @@ class ClassSelector extends StatelessWidget {
   }
 
   List<DropdownMenuItem<int>> buildItems(BuildContext context) {
-    return List.generate(classArray.length, (index) {
+    if (course == null) return [];
+    final classCount = course!.maxClassNum - course!.minClassNum + 1;
+    return List.generate(classCount, (index) {
+      final currentClass = index + course!.minClassNum;
       return DropdownMenuItem(
-        value: index,
-        child: Text("CL${classArray[index].toString().padLeft(2, '0')}"),
+        value: currentClass,
+        enabled: currentClass != excludedClass,
+        child: Text("CL${currentClass.toString().padLeft(2, '0')}"),
       );
     });
   }
