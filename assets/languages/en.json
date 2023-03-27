@@ -206,5 +206,6 @@
   "no_swap_request":"You don't have any Requests",
   "repost_msg":"Are you sure to Repost this request?",
   "send_request":"Are you sure to Create the request?",
-  "swaped_action_msg":"Please contact him/her to process the swapping"
+  "swaped_action_msg":"Please contact him/her to process the swapping",
+  "no_swap_msg":"Can't perform swap!\nThis course only have 1 class."
 }

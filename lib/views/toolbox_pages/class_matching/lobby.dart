@@ -9,6 +9,7 @@ import '../../../api/error.dart';
 import '../../../api/interfaces/toolbox_api.dart';
 import '../../../models/courseswap.dart';
 import '../../_share/course_input.dart';
+import '../../_share/nooptiondialog.dart';
 import '../../_share/repeat_action_error.dart';
 import '../../_share/titled_container.dart';
 
@@ -22,13 +23,13 @@ class CMlobbyPage extends StatefulWidget {
 class CMlobbyPageState extends State<CMlobbyPage> {
   List<SearchRequest> requestlist = [];
   final FocusNode _focusNode = FocusNode();
-  late CourseInputController courseController;
-  late ClassSelectorController classController;
-  late ClassSelector? classinput;
-  late CourseInput? courseinput;
+  CourseInputController courseController = CourseInputController(null);
+  ClassSelectorController classController = ClassSelectorController(null);
   @override
   void initState() {
     super.initState();
+    courseController.addListener(() => setState(() {}));
+    classController.addListener(() => setState(() => gotoSearchSwapPage()));
     refresh();
   }
 
@@ -56,15 +57,12 @@ class CMlobbyPageState extends State<CMlobbyPage> {
   }
 
   Widget lobbybody(BuildContext context) {
-    setState(() {
-      courseinput = CourseInput(courseController, focusNode: _focusNode);
-    });
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 50),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         TitledField(
             title: context.getString("request_swap_message"),
-            body: courseinput!),
+            body: CourseInput(courseController, focusNode: _focusNode)),
         if (courseController.value != null)
           TitledField(
               title: context.getString("current_class"),
@@ -80,18 +78,21 @@ class CMlobbyPageState extends State<CMlobbyPage> {
         i++) {
       classArray.add(i);
     }
-    setState(() {
-      classinput = ClassSelector(classController, classArray: classArray);
-    });
-    return classinput!;
+    return ClassSelector(classController, classArray: classArray);
   }
 
   void gotoSearchSwapPage() {
     requestlist = [];
-    searchRequest(courseController.value!.courseCode, classController.value!)
-        .then((value) => setValue(value))
-        .catchError((_) => repeat(context), test: (e) => e is FrquentError)
-        .onError((e, _) {});
+    if (courseController.value!.maxClassNum !=
+        courseController.value!.minClassNum) {
+      searchRequest(courseController.value!.courseCode, classController.value!)
+          .then((value) => setValue(value))
+          .catchError((_) => repeat(context), test: (e) => e is FrquentError)
+          .onError((e, _) {});
+    } else {
+      refresh();
+      noOptionDialog(context, "no_swap_msg");
+    }
   }
 
   void repeat(BuildContext context) {
@@ -120,12 +121,8 @@ class CMlobbyPageState extends State<CMlobbyPage> {
 
   Future<void> refresh() {
     setState(() {
-      courseController = CourseInputController(null);
-      courseinput = null;
-      classController = ClassSelectorController(null);
-      classinput = null;
-      courseController.addListener(() => setState(() {}));
-      classController.addListener(() => setState(() => gotoSearchSwapPage()));
+      courseController.value = null;
+      classController.value = null;
     });
     return Future.value();
   }

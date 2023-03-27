@@ -136,12 +136,17 @@ class SearchSwapPageState extends State<SearchSwapPage> {
           const SizedBox(height: 10),
           OutlinedButton(
             onPressed: () {
+              List<int> classArray = [];
+              for (int i = widget.selectedcourse.value!.minClassNum;
+                  i < widget.selectedcourse.value!.maxClassNum + 1;
+                  i++) {
+                if (i != widget.selectedclass.value) classArray.add(i);
+              }
+              print(classArray);
               Navigator.of(context).push(CupertinoPageRoute(
                 builder: ((_) {
-                  return SwapCreatePage(
-                    widget.selectedclass.value!,
-                    widget.selectedcourse.value!,
-                  );
+                  return SwapCreatePage(widget.selectedclass.value!,
+                      widget.selectedcourse.value!, classArray);
                 }),
               ));
             },

@@ -68,21 +68,7 @@ class _RequestRecordPageState extends State<RequestRecordPage> {
                       swaprequestlist[index].course.coureseName,
                       style: TextStyle(color: Theme.of(context).primaryColor),
                     ),
-                    Row(
-                      children: [
-                        Text(
-                          "CL${swaprequestlist[index].currentClassNum.toString().padLeft(2, '0')}",
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 22),
-                        ),
-                        const Icon(Icons.arrow_forward),
-                        Text(
-                          "CL${swaprequestlist[index].expectedClassNum.toString().padLeft(2, '0')}",
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 22),
-                        )
-                      ],
-                    ),
+                    targetclass(context, index),
                     requestStat(context, index)
                   ],
                 ),
@@ -91,6 +77,31 @@ class _RequestRecordPageState extends State<RequestRecordPage> {
           },
         ),
       ),
+    );
+  }
+
+  Widget targetclass(BuildContext context, int index) {
+    int cur;
+    int want;
+    if (swaprequestlist[index].requesterUid == getuserUid(context)) {
+      cur = swaprequestlist[index].currentClassNum;
+      want = swaprequestlist[index].expectedClassNum;
+    } else {
+      cur = swaprequestlist[index].expectedClassNum;
+      want = swaprequestlist[index].currentClassNum;
+    }
+    return Row(
+      children: [
+        Text(
+          "CL${cur.toString().padLeft(2, '0')}",
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+        ),
+        const Icon(Icons.arrow_forward),
+        Text(
+          "CL${want.toString().padLeft(2, '0')}",
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+        )
+      ],
     );
   }
 

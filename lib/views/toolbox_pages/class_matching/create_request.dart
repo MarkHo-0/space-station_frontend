@@ -20,7 +20,9 @@ import 'lobby.dart';
 class SwapCreatePage extends StatefulWidget {
   final int selectedclass;
   final CourseInfo selectedcourse;
-  const SwapCreatePage(this.selectedclass, this.selectedcourse, {super.key});
+  final List<int> classArray;
+  const SwapCreatePage(this.selectedclass, this.selectedcourse, this.classArray,
+      {super.key});
 
   @override
   State<SwapCreatePage> createState() => _SwapCreatePageState();
@@ -29,18 +31,6 @@ class SwapCreatePage extends StatefulWidget {
 class _SwapCreatePageState extends State<SwapCreatePage> {
   ContactInputController contactCtl = ContactInputController(null);
   ClassSelectorController wantclassController = ClassSelectorController(null);
-  List<int> classArray = [];
-
-  @override
-  void initState() {
-    super.initState();
-    classArray = [];
-    for (int i = widget.selectedcourse.minClassNum;
-        i < widget.selectedcourse.maxClassNum + 1;
-        i++) {
-      if (i != widget.selectedclass) classArray.add(i);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +50,7 @@ class _SwapCreatePageState extends State<SwapCreatePage> {
             body: SizedBox(
                 width: 300,
                 child: ClassSelector(wantclassController,
-                    classArray: classArray))),
+                    classArray: widget.classArray))),
         TitledField(
             title: context.getString('contact'),
             body: ContactField(contactCtl)),
@@ -97,10 +87,6 @@ class _SwapCreatePageState extends State<SwapCreatePage> {
   }
 
   void onButtonPressed(BuildContext context) {
-    print(widget.selectedclass.toString() +
-        widget.selectedcourse.courseCode +
-        contactCtl.value!.detail.toString() +
-        wantclassController.value.toString());
     if (wantclassController.value != null && contactCtl.value!.detail != "") {
       final request = SwapRequest(
           widget.selectedclass,
