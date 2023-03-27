@@ -83,6 +83,9 @@ flutter:
     - assets/languages/zh-CN.json
     - assets/languages/zh-HK.json
     - assets/languages/zh-TW.json
+    - assets/legal_docs/cookies_usage.txt
+    - assets/legal_docs/privacy_policy.txt
+    - assets/legal_docs/terms_of_service.txt
 
 icons_launcher:
   image_path: "assets/launcher/icon.jpeg"

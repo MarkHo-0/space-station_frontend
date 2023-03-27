@@ -36,7 +36,7 @@ class LegalDocPage extends StatelessWidget {
 
   Future<String> loadDoc() {
     return rootBundle
-        .loadString('legal_docs/$docName.txt')
+        .loadString('assets/legal_docs/$docName.txt')
         .catchError((_) => '');
   }
 }
