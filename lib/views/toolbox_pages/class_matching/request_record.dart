@@ -133,6 +133,7 @@ class _RequestRecordPageState extends State<RequestRecordPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(context.getString("accepted_request_msg1")),
               Text(context.getString("accepted_request_msg2"))
