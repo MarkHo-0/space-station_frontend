@@ -10,16 +10,15 @@ import '../../_share/before_repost_popup.dart';
 import '../../_share/contact_input/contact_field.dart';
 import '../../_share/unknown_error_popup.dart';
 
-class SwapCreatePage extends StatefulWidget {
+class SwapCreatePage extends StatelessWidget {
   final int currentClass;
   final CourseInfo targetCourse;
-  const SwapCreatePage(this.currentClass, this.targetCourse, {super.key});
+  SwapCreatePage({
+    required this.currentClass,
+    required this.targetCourse,
+    super.key,
+  });
 
-  @override
-  State<SwapCreatePage> createState() => _SwapCreatePageState();
-}
-
-class _SwapCreatePageState extends State<SwapCreatePage> {
   final contactCtl = ContactInputController(null);
   final expClassController = ClassSelectorController(null);
   final formKey = GlobalKey<FormState>();
@@ -37,22 +36,19 @@ class _SwapCreatePageState extends State<SwapCreatePage> {
             children: [
               TitledField(
                 title: context.getString("course"),
-                body: Text(widget.targetCourse.coureseName),
+                body: Text(targetCourse.coureseName),
               ),
               TitledField(
                 title: context.getString("current_class"),
-                body:
-                    Text("CL${widget.currentClass.toString().padLeft(2, '0')}"),
+                body: Text("CL${currentClass.toString().padLeft(2, '0')}"),
               ),
               TitledField(
                 title: context.getString("want_class"),
-                body: SizedBox(
-                  width: 300,
-                  child: ClassSelector(
-                    course: widget.targetCourse,
-                    controller: expClassController,
-                    excludedClass: widget.currentClass,
-                  ),
+                body: ClassSelector(
+                  course: targetCourse,
+                  controller: expClassController,
+                  excludedClass: currentClass,
+                  hintText: context.getString("want_class_hint"),
                 ),
               ),
               TitledField(
@@ -83,21 +79,23 @@ class _SwapCreatePageState extends State<SwapCreatePage> {
     if (formKey.currentState!.validate() == false) return;
 
     final request = SwapRequest(
-      widget.currentClass,
+      currentClass,
       expClassController.value!,
       contactCtl.value!,
-      widget.targetCourse.courseCode,
+      targetCourse.courseCode,
     );
 
     showConfirmationDialog(context, "send_request", () {
       createSwapRequest(request)
           .then((_) => onCreateSuccessed(context))
-          .onError((_, __) => showUnkownErrorDialog(context));
+          .catchError((_) => showUnkownErrorDialog(context));
     });
   }
 
   void onCreateSuccessed(BuildContext context) {
     contactCtl.trySaveToLocal();
+    contactCtl.dispose();
+    expClassController.dispose();
     Navigator.pop(context);
   }
 }

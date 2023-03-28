@@ -31,22 +31,21 @@ class SearchSwapPageState extends State<SearchSwapPage> {
     return Scaffold(
       appBar: AppBar(title: Text(context.getString("found_time_slots"))),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(15),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                widget.searchCourse.coureseName,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).primaryColor,
-                ),
+        padding: const EdgeInsets.all(15),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              widget.searchCourse.coureseName,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).primaryColor,
               ),
-              buildResult(context),
-              buildFooter(context)
-            ],
-          ),
+            ),
+            const SizedBox(height: 10),
+            buildResult(context),
+            buildFooter(context)
+          ],
         ),
       ),
     );
@@ -75,7 +74,7 @@ class SearchSwapPageState extends State<SearchSwapPage> {
 
   Widget buildResultItem(BuildContext context, int index) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 3),
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       decoration: BoxDecoration(
         border: Border.all(color: Theme.of(context).dividerColor),
       ),
@@ -100,10 +99,7 @@ class SearchSwapPageState extends State<SearchSwapPage> {
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.fromLTRB(35, 10, 35, 10),
             ),
-            child: Text(
-              context.getString("swap"),
-              style: const TextStyle(fontSize: 20),
-            ),
+            child: Text(context.getString("swap")),
           )
         ],
       ),
@@ -141,8 +137,8 @@ class SearchSwapPageState extends State<SearchSwapPage> {
               Navigator.of(context).pushReplacement(CupertinoPageRoute(
                 builder: ((_) {
                   return SwapCreatePage(
-                    widget.searchClass,
-                    widget.searchCourse,
+                    currentClass: widget.searchClass,
+                    targetCourse: widget.searchCourse,
                   );
                 }),
               ));
@@ -155,7 +151,7 @@ class SearchSwapPageState extends State<SearchSwapPage> {
   }
 
   void showConfirmation(BuildContext pageCtx, int index, VoidCallback runner) {
-    final courseName = widget.searchCourse.courseCode;
+    final courseName = widget.searchCourse.coureseName;
     final currClass = widget.searchClass;
     final expClass = widget.result[index].classNum;
     showDialog<void>(
@@ -168,8 +164,15 @@ class SearchSwapPageState extends State<SearchSwapPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(courseName, style: Theme.of(pageCtx).textTheme.titleMedium!),
-            ClassExchangeView(left: currClass, right: expClass),
+            Text(
+              courseName,
+              style: Theme.of(pageCtx).textTheme.titleMedium!,
+              textAlign: TextAlign.center,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              child: ClassExchangeView(left: currClass, right: expClass),
+            ),
           ],
         ),
         actions: [
@@ -178,7 +181,7 @@ class SearchSwapPageState extends State<SearchSwapPage> {
               Navigator.pop(dialogCtx);
               runner();
             },
-            child: Text(pageCtx.getString("swap")),
+            child: Text(pageCtx.getString("conform")),
           ),
           TextButton(
             onPressed: () => Navigator.pop(dialogCtx),

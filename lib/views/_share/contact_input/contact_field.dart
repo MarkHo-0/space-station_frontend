@@ -64,51 +64,24 @@ class _ContactFieldState extends State<ContactField> {
   Widget buildContactDisplayer(BuildContext context) {
     final methold = getMetholdName(context, widget.controller.method - 1);
     final detail = currMethod.detail.toDisplayText(widget.controller.datail);
-    bool copied = false;
-    return StatefulBuilder(
-      builder: (BuildContext context, updateUI) {
-        return Row(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: Theme.of(context).primaryColor),
-                ),
-              ),
-              child: InkWell(
-                child: Text(
-                  '$methold: $detail',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-                onTap: () {
-                  Clipboard.setData(ClipboardData(text: detail)).then((_) {
-                    copied = true;
-                    updateUI(() {});
-                  });
-                },
-              ),
-            ),
-            Visibility(
-              visible: copied == true,
-              child: Row(
-                children: [
-                  const SizedBox(width: 15),
-                  const Icon(
-                    Icons.content_copy,
-                    color: Colors.green,
-                    size: 18,
-                  ),
-                  const SizedBox(width: 5),
-                  Text(context.getString('copied_contct')),
-                ],
-              ),
-            ),
-          ],
-        );
-      },
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: Theme.of(context).primaryColor),
+        ),
+      ),
+      child: InkWell(
+        child: Text(
+          '$methold: $detail',
+          style: TextStyle(
+            fontSize: 16,
+            color: Theme.of(context).primaryColor,
+          ),
+        ),
+        onTap: () {
+          Clipboard.setData(ClipboardData(text: detail));
+        },
+      ),
     );
   }
 

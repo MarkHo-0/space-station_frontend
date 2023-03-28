@@ -13,12 +13,13 @@ class CourseInput extends StatefulWidget {
 }
 
 class _CourseInputState extends State<CourseInput> {
-  late TextEditingController myTextEditCtl;
+  late TextEditingController inputController;
 
   @override
   void initState() {
     super.initState();
-    myTextEditCtl = TextEditingController(text: widget.controller.name);
+    inputController = TextEditingController(text: widget.controller.name);
+    widget.controller.addListener(onCourseUpdated);
   }
 
   @override
@@ -26,7 +27,7 @@ class _CourseInputState extends State<CourseInput> {
     return LayoutBuilder(
       builder: (context, constraints) => RawAutocomplete<CourseInfo>(
         focusNode: widget.focusNode,
-        textEditingController: myTextEditCtl,
+        textEditingController: inputController,
         fieldViewBuilder: (ctx, textCtl, fNode, onFiredSubmit) {
           return TextFormField(
             controller: textCtl,
@@ -98,9 +99,16 @@ class _CourseInputState extends State<CourseInput> {
     );
   }
 
+  void onCourseUpdated() {
+    if (widget.controller.value == null) {
+      inputController.clear();
+    }
+  }
+
   @override
   void dispose() {
-    myTextEditCtl.dispose();
+    inputController.dispose();
+    widget.controller.removeListener(onCourseUpdated);
     super.dispose();
   }
 }
@@ -111,6 +119,4 @@ class CourseInputController extends ValueNotifier<CourseInfo?> {
   String get code => isEmpty ? '' : value!.courseCode;
 
   bool get isEmpty => value == null;
-
-  bool get swappable => !isEmpty && value!.maxClassNum > value!.minClassNum;
 }

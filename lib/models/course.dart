@@ -18,6 +18,8 @@ class CourseInfo {
         minClassNum: json["min_class_num"],
         maxClassNum: json["max_class_num"]);
   }
+
+  bool get isSingleClass => maxClassNum - minClassNum == 0;
 }
 
 class CoursesModel {

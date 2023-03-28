@@ -55,7 +55,7 @@ class _SwapRecordPageState extends State<SwapRecordPage> {
         record.length,
         (index) {
           return Padding(
-            padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.symmetric(vertical: 15),
             child: buildRecordItem(context, index),
           );
         },
@@ -74,12 +74,15 @@ class _SwapRecordPageState extends State<SwapRecordPage> {
       decoration: BoxDecoration(
         border: Border.all(color: Theme.of(context).dividerColor),
       ),
+      width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             request.course.coureseName,
             style: TextStyle(color: Theme.of(context).primaryColor),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
           ClassExchangeView(left: lClass, right: rClass),
           buildRecordItemFooter(context, index)
@@ -116,10 +119,7 @@ class _SwapRecordPageState extends State<SwapRecordPage> {
             child: Container(
               alignment: Alignment.center,
               width: 110,
-              child: Text(
-                context.getString("remove"),
-                style: const TextStyle(fontSize: 18),
-              ),
+              child: Text(context.getString("remove")),
             ),
           ),
         )
@@ -148,10 +148,7 @@ class _SwapRecordPageState extends State<SwapRecordPage> {
             child: Container(
               alignment: Alignment.center,
               width: 110,
-              child: Text(
-                context.getString("repost"),
-                style: const TextStyle(fontSize: 18),
-              ),
+              child: Text(context.getString("repost")),
             ),
           ),
         )
@@ -195,12 +192,13 @@ class _SwapRecordPageState extends State<SwapRecordPage> {
   void onRepostRequest(BuildContext context, int index) {
     if (isMyRequest(index) == false) return;
     showConfirmationDialog(context, "repost_msg", () {
-      repostRequest(record[index].id).then((value) {
-        record[index].responserUid = null;
-        setState(() {});
-      }).onError((_, __) {
-        showUnkownErrorDialog(context);
-      });
+      repostRequest(record[index].id).then(
+        (value) {
+          record[index].responserUid = null;
+          setState(() {});
+        },
+        onError: (_) => showUnkownErrorDialog(context),
+      );
     });
   }
 

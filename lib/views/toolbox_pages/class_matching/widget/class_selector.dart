@@ -50,4 +50,6 @@ class ClassSelector extends StatelessWidget {
 
 class ClassSelectorController extends ValueNotifier<int?> {
   ClassSelectorController(super.value);
+
+  bool get isEmpty => value == null;
 }

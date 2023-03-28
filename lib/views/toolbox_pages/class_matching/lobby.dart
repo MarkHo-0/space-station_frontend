@@ -2,14 +2,16 @@ import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:space_station/api/error.dart';
-import 'package:space_station/views/toolbox_pages/class_matching/request_record.dart';
-import 'package:space_station/views/toolbox_pages/class_matching/search_swap.dart';
-import 'package:space_station/views/toolbox_pages/class_matching/widget/class_selector.dart';
+import 'package:space_station/views/_share/general_error_dialog.dart';
+import 'package:space_station/views/toolbox_pages/class_matching/create_request.dart';
 
+import '../../_share/unknown_error_popup.dart';
+import 'request_record.dart';
+import 'search_swap.dart';
+import 'widget/class_selector.dart';
 import '../../../api/interfaces/toolbox_api.dart';
 import '../../../models/courseswap.dart';
 import '../../_share/course_input.dart';
-import '../../_share/repeat_action_error.dart';
 import '../../_share/titled_container.dart';
 
 class CMlobbyPage extends StatefulWidget {
@@ -22,11 +24,14 @@ class CMlobbyPage extends StatefulWidget {
 class CMlobbyPageState extends State<CMlobbyPage> {
   final courseController = CourseInputController(null);
   final classController = ClassSelectorController(null);
+  final firstFocus = FocusNode();
+
   @override
   void initState() {
     super.initState();
-    courseController.addListener(onCourseSelected);
-    classController.addListener(onClassSelected);
+    courseController.addListener(onCourseUpdated);
+    classController.addListener(onClassUpdated);
+    firstFocus.requestFocus();
   }
 
   @override
@@ -42,7 +47,7 @@ class CMlobbyPageState extends State<CMlobbyPage> {
               title: context.getString("request_swap_message"),
               body: CourseInput(
                 courseController,
-                focusNode: FocusNode(),
+                focusNode: firstFocus,
               ),
             ),
             Visibility(
@@ -52,6 +57,7 @@ class CMlobbyPageState extends State<CMlobbyPage> {
                 body: ClassSelector(
                   controller: classController,
                   course: courseController.value,
+                  hintText: context.getString('current_class_hint'),
                 ),
               ),
             )
@@ -75,31 +81,38 @@ class CMlobbyPageState extends State<CMlobbyPage> {
     );
   }
 
-  void onCourseSelected() {
-    if (courseController.swappable == false) {
-      clearInput();
-      return repeatActionErrorDialog(context);
+  void onCourseUpdated() {
+    if (courseController.isEmpty) return;
+    if (courseController.value!.isSingleClass) {
+      return showSingleClassError(context);
     }
     classController.value = null;
     setState(() {});
   }
 
-  void onClassSelected() {
-    if (classController.value == null) return;
+  void onClassUpdated() {
+    if (classController.isEmpty) return;
     searchRequest(courseController.value!.courseCode, classController.value!)
-        .then((value) => onSearchSuccessed(value))
-        .catchError(
+        .then((result) => onSearchSuccessed(result))
+        .onError(
           (_, __) => showCourseRepeatedError(context),
           test: (e) => e is FrquentError,
         )
-        .onError((e, _) {});
+        .catchError((_) => showUnkownErrorDialog(context));
   }
 
   void onSearchSuccessed(SearchRequests result) {
     final course = courseController.value!;
     final classNumber = classController.value!;
-    clearInput();
+    clearScreen();
     Navigator.of(context).push(CupertinoPageRoute(builder: (_) {
+      if (result.requestArray.isEmpty) {
+        return SwapCreatePage(
+          currentClass: classNumber,
+          targetCourse: course,
+        );
+      }
+
       return SearchSwapPage(
         searchCourse: course,
         searchClass: classNumber,
@@ -108,18 +121,32 @@ class CMlobbyPageState extends State<CMlobbyPage> {
     }));
   }
 
-  void showCourseRepeatedError(BuildContext context) {}
+  void showCourseRepeatedError(BuildContext context) {
+    showGeneralErrorDialog(context, 'course_repeated_error')
+        .then((_) => clearScreen(focusAfterClear: true));
+  }
 
-  void clearInput() {
+  void showSingleClassError(BuildContext context) {
+    showGeneralErrorDialog(context, 'single_class_error')
+        .then((_) => clearScreen(focusAfterClear: true));
+  }
+
+  void clearScreen({bool focusAfterClear = false}) {
     courseController.value = null;
     classController.value = null;
     setState(() {});
+    if (focusAfterClear) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        firstFocus.requestFocus();
+      });
+    }
   }
 
   @override
   void dispose() {
     courseController.dispose();
     classController.dispose();
+    firstFocus.dispose();
     super.dispose();
   }
 }

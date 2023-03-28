@@ -12,32 +12,39 @@ class ContactPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: Column(
-        children: [
-          const SizedBox(height: 20),
-          Text(
-            request.course.courseCode,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: ClassExchangeView(
-              left: request.expectedClassNum,
-              right: request.currentClassNum,
+      body: Padding(
+        padding: const EdgeInsets.all(15),
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            Text(
+              request.course.coureseName,
+              style: Theme.of(context).textTheme.titleMedium,
+              textAlign: TextAlign.center,
             ),
-          ),
-          const SizedBox(height: 20),
-          Text(context.getString("swaped_action_msg")),
-          ContactField(
-            ContactInputController(request.contactInfo),
-            editable: false,
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(context.getString('finish')),
-          )
-        ],
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: ClassExchangeView(
+                left: request.expectedClassNum,
+                right: request.currentClassNum,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(context.getString("swaped_action_msg")),
+            ContactField(
+              ContactInputController(request.contactInfo),
+              editable: false,
+            ),
+            const SizedBox(height: 40),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Text(context.getString('finish')),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
