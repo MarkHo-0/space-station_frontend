@@ -93,7 +93,7 @@ class _StudyPartnerRecordPageState extends State<StudyPartnerRecordPage> {
                 }),
               ));
             },
-            child: Text(context.getString('create_recruitment')),
+            child: Text(context.getString('create_post')),
           ),
         ],
       ),

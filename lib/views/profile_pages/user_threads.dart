@@ -1,4 +1,3 @@
-
 import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:space_station/api/interfaces/user_api.dart';
@@ -11,7 +10,7 @@ class UserThreadsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(context.getString('your_threads'))),
+      appBar: AppBar(title: Text(context.getString('my_threads'))),
       body: ThreadListView(onRequest: (String cursor) {
         return getUserThreads(userID, cursor);
       }),

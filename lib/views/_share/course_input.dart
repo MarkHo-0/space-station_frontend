@@ -36,7 +36,7 @@ class _CourseInputState extends State<CourseInput> {
             textInputAction: TextInputAction.next,
             onTap: () => textCtl.clear(),
             decoration: InputDecoration(
-              hintText: 'Search by Course Code/Course English Name',
+              hintText: context.getString('course_search_hint'),
             ),
             onTapOutside: (event) {
               if (widget.controller.value == null) {

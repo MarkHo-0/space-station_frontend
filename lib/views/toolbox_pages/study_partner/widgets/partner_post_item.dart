@@ -30,7 +30,7 @@ class PartnerPostItem extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(
-              vertical: 15,
+              vertical: 18,
               horizontal: 10,
             ),
             child: Row(
@@ -77,13 +77,12 @@ class PartnerPostItem extends StatelessWidget {
             maxLines: 2,
             style: TextStyle(
               color: Theme.of(context).primaryColor,
-              fontSize: 24,
+              fontSize: 18,
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          const SizedBox(height: 5),
           Text(
-            data.description,
+            '${data.description}\n', //強制兩行顯示
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),

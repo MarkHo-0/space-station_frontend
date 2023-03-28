@@ -70,13 +70,13 @@ class CMlobbyPageState extends State<CMlobbyPage> {
   Widget buildRecordButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(right: 10),
-      child: ElevatedButton(
+      child: TextButton(
         onPressed: () {
           Navigator.of(context).push(CupertinoPageRoute(builder: (_) {
             return const SwapRecordPage();
           }));
         },
-        child: Text(context.getString("my_request")),
+        child: Text(context.getString("swap_records")),
       ),
     );
   }

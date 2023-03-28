@@ -30,7 +30,7 @@ class _SwapRecordPageState extends State<SwapRecordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(context.getString("my_request"))),
+      appBar: AppBar(title: Text(context.getString("swap_records"))),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(15),
         child: buildRecords(context),
