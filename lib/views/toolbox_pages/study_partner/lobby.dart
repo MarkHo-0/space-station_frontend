@@ -187,12 +187,24 @@ class _StudyPartnerLobbyPageState extends State<StudyPartnerLobbyPage> {
     isError = false;
   }
 
-  void onScroll() {}
+  void onScroll() {
+    final pos = scrollCtl.position;
+    if (cursor.isEmpty) return;
+    if (pos.pixels < pos.maxScrollExtent - 40) return;
+    fetchData();
+  }
 
   void onViewPost(BuildContext context, StudyPartnerPost data) {
     showModalBottomSheet(
       context: context,
       builder: (_) => StudyPartnerPreviewer(data),
     );
+  }
+
+  @override
+  void dispose() {
+    scrollCtl.dispose();
+    queryTextCtl.dispose();
+    super.dispose();
   }
 }
