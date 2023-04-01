@@ -38,6 +38,7 @@ class _RegisterSuccessPageState extends State<RegisterSuccessPage>
       ),
       body: SizedBox.expand(
         child: Stack(
+          alignment: Alignment.center,
           children: [
             AspectRatio(
               aspectRatio: 1,

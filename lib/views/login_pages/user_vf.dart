@@ -28,10 +28,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
   @override
   void initState() {
     super.initState();
-    sendVfCode(widget.studentID).catchError((e) {
-      isSendFailed = true;
-      return false;
-    }).whenComplete(() {
+    sendVfCode(widget.studentID).catchError((_) => isSendFailed = true).whenComplete(() {
       setState(() => isLoading = false);
       WidgetsBinding.instance.addPostFrameCallback(
         (_) => firstDigitFocus.requestFocus(),
