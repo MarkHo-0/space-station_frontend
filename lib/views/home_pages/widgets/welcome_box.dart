@@ -1,7 +1,6 @@
 import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 import '../../../providers/auth_provider.dart';
 import '../../login_pages/login_lobby.dart';
@@ -15,9 +14,9 @@ class WelcomeBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<AuthProvider>(context);
-    final design = auth.isLogined
-        ? loginedDesign(context, auth.user!.nickname)
+    final loginedUser = getLoginedUser(context);
+    final design = loginedUser != null
+        ? loginedDesign(context, loginedUser.nickname)
         : defaultDesign(context);
     return Padding(
       padding: const EdgeInsets.all(15),
@@ -132,7 +131,7 @@ class WelcomeBoxDesign {
   final List<Widget> children;
   final String animationFile;
 
-  WelcomeBoxDesign({required this.children, required this.animationFile});
+  const WelcomeBoxDesign({required this.children, required this.animationFile});
 
   Widget finalize(
       BuildContext context, GlobalKey<ClickableAnimationState> animationKey) {

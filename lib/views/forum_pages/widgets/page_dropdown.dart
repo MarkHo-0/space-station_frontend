@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
 import '../../../utils/constant.dart';
@@ -29,7 +27,7 @@ class _PageDropdownState extends State<PageDropdown> {
           borderRadius: BorderRadius.circular(3),
         ),
         child: DropdownButtonHideUnderline(
-          child: DropdownButton<double>(
+          child: DropdownButton<int>(
             elevation: 2,
             borderRadius: BorderRadius.circular(3),
             value: widget.controller.value,
@@ -38,21 +36,21 @@ class _PageDropdownState extends State<PageDropdown> {
             hint: buildItem(context.getString("page_dropdown_hint")),
             isDense: true,
             isExpanded: true,
-            onChanged: (value) => widget.controller.update(value!),
+            onChanged: (selected) => widget.controller.update(selected!),
           ),
         ),
       ),
     );
   }
 
-  List<DropdownMenuItem<double>> buildSelectorItems(BuildContext context) {
-    List<DropdownMenuItem<double>> items = [];
+  List<DropdownMenuItem<int>> buildSelectorItems(BuildContext context) {
+    List<DropdownMenuItem<int>> items = [];
     for (var i = 0; i < kForumTabs.length; i++) {
       var tab = kForumTabs[i];
       var hasChildren = tab.hasCategorySelector;
       items.add(DropdownMenuItem(
         enabled: !hasChildren,
-        value: (i + 1).toDouble(),
+        value: (i + 1) * 10,
         child: Text(
           context.getString("page_${tab.key}"),
           style: hasChildren
@@ -63,16 +61,15 @@ class _PageDropdownState extends State<PageDropdown> {
         ),
       ));
       if (hasChildren) {
-        items.addAll(List.generate(tab.categoriesQuantity!, (j) {
-          j = j + 1;
-          return DropdownMenuItem(
-            value: (i + 1) + (j / pow(10, j.toString().length)),
+        for (var j = 1; j <= tab.categoriesQuantity!; j++) {
+          items.add(DropdownMenuItem(
+            value: (i + 1) * 10 + j,
             child: Padding(
               padding: kLeftPadding,
               child: Text(context.getString("${tab.categoryKey}_$j")),
             ),
-          );
-        }));
+          ));
+        }
       }
     }
     return items;
@@ -117,19 +114,23 @@ class _PageDropdownState extends State<PageDropdown> {
   }
 }
 
-class PageDropdownController extends ValueNotifier<double?> {
+class PageDropdownController extends ValueNotifier<int?> {
   int pageID = 0;
   int categoryID = 0;
 
   PageDropdownController() : super(null);
 
-  void update(double newValue) {
-    final temp = newValue.toString().split('.');
-    pageID = int.parse(temp[0]);
-    categoryID = int.parse(temp[1]);
-    super.value = newValue;
+  void update(int newValue) {
+    pageID = newValue ~/ 10;
+    categoryID = newValue % 10;
+    value = newValue;
   }
-
-  bool get isEmpty => super.value == null;
-  void clear() => super.value = null;
+  
+  bool get isEmpty => value == null;
+  
+  void clear() {
+    pageID = 0;
+    categoryID = 0;
+    value = null;
+  }
 }

@@ -57,7 +57,14 @@ class _ForumPageState extends State<ForumPage>
     if (getLoginedUser(ctx, warnOnEmpty: true) == null) return;
 
     Navigator.of(context).push(
-      CupertinoPageRoute(builder: ((_) => const ThreadPostPage())),
+      CupertinoPageRoute(builder: (_) {
+        return ThreadPostPage(onPosted: (postOnPage) {
+          getLoginedUser(context)?.threadCount.value++;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _forumKey.currentState!.switchToTab(postOnPage - 1);       
+          });
+        });
+      }),
     );
   }
 

@@ -13,7 +13,8 @@ import '../../api/interfaces/forum_api.dart';
 import '../_styles/textfield.dart';
 
 class ThreadPostPage extends StatefulWidget {
-  const ThreadPostPage({super.key});
+  final void Function(int) onPosted;
+  const ThreadPostPage({super.key, required this.onPosted});
   @override
   State<ThreadPostPage> createState() => _ThreadPostPageState();
 }
@@ -135,21 +136,17 @@ class _ThreadPostPageState extends State<ThreadPostPage> {
       ),
     ).then((threadID) {
       if (threadID == null) return;
+      widget.onPosted(destDropdown.pageID);
 
       destDropdown.clear();
       titleInput.clear();
       contentInput.clear();
-
-      if (threadID >= 0) Navigator.pop(context);
-      if (threadID > 0) {
-        Future.delayed(const Duration(microseconds: 500), () {
-          Navigator.of(context).push(
-            CupertinoPageRoute(
-              builder: ((_) => ThreadPage(threadID)),
-            ),
-          );
-        });
-      }
+      if (threadID == 0) return Navigator.pop(context);
+      Navigator.of(context).pushReplacement(
+        CupertinoPageRoute(
+          builder: ((_) => ThreadPage(threadID)),
+        ),
+      );
     });
   }
 }

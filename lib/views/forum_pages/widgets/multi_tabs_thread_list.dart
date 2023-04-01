@@ -111,6 +111,10 @@ class MultiTabsThreadListState extends State<MultiTabsThreadList>
     }
   }
 
+  void switchToTab(int index) {
+    _tabController.animateTo(index);
+  }
+
   @override
   void dispose() {
     _tabController.dispose();
