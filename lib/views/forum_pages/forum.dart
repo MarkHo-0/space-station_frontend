@@ -61,7 +61,7 @@ class _ForumPageState extends State<ForumPage>
         return ThreadPostPage(onPosted: (postOnPage) {
           getLoginedUser(context)?.threadCount.value++;
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            _forumKey.currentState!.switchToTab(postOnPage - 1);       
+            _forumKey.currentState!.switchToTabAndRefresh(postOnPage - 1);
           });
         });
       }),

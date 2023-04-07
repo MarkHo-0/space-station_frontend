@@ -51,9 +51,7 @@ class MultiTabsThreadListState extends State<MultiTabsThreadList>
               (pageID) => DynamicTab(
                 key: _keysList.tabs[pageID],
                 tabInfo: tabs[pageID],
-                onCategoryChanged: ((_) {
-                  _keysList.views[pageID].currentState!.refresh();
-                }),
+                onCategoryChanged: ((_) => getViewState(pageID).refresh()),
               ),
             ),
           ),
@@ -64,8 +62,13 @@ class MultiTabsThreadListState extends State<MultiTabsThreadList>
                 tabs.length,
                 (pageID) => ThreadListView(
                   key: _keysList.views[pageID],
-                  onRequest: (nextCursor) => widget.onRequest(
-                      pageID + 1, currentCategoryID, nextCursor),
+                  onRequest: (nextCursor) {
+                    return widget.onRequest(
+                      pageID + 1,
+                      currentCategoryID,
+                      nextCursor,
+                    );
+                  },
                 ),
               ),
             ),
@@ -75,20 +78,14 @@ class MultiTabsThreadListState extends State<MultiTabsThreadList>
     );
   }
 
-  int get currentCategoryID {
-    final tab = _keysList.tabs[_tabController.index].currentState;
-    if (tab == null) return 0;
-    return tab.categoryID;
-  }
-
   void _onTabSwitched() {
     if (_tabController.indexIsChanging == true) return; //防止重複呼叫
 
     //隱藏上個分頁的子分頁選項
-    _keysList.tabs[_tabController.previousIndex].currentState!.hideSelector();
+    getTabState(_tabController.previousIndex).hideSelector();
 
     //顯示當前頁面的子分頁選項
-    final currentTab = _keysList.tabs[_tabController.index].currentState!;
+    final currentTab = getTabState(_tabController.index);
     currentTab.showSelector();
 
     //假如資為舊則刷新列表
@@ -100,20 +97,32 @@ class MultiTabsThreadListState extends State<MultiTabsThreadList>
 
   void notifyParametersChanged() {
     //刷新當前頁面
-    final view = _keysList.views[_tabController.index].currentState!;
-    view.refresh();
+    getViewState(_tabController.index).refresh();
 
     //將其它頁面的資料標記為舊，下次顯示時自動刷新
     for (var pageIndex = 0; pageIndex < _keysList.length; pageIndex++) {
       if (pageIndex != _tabController.index) {
-        _keysList.tabs[pageIndex].currentState!.isDataOutdated = true;
+        getTabState(pageIndex).isDataOutdated = true;
       }
     }
   }
 
-  void switchToTab(int index) {
-    _tabController.animateTo(index);
+  void switchToTabAndRefresh(int index) {
+    //假如不是目標不是當前頁面，則轉換到該頁面再更新
+    if (index != _tabController.index) {
+      getTabState(index).isDataOutdated = true;
+      _tabController.animateTo(index);
+      return;
+    }
+
+    getViewState(index).refresh();
   }
+
+  int get currentCategoryID => getTabState(_tabController.index).categoryID;
+
+  DynamicTabState getTabState(int i) => _keysList.tabs[i].currentState!;
+
+  ThreadListViewState getViewState(int i) => _keysList.views[i].currentState!;
 
   @override
   void dispose() {
