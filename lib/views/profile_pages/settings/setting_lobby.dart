@@ -1,7 +1,5 @@
 import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import '../../../providers/auth_provider.dart';
 import '../widgets/next_page_tile.dart';
 import '../widgets/setting_subtitle.dart';
@@ -15,7 +13,7 @@ class SettingContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLogined = Provider.of<AuthProvider>(context).isLogined;
+    final isLogined = getLoginedUser(context, listen: true) != null;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

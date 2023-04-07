@@ -73,9 +73,12 @@ class ThreadListViewState extends State<ThreadListView>
     if (threads.isEmpty) {
       if (isLoading) return const LoadingPage();
       if (isNetError) return const NetworkErrorPage();
-      return Text(
-        context.getString('no_items_found'),
-        textAlign: TextAlign.center,
+      return Padding(
+        padding: const EdgeInsets.all(15),
+        child: Text(
+          context.getString('no_items_found'),
+          textAlign: TextAlign.center,
+        ),
       );
     }
 
@@ -91,7 +94,17 @@ class ThreadListViewState extends State<ThreadListView>
   }
 
   Widget buildItem(BuildContext context, int index) {
-    final bottomLoadingWidget = ColorFiltered(
+    //列表最後的組件顯示
+    if (index == threads.length) {
+      if (isLoading) return buildLoadingWidget(context);
+      return buildBottomNoMoreWidget(context);
+    }
+
+    return ThreadItem(data: threads[index]);
+  }
+
+  Widget buildLoadingWidget(BuildContext context) {
+    return ColorFiltered(
       colorFilter: ColorFilter.mode(
         Theme.of(context).primaryColor,
         BlendMode.srcIn,
@@ -101,21 +114,16 @@ class ThreadListViewState extends State<ThreadListView>
         child: RiveAnimation.asset('assets/animations/stars_twinkle.riv'),
       ),
     );
+  }
 
-    final bottomNoMoreWidget = Padding(
+  Widget buildBottomNoMoreWidget(BuildContext context) {
+    return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: Text(
         context.getString('no_more_items'),
         textAlign: TextAlign.center,
       ),
     );
-
-    //列表最後的組件顯示
-    if (index == threads.length) {
-      return isLoading ? bottomLoadingWidget : bottomNoMoreWidget;
-    }
-
-    return ThreadItem(data: threads[index]);
   }
 
   @override

@@ -14,7 +14,7 @@ class WelcomeBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final loginedUser = getLoginedUser(context);
+    final loginedUser = getLoginedUser(context, listen: true);
     final design = loginedUser != null
         ? loginedDesign(context, loginedUser.nickname)
         : defaultDesign(context);

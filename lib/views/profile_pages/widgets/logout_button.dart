@@ -41,12 +41,11 @@ class LogoutButton extends StatelessWidget {
             title: Text(context.getString('conform_logout')),
             actions: [
               TextButton(
-                onPressed: () =>
-                    Provider.of<AuthProvider>(context, listen: false)
-                        .logout()
-                        .whenComplete(() {
-                  Navigator.pop(context);
-                }),
+                onPressed: () {
+                  Provider.of<AuthProvider>(context, listen: false)
+                      .logout()
+                      .whenComplete(() => Navigator.pop(context));
+                },
                 style: const ButtonStyle(
                   backgroundColor: MaterialStatePropertyAll(Colors.transparent),
                 ),

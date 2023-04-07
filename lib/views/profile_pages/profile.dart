@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:space_station/providers/auth_provider.dart';
 import 'package:space_station/views/profile_pages/widgets/logout_button.dart';
 import 'package:space_station/views/profile_pages/widgets/user_info_box.dart';
@@ -19,15 +18,13 @@ class _ProfilePageState extends State<ProfilePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-
-    final islogined = Provider.of<AuthProvider>(context).isLogined;
     return ListView(
       children: [
         const UserInfoBox(),
         const SettingContainer(),
         const SizedBox(height: 80),
         Visibility(
-          visible: islogined,
+          visible: getLoginedUser(context, listen: true) != null,
           child: const LogoutButton(),
         ),
       ],

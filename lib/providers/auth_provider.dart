@@ -53,8 +53,8 @@ class AuthProvider extends ChangeNotifier {
   }
 }
 
-UserInfo? getLoginedUser(BuildContext context, {warnOnEmpty = false}) {
-  final auth = Provider.of<AuthProvider>(context, listen: false);
+UserInfo? getLoginedUser(BuildContext context, {warnOnEmpty = false, listen = false}) {
+  final auth = Provider.of<AuthProvider>(context, listen: listen);
   if (auth.isLogined == false) {
     if (warnOnEmpty) showNeedLoginDialog(context);
     return null;
