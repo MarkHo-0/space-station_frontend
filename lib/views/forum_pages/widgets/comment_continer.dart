@@ -1,6 +1,7 @@
 import 'package:ez_localization/ez_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:m_toast/m_toast.dart';
 import '../../../models/comment.dart';
 import '../../_share/owner_tag.dart';
 import '../../../providers/auth_provider.dart';
@@ -159,6 +160,7 @@ class CommentContiner extends StatelessWidget {
                 color: Colors.orangeAccent,
               ),
               title: Text(context.getString("pin_comment")),
+              onTap: () => onPin(context, comment.cid),
             ),
           ),
         PopupMenuItem(
@@ -170,13 +172,10 @@ class CommentContiner extends StatelessWidget {
               color: Colors.redAccent,
             ),
             title: Text(context.getString("report")),
+            onTap: () => report(context),
           ),
         ),
       ],
-      onSelected: (value) {
-        if (value == 0) onPin(context, comment.cid);
-        if (value == 1) report(context);
-      },
       offset: const Offset(0, 20),
       child: Icon(
         Icons.more_vert,
@@ -267,7 +266,22 @@ class CommentContiner extends StatelessWidget {
     if (comment.status == 2) return showBannedMessageDialog(context);
     Navigator.of(context).push(
       CupertinoPageRoute(
-        builder: ((_) => ReportPage(comment, floorIndex)),
+        builder: ((_) {
+          return ReportPage(
+            comment: comment,
+            floorIndex: floorIndex,
+            onReportSuccessed: () {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                ShowMToast().successToast(
+                  context,
+                  message: context.getString("report_success_message"),
+                  alignment: Alignment.bottomCenter,
+                  duration: 3000,
+                );
+              });
+            },
+          );
+        }),
       ),
     );
   }
