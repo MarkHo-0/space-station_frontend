@@ -56,17 +56,20 @@ class ThreadPageState extends State<ThreadPage> {
   }
 
   void onLoaded(ThreadDetailModel data, bool shouldClearOld) {
-    if (shouldClearOld) comments.clear();
-    if (thread != null) startViewingTime = getCurrUnixTime();
-    if (data.threadDetail != null) {
-      thread = data.threadDetail;
-      pinnedCommentID.value = thread!.pinedCid;
-      if (getLoginedUser(context)?.uid == thread!.sender.uid) {
-        isOwnedByMe = true;
-      }
-    }
-    nextCursor = data.continuous;
+    if (shouldClearOld == true) comments.clear();
     comments.addAll(data.commentsList);
+    nextCursor = data.continuous;
+
+    if (data.threadDetail == null) return;
+    thread = data.threadDetail;
+    pinnedCommentID.value = thread!.pinedCid;
+
+    final currentUser = getLoginedUser(context);
+    if (currentUser == null) return;
+    startViewingTime = getCurrUnixTime();
+
+    if (currentUser.uid != thread!.sender.uid) return;
+    isOwnedByMe = true;
   }
 
   @override
