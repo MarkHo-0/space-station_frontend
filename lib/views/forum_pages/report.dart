@@ -97,8 +97,8 @@ class ReportPage extends StatelessWidget {
     return StatefulBuilder(
       builder: (BuildContext context, setState) {
         return Column(
-          children: List.generate(8, (index) {
-            final reasonID = 7 - index;
+          children: List.generate(7, (index) {
+            final reasonID = 6 - index + 1;
             return RadioListTile(
               value: reasonID,
               activeColor: pColor,
