@@ -1,6 +1,6 @@
 ## Space Station
 
-This is the Application of Space Station which contains both Android and IOS version.
+This is the frontend of Space Station which contains both.
 
-Testing 10/10/2022
-
+All the code we wrote is located in the /lib folder, 
+and /assets is to store non-program resources, such as pictures, translation files, etc.
